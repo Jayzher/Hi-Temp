@@ -16,8 +16,7 @@ import Employee from './navlinks/Employee';
 
 
 function App() {
-
-const [user, setUser] = useState({
+  const [user, setUser] = useState({
     id: null,
     Status: null,
     profile: null,
@@ -29,24 +28,27 @@ const [user, setUser] = useState({
   });
 
   return (
-    <UserProvider value={{user, setUser}}>
+    <UserProvider value={{ user, setUser }}>
       <Router>
-      <AppNavBar/>
+        <AppNavBar />
         <Container>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/Hi-Temp" element={<Home />} />
             <Route path="/Login" element={<Login />} />
-            <Route path="/Employee" element={<Employee />} />
+            <Route path="/Logout" element={<Logout />} />
+            <Route path="/TasksCreate" element={<CreateNewTask />} />
+            {/* Dashboard Routes */}
             <Route path="/Dashboard" element={<Dashboard />} />
             <Route path="/Dashboard/:taskId" element={<Dashboard />} />
             <Route path="/Dashboard/profile" element={<Profile />} />
-            <Route path="/TasksCreate" element={<CreateNewTask />} />
-            <Route path="/Logout" element={<Logout />} />
+            {/* Employee Routes */}
+            <Route path="/Employee" element={<Employee />} />
           </Routes>
         </Container>
       </Router>
-    </UserProvider >
+    </UserProvider>
   );
 }
+
 
 export default App;

@@ -10,18 +10,19 @@ export default function AppNavBar() {
   const { user, setUser } = useContext(UserContext);
 
   return (
-    <Navbar style={{ display: "flex", background: "rgba(1, 1, 1, 0.5)" }} variant="light">
-      <Link to="/">
-        <img src={logo} style={{ height: "80px" }} className="ms-3" alt="Logo" />
-      </Link>
-      {user.id === null || user.id === undefined ? (
-        <Nav className="ms-auto me-5">
-          <Link to="/login" className="nav-link fs-4 fw-bold">Login</Link>
-        </Nav>
-      ) : (
-        <>
-        </>
-      )}
-    </Navbar>
+    <>
+      { (user.id === null || user.id === undefined) ?
+        <Navbar style={{ display: "flex", background: "rgba(1, 1, 1, 0.5)" }} variant="light">
+            <Link to="/">
+              <img src={logo} style={{ height: "80px" }} className="ms-3" alt="Logo" />
+            </Link>
+            <Nav className="ms-auto me-5">
+              <Link to="/login" className="nav-link fs-4 fw-bold">Login</Link>
+            </Nav>
+        </Navbar>
+        :
+        <div style={{padding: "0", margin: "0"}}></div>
+      }
+    </>
   );
 }
