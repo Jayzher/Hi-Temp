@@ -1,0 +1,32 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - master  # Change this to your master branch name
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Build app
+        run: npm run build
+        
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@3.7.1  # Use the appropriate version
+        with:
+          token: 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
+          branch: gh-pages  # Change this to your deployment branch
+          folder: build  # Change this to the folder where your built React app resides
