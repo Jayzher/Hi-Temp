@@ -3,7 +3,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tasks from './Tasks.js';
 import DisplayTaskCard from './DisplayTaskCard.js';
 import DisplayProjectCard from './DisplayProjectCard.js';
-import Calendar from './Calendar.js';
+// import Calendar from './Calendar.js';
 import { useEffect } from 'react';
 
 function JustifiedExample() {
@@ -20,7 +20,7 @@ function JustifiedExample() {
       </Tab>
       <Tab style={{marginTop: "4.5vh", left: "15.1vw", position: "absolute", backgroundColor: "lightgreen"}} eventKey="Calendar" title="Calendar">
         <div style={{backgroundImage: "radial-gradient( circle farthest-corner at 10% 20%,  rgba(97,186,255,1) 0%, rgba(166,239,253,1) 90.1% )", height: "95.5vh", width: "84vw"}}>
-          <Calendar />
+          {/*<Calendar />*/}
         </div>
       </Tab>
       <Tab style={{marginTop: "4.5vh", left: "15.1vw", position: "absolute", backgroundColor: "burlywood"}} eventKey="progress" title="Project Progress">
