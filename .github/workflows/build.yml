@@ -1,9 +1,9 @@
-name: Build and Deploy
+name: Build and Test
 
 on:
   push:
     branches:
-      - master  # Change this to your master branch name
+      - main  # Adjust to your main branch name
 
 jobs:
   build:
@@ -24,9 +24,5 @@ jobs:
       - name: Build app
         run: npm run build
         
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@3.7.1  # Use the appropriate version
-        with:
-          token: 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
-          branch: gh-pages  # Change this to your deployment branch
-          folder: build  # Change this to the folder where your built React app resides
+      - name: Run tests
+        run: npm test
