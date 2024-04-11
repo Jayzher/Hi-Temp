@@ -29,7 +29,7 @@ function NewTasks() {
         projectName: '',
         description: '',
         destination: '',
-        duration: '', // Initialize duration field
+        duration: '',
         taskType: '',
         department: '',
         travelFunds: '',
@@ -122,7 +122,7 @@ function NewTasks() {
         .then(res => res.json())
         .then(data => {
             console.log(data);
-            setFormData(prevState => ({
+            setFormData2(prevState => ({
                 ...prevState,
                 projectName: '',
                 description: '',
@@ -307,7 +307,7 @@ function NewTasks() {
                                         <Form.Group style={{width: "40vw"}}>
                                             <Form.Label>Project Sub-Tasks: (Optional)</Form.Label>
                                             <Form.Select onChange={handleChange} name="projectName">
-                                                <option value="">Select Project</option>
+                                                <option value="N/A">Select Project</option>
                                                 <GetProjects />
                                             </Form.Select>
                                         </Form.Group>
@@ -323,7 +323,7 @@ function NewTasks() {
                                         <Form.Group style={{width: "20vw"}} className="ms-4 me-2">
                                             <Form.Label>Task Type:</Form.Label>
                                             <Form.Select onChange={handleChange} required name="taskType" required>
-                                                <option value="">Select Task Type</option>
+                                                <option value="N/A" Selected>Select Task Type</option>
                                                 <GetTaskType department={formData.department} />
                                             </Form.Select>
                                         </Form.Group>

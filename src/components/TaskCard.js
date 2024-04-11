@@ -44,8 +44,6 @@ export default function DisplayCard({ tasks }) {
 
     };
 
-    console.log(userData.profile);
-
     const getStatusColor = (status) => {
         switch (status) {
             case "In Progress":

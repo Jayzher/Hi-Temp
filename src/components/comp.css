@@ -214,3 +214,54 @@ table.fc-scrollgrid.fc-scrollgrid-liquid {
 a.fc-col-header-cell-cushion {
 	text-decoration: none;
 }
+
+thead th {
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+tr:first-child {
+
+}
+
+.arrow-up::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 5px; /* Adjust as needed */
+    transform: translateY(-50%);
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid black;
+}
+
+.arrow-down::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 5px; /* Adjust as needed */
+    transform: translateY(-50%);
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid black;
+}
+
+.fixed-image {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    cursor: pointer;
+    z-index: 9999; /* Ensure it's above other content */
+}
+
+.fixed-image img {
+    width: 50px; /* Adjust the size as needed */
+    height: auto;
+}

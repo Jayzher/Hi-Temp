@@ -10,8 +10,16 @@ function JustifiedExample() {
 
   return (
     <Tabs defaultActiveKey="home" id="justify-tab-example" style={{paddingLeft: "", width: "84vw", left: "15.1vw", right: "0", position: "absolute"}} className="" justify>
-      <Tab style={{ marginTop: "4.5vh", left: "15.1vw", position: "absolute", backgroundColor: "radial-gradient( circle 311px at 8.6% 27.9%, rgba(62,147,252,0.57) 12.9%, rgba(239,183,192,0.44) 91.2% )", height: "100%", width: "84vw" }} eventKey="home" title="Tasks">
-        <div className="d-flex flex-row justify-content-around pt-5 pb-5" style={{ backgroundImage: "radial-gradient(circle farthest-corner at 10% 50%, rgba(62,147,252,0.7) 0%, rgba(239,183,192,0.3) 90%)", height: "fit-content", width: "100%", minHeight: "100vh" }}>
+      <Tab style={{ marginTop: "4.5vh", left: "15.1vw", position: "absolute", backgroundSize: "cover", backgroundRepeat: "no-repeat", // Prevents the background image from repeating
+            height: "fit-content", backgroundColor: "radial-gradient( circle 311px at 8.6% 27.9%, rgba(62,147,252,0.57) 12.9%, rgba(239,183,192,0.44) 91.2% )", height: "100%", width: "84vw" }} eventKey="home" title="Tasks">
+        <div className="d-flex flex-row justify-content-around pt-5 pb-5" style={{ 
+            backgroundImage: "radial-gradient(circle farthest-corner at 10% 50%, rgba(62,147,252,0.7) 0%, rgba(239,183,192,0.3) 90%)", 
+            backgroundSize: "cover", // Ensures the background image stretches and covers the entire container
+            backgroundRepeat: "no-repeat", // Prevents the background image from repeating
+            height: "fit-content", 
+            width: "100%", 
+            minHeight: "100vh" 
+        }}>
             <DisplayTaskCard />
         </div>
       </Tab>

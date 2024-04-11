@@ -268,7 +268,7 @@ export default function TaskList({tasks}) {
                             </Form.Group>
                             <Form.Group style={{width: "20vw"}} className="ms-4 me-4">
                                 <Form.Label>Due Date:</Form.Label>
-                                <Form.Control type="date" name="dueDate" value={duration} onChange={e => setDuration(e.target.value)} />
+                                <Form.Control type="date" name="dueDate" value={taskduration} onChange={e => setDuration(e.target.value)} />
                             </Form.Group>
                         </div>
                         <Form.Group style={{width: "47vw"}} className="ms-4 me-4">
@@ -345,19 +345,19 @@ export default function TaskList({tasks}) {
 		            {assignedTo[0].fullName}
 		        </div>
 		    </td>
-		    <td style={{ width: "14.6%" }}>
+		    <td style={{ width: "17.6%" }}>
 		        <div className="d-flex align-items-center justify-content-center" style={{ height: "50px", fontSize: '0.8rem'}}>
 		            {formatDate(duration)}
 		        </div>
 		    </td>
-		    <td style={{ width: "14.6%" }}>
+		    <td style={{ width: "16.6%" }}>
 		        <div className="d-flex align-items-center justify-content-center" style={{ height: "50px", fontSize: '0.8rem'}}>
 		            {Status}
 		        </div>
 		    </td>
-		    <td style={{ width: "14.6%"}}>
-		        <div className="d-flex align-items-center ml-auto" style={{ height: "50px", width: "76px", fontSize: '0.8rem'}}>
-		            <button id="bt1" style={{ marginLeft: "20px", marginRight: "20px", padding: "5px" }} onClick={() => sets(tasksId, _id)}>Details</button>
+		    <td style={{ width: "12.6%"}}>
+		        <div className="d-flex align-items-center ml-auto" style={{ height: "50px", width: "65px", fontSize: '0.8rem'}}>
+		            <button id="bt1" style={{ marginLeft: "10px", marginRight: "20px", padding: "5px" }} onClick={() => sets(tasksId, _id)}>Details</button>
 		        </div>
 		    </td>
 		</tr>

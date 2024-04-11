@@ -60,14 +60,14 @@ export default function ProjectCard({ proj }) {
                         <Card style={{ width: '100%', background: "rgba(0,0,0,0.1)", height: "fit-content", border: "solid 1px black" }} className="d-flex flex-column pt-3">
                             <Card.Body>
                                 <label style={{ fontWeight: "bold", fontSize: "1rem" }}>Company:</label>
-                                <Card.Title style={{ fontSize: "1rem" }}>{company}</Card.Title>
+                                <Card.Title style={{ fontSize: "1rem" }} className="ps-3 pe-3 pt-2 pb-2">{company}</Card.Title>
                                 <label style={{ fontWeight: "bold", fontSize: "1rem" }} className="">Address:</label>
                                 <Card.Text className="ps-3 pe-3 fs-6 mb-2" >
                                     {address}
                                 </Card.Text>
                                 <label style={{ fontWeight: "bold", fontSize: "1rem" }}>Description:</label>
                                 <div id="modalDesc" style={{ height: "130px", background: "peachpuff", textAlign: "justify", overflowY: "auto", textOverflow: "hidden" }}>
-                                    <Card.Text className="ps-3 pe-3 fs-6 pt-2 pb-2" >
+                                    <Card.Text className="ps-3 pe-3 fs-6 pt-2 pb-2">
                                         {description}
                                     </Card.Text>
                                 </div>
@@ -89,7 +89,7 @@ export default function ProjectCard({ proj }) {
                                     <div className="d-flex flex-column">
                                         <label style={{ fontWeight: "bold", fontSize: "1rem" }} className="">Date Completed:</label>
                                         <Card.Text className="ps-3 pe-3 fs-6 mb-2" >
-                                            {DateCompleted}
+                                            {formatDate(DateCompleted)}
                                         </Card.Text>
                                     </div>
                                     <div className="d-flex flex-column">

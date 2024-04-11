@@ -70,7 +70,7 @@ export default function SideNavBar() {
                 <ul id="sidenavlink" className="nav-links">
                     <Link style={{textDecoration: "none"}} to="/Dashboard" className="nav-link" onClick={() => handleLinkClick("Dashboard")}><li style={{borderTop: "2px solid black"}} className={`side-link ps-3 ${activeLink === "Dashboard" ? "active" : ""}`}>Dashboard</li></Link>
                     <Link style={{textDecoration: "none"}} to="/Dashboard/profile" className="nav-link" onClick={() => handleLinkClick("profile")}><li style={{borderTop: "2px solid black"}} className={`side-link ps-3 ${activeLink === "profile" ? "active" : ""}`}>Profile</li></Link>
-                    <Link style={{textDecoration: "none"}} to="/" className="nav-link" onClick={() => handleLinkClick("planner")}><li  className={`side-link ps-3 ${activeLink === "planner" ? "active" : ""}`}>My Planner</li></Link>
+                    <Link style={{textDecoration: "none"}} to="/Planner" className="nav-link" onClick={() => handleLinkClick("planner")}><li  className={`side-link ps-3 ${activeLink === "planner" ? "active" : ""}`}>Weekly Report</li></Link>
                     <Link style={{textDecoration: "none"}} to="/" className="nav-link" onClick={() => handleLinkClick("schedule")}><li className={`side-link ps-3 ${activeLink === "schedule" ? "active" : ""}`}>My Schedule</li></Link>
                     {
                         (role === "Admin") ?

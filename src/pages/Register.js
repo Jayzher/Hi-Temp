@@ -6,6 +6,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import Employee_Details from '../components/Employee_Details';
+import GetDepartment from '../components/GetDepartment';
 
 export default function Register(){
 
@@ -24,7 +25,7 @@ export default function Register(){
   const [isValid, setIsValid] = useState(false);
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
-  const [ profile, setProfile ] = useState();
+  const [ profile, setProfile ] = useState(null);
   const [ file, setFile ] = useState();
 
   const togglePasswordVisibility1 = () => {
@@ -81,50 +82,38 @@ export default function Register(){
 
     function registerUser(e) {
       e.preventDefault();
-
       // Upload image to Cloudinary
-      const formData = new FormData();
-      formData.append('file', profile);
-      formData.append('upload_preset', 'profile_upload'); // Use your Cloudinary upload preset name
+      if (e.file) {
+        handleProfileUpload(e);
+      }
 
-      fetch(`https://api.cloudinary.com/v1_1/dgzhcuwym/image/upload`, { // Replace cloudName with your Cloudinary cloud name
-        method: 'POST',
-        body: formData
+      // Continue with user registration...
+      localStorage.setItem("username", username)
+      fetch(`${process.env.REACT_APP_API_URL}/users/register`, {
+        method: "POST",
+        headers: {
+          'Content-Type' : 'application/json',
+        },
+        body: JSON.stringify({
+          name : name,
+          profile: profile,
+          department : department,
+          role : role,
+          isAdmin: admin,
+          username : username,
+          password : Password2
+        })
       })
-      .then(response => response.json())
+      .then(res => res.json())
       .then(data => {
-        if (data.secure_url) {
-          setProfile(data.secure_url); // Set profile URL after successful upload
-          // Continue with user registration...
-          localStorage.setItem("username", username)
-          fetch(`${process.env.REACT_APP_API_URL}/users/register`, {
-            method: "POST",
-            headers: {
-              'Content-Type' : 'application/json',
-            },
-            body: JSON.stringify({
-              name : name,
-              profile: data.secure_url,
-              department : department,
-              role : role,
-              isAdmin: admin,
-              username : username,
-              password : Password2
-            })
+        if(data === true) {
+          Swal.fire({
+            title: "Registered!",
+            icon: "success",
+            text: "You have Successfully Registered."
           })
-          .then(res => res.json())
-          .then(data => {
-            if(data === true) {
-              Swal.fire({
-                title: "Registered!",
-                icon: "success",
-                text: "You have Successfully Registered."
-              })
-            }
-            handleProfileUpload(profile);
-          })
-          .catch(error => console.error('Error:', error));
         }
+        handleProfileUpload(profile);
       })
       .catch(error => console.error('Error:', error));
 
@@ -135,29 +124,28 @@ export default function Register(){
     }
 
     const handleProfileUpload = (file) => {
-        // Upload image to Cloudinary
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', 'profile_upload'); // Use your Cloudinary upload preset name
+       const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', 'profile_upload'); // Use your Cloudinary upload preset name
 
-        fetch(`https://api.cloudinary.com/v1_1/dgzhcuwym/image/upload`, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to upload image to Cloudinary');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.secure_url) {
-                setProfile(data.secure_url); // Update profile state with uploaded image URL
-            }
-        })
-        .catch(error => {
-            console.error('Error uploading image to Cloudinary:', error);
-        });
+      fetch(`https://api.cloudinary.com/v1_1/dgzhcuwym/image/upload`, {
+          method: 'POST',
+          body: formData
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Failed to upload image to Cloudinary');
+          }
+          return response.json();
+      })
+      .then(data => {
+          if (data.secure_url) {
+              setProfile(data.secure_url); // Update profile state with uploaded image URL
+          }
+      })
+      .catch(error => {
+          console.error('Error uploading image to Cloudinary:', error);
+      });
     }
 
   return (
@@ -177,15 +165,13 @@ export default function Register(){
               </Form.Group>
               <Form.Group style={{width: "25vw"}} className="mb-3">
                 <Form.Label className="fw-bold">Profile: </Form.Label>
-                <Form.Control type="file" onChange={e => setProfile(e.target.files[0])} required />
+                <Form.Control type="file" onChange={e => setProfile(e.target.files[0])} />
               </Form.Group>
               <Form.Group style={{width: "25vw"}} className="mb-3">
                 <Form.Label className="fw-bold">Department: </Form.Label>
                 <Form.Select onChange={e => setDepartment(e.target.value)} required>
                   <option value="">Select Department</option>
-                  <option value="Admin Staff">Admin Staff</option>
-                  <option value="Technical Team">Technical Team</option>
-                  <option value="Sales Team">Sales Team</option>
+                  <GetDepartment />
                 </Form.Select>
               </Form.Group>
               <Form.Group style={{width: "25vw"}} className="mb-3">

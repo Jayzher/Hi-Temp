@@ -11,6 +11,7 @@ import Tabs from './components/Tab';
 import { UserProvider } from './userContext';
 import {useState, useEffect} from 'react';
 import Profile from './navlinks/Profile';
+import Planner from './navlinks/Planner';
 import CreateNewTask from './navlinks/CreateNewTask';
 import Employee from './navlinks/Employee';
 
@@ -43,6 +44,7 @@ function App() {
             <Route path="/Dashboard/profile" element={<Profile />} />
             {/* Employee Routes */}
             <Route path="/Employee" element={<Employee />} />
+            <Route path="/Planner" element={<Planner />} />
           </Routes>
         </Container>
       </Router>
