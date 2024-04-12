@@ -71,7 +71,7 @@ export default function SideNavBar() {
                     <Link style={{textDecoration: "none"}} to="/Dashboard" className="nav-link" onClick={() => handleLinkClick("Dashboard")}><li style={{borderTop: "2px solid black"}} className={`side-link ps-3 ${activeLink === "Dashboard" ? "active" : ""}`}>Dashboard</li></Link>
                     <Link style={{textDecoration: "none"}} to="/Dashboard/profile" className="nav-link" onClick={() => handleLinkClick("profile")}><li style={{borderTop: "2px solid black"}} className={`side-link ps-3 ${activeLink === "profile" ? "active" : ""}`}>Profile</li></Link>
                     <Link style={{textDecoration: "none"}} to="/Planner" className="nav-link" onClick={() => handleLinkClick("planner")}><li  className={`side-link ps-3 ${activeLink === "planner" ? "active" : ""}`}>Weekly Report</li></Link>
-                    <Link style={{textDecoration: "none"}} to="/" className="nav-link" onClick={() => handleLinkClick("schedule")}><li className={`side-link ps-3 ${activeLink === "schedule" ? "active" : ""}`}>My Schedule</li></Link>
+                    {/*<Link style={{textDecoration: "none"}} to="/" className="nav-link" onClick={() => handleLinkClick("schedule")}><li className={`side-link ps-3 ${activeLink === "schedule" ? "active" : ""}`}>My Schedule</li></Link>*/}
                     {
                         (role === "Admin") ?
                         <>
@@ -80,13 +80,13 @@ export default function SideNavBar() {
                         </>
                         :
                         <>
-                            <Link style={{textDecoration: "none"}} to="/" className="nav-link" onClick={() => handleLinkClick("ongoingTasks")}><li className={`side-link ps-3 ${activeLink === "ongoingTasks" ? "active" : ""}`}>Ongoing Tasks</li></Link>
-                            <Link style={{textDecoration: "none"}} to="/" className="nav-link" onClick={() => handleLinkClick("taskProgress")}><li className={`side-link ps-3 ${activeLink === "taskProgress" ? "active" : ""}`}>Task Progress</li></Link>
+                            {/*<Link style={{textDecoration: "none"}} to="/" className="nav-link" onClick={() => handleLinkClick("ongoingTasks")}><li className={`side-link ps-3 ${activeLink === "ongoingTasks" ? "active" : ""}`}>Ongoing Tasks</li></Link>*/}
+                            {/*<Link style={{textDecoration: "none"}} to="/" className="nav-link" onClick={() => handleLinkClick("taskProgress")}><li className={`side-link ps-3 ${activeLink === "taskProgress" ? "active" : ""}`}>Task Progress</li></Link>*/}
                         </>
                     }
-                    <Link style={{textDecoration: "none"}} to="/" className="nav-link" onClick={() => handleLinkClick("completedTasks")}><li className={`side-link ps-3 ${activeLink === "completedTasks" ? "active" : ""}`}>Completed Tasks</li></Link>
+                    <Link style={{textDecoration: "none"}} to="/Messages" className="nav-link" onClick={() => handleLinkClick("Messages")}><li className={`side-link ps-3 ${activeLink === "Messages" ? "active" : ""}`}>Messages</li></Link>
                     <Link style={{textDecoration: "none"}} to="/" className="nav-link" onClick={() => handleLinkClick("announcements")}><li className={`side-link ps-3 ${activeLink === "announcements" ? "active" : ""}`}>Announcements</li></Link>
-                    <Link style={{textDecoration: "none"}} to="/" className="nav-link" onClick={() => handleLinkClick("account")}><li className={`side-link ps-3 ${activeLink === "account" ? "active" : ""}`} style={{ borderBottom: "2px solid black" }}>Account</li></Link>
+                    {/*<Link style={{textDecoration: "none"}} to="/" className="nav-link" onClick={() => handleLinkClick("account")}><li className={`side-link ps-3 ${activeLink === "account" ? "active" : ""}`} style={{ borderBottom: "2px solid black" }}>Account</li></Link>*/}
                     <Link style={{textDecoration: "none"}} to="/Logout" className="nav-link"><li className="side-link" style={{ border: "1px solid black", bottom: "0", position: "absolute", textAlign: "center" }}>Logout</li></Link>
                 </ul>
             </nav>

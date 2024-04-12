@@ -47,7 +47,7 @@ export default function DisplayTaskCard() {
             if (user.role === "Admin") {
                 response = await fetch(`${apiUrl}/tasks/allTasks`);
             } else {
-                response = await fetch(`${apiUrl}/tasks/completed`, {
+                response = await fetch(`${apiUrl}/tasks/active`, {
                     method: "PATCH",
                     headers: {
                         'Content-Type': 'application/json'

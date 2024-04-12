@@ -219,25 +219,35 @@ export default function TaskList({tasks}) {
     }
 
     function updateSubTask() {
-        fetch(`http://localhost:4000/project/updateProjectTasks`, {
-            method: "PUT",
-            headers: {
-                'Content-Type': 'Application/json'
-            },
-            body: JSON.stringify({
-            	tasks: tasks,
-            	Status: taskStatus
-            })
-        })
-        .then(res => {
-            console.log(res);
-            window.dispatchEvent(new Event('ProjectCreated'));
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            // Handle error, e.g., display an error message to the user
-        });
-    }
+	    // Check if any task in the tasks array has no projectName or is an empty string, null, or undefined
+	    const hasInvalidTasks = tasks.some(task => !task.projectName || task.projectName === "" || task.projectName === null || task.projectName === undefined);
+	    
+	    // If any task is invalid, skip the fetch request
+	    if (hasInvalidTasks) {
+	        console.log("Tasks contain items with no projectName or invalid projectName. Skipping fetch request.");
+	        return;
+	    }
+
+	    fetch(`http://localhost:4000/project/updateProjectTasks`, {
+	        method: "PUT",
+	        headers: {
+	            'Content-Type': 'Application/json'
+	        },
+	        body: JSON.stringify({
+	            tasks: tasks,
+	            Status: taskStatus
+	        })
+	    })
+	    .then(res => {
+	        console.log(res);
+	        window.dispatchEvent(new Event('ProjectCreated'));
+	    })
+	    .catch(error => {
+	        console.error("Error:", error);
+	        // Handle error, e.g., display an error message to the user
+	    });
+	}
+
 
 
 	function sets(e, id) {
@@ -248,6 +258,7 @@ export default function TaskList({tasks}) {
 	}
 
 	return (
+		
 	<>	
 		<Modal size="lg" id="thisModal" className="" show={show} onHide={handleClose}>
 			    <Modal.Header style={{textAlign: "center", height: "4rem"}} className="d-flex flex-column text-center align-items-center" closeButton>

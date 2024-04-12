@@ -114,12 +114,13 @@ export default function TaskTable() {
         <div className="ms-4 me-4 pt-3" style={{ height: "100vh", width: "45.5vw", overflow: "hidden"}}>
             <div className="d-flex flex-row justify-content-around align-items-end" style={{ marginBottom: '10px' }}>
                 <input style={{height: "30px"}}
+                    className="me-5"
                     type="text"
                     placeholder="Search by Name"
                     value={searchName}
                     onChange={(e) => handleSearchByName(e.target.value)}
                 />
-                <div className="d-flex flex-column justify-content-center">
+                <div className="d-flex flex-column me-4 justify-content-center">
                     <label className="me-2" htmlFor="status">By Department:</label>
                     <select name="department" value={filterStatus} onChange={(e) => handleFilterByDepartment(e.target.value)}>
                         <option value="">All</option>

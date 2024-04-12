@@ -42,6 +42,7 @@ function NewTasks() {
         projectName: '',
         description: '',
         company: '',
+        product: '',
         address: '',
         projExpenses: ''
      });
@@ -115,6 +116,7 @@ function NewTasks() {
             body: JSON.stringify({
                 projectName: formData2.projectName,
                 company: formData2.company,
+                product: formData2.product,
                 address: formData2.address,
                 description: formData2.description
             })
@@ -127,6 +129,7 @@ function NewTasks() {
                 projectName: '',
                 description: '',
                 company: '',
+                product: '',
                 address: '',
                 projExpenses: ''
             }));
@@ -135,6 +138,7 @@ function NewTasks() {
                 icon: "success",
                 text: "Project Created Successfully!"
             })
+             window.dispatchEvent(new Event('ProjectCreated'));
         })
         .catch(error => {
             console.error("Error:", error);
@@ -307,7 +311,7 @@ function NewTasks() {
                                         <Form.Group style={{width: "40vw"}}>
                                             <Form.Label>Project Sub-Tasks: (Optional)</Form.Label>
                                             <Form.Select onChange={handleChange} name="projectName">
-                                                <option value="N/A">Select Project</option>
+                                                <option value="N/A" Selected>Select Project</option>
                                                 <GetProjects />
                                             </Form.Select>
                                         </Form.Group>
@@ -378,6 +382,10 @@ function NewTasks() {
                                     <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
                                         <Form.Label>Company:</Form.Label>
                                         <Form.Control type="text" placeholder="Enter Company Name" name="company" value={formData2.company} onChange={handleChange2} required />
+                                    </Form.Group>
+                                    <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
+                                        <Form.Label>Product:</Form.Label>
+                                        <Form.Control type="text" placeholder="Enter Product Name" name="product" value={formData2.product} onChange={handleChange2} required />
                                     </Form.Group>
                                     <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
                                         <Form.Label>Address:</Form.Label>

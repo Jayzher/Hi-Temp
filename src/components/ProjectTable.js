@@ -13,49 +13,50 @@ export default function TaskTable() {
         // Fetch tasks data
         fetchTasksData();
 
-        // Listen for 'taskCreated' event to refresh tasks data
-        window.addEventListener('ProjectCreated', fetchTasksData);
+        // Define the event listener function
+        const handleProjectCreated = () => {
+            // Fetch tasks data again when 'ProjectCreated' event is triggered
+            fetchTasksData();
+        };
+
+        // Listen for 'ProjectCreated' event and call handleProjectCreated function
+        window.addEventListener('ProjectCreated', handleProjectCreated);
 
         // Clean up event listener
         return () => {
-            window.removeEventListener('ProjectCreated', fetchTasksData);
+            window.removeEventListener('ProjectCreated', handleProjectCreated);
         };
     }, [user.id]); // Fetch data whenever user.id changes
 
     const fetchTasksData = () => {
-        // If the user is not authenticated, redirect to the Login page
-        if (!user.id) {
-            navigate("/Login");
-        } else {
-            // Fetch tasks data
-            fetch(`${process.env.REACT_APP_API_URL}/project/allProject`, {
-                method: "GET",
-                headers: { 
-                    'Content-Type' : 'application/json'
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                setproject(data.map(res => {
-                    return <ProjectList key={res._id} proj={res} /> ;
-                }));
-            })
-            .catch(error => {
-                console.error("Error fetching tasks:", error);
-                // Handle error, e.g., display an error message to the user
-            });
-        }
+        // Fetch tasks data
+        fetch(`${process.env.REACT_APP_API_URL}/project/allProject`, {
+            method: "GET",
+            headers: { 
+                'Content-Type' : 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            setproject(data.map(res => {
+                return <ProjectList key={res._id} proj={res} /> ;
+            }));
+        })
+        .catch(error => {
+            console.error("Error fetching tasks:", error);
+            // Handle error, e.g., display an error message to the user
+        });
     };
 
     return (
-        <div className="ms-4 me-4 pt-3" style={{ height: "100vh", width: "45.5vw", overflow: "auto"}}>
+        <div className="ms-2 me-2 pt-3" style={{ height: "100vh", width: "47.5vw", overflow: "auto"}}>
             <Table style={{ background: "peachpuff" }} striped bordered hover className="text-center">
                 <thead className="opacity" style={{ position: "sticky", top: "0", zIndex: 1}}>
-                    <tr className="opacity">
+                    <tr className="opacity"> 
                         <th className="opacity" style={{ width: "30%"}}>Project Name</th>
                         <th className="opacity" style={{ width: "26%"}}>Product</th>
-                        <th style={{ width: "14.6%"}} className="opacity">Company</th>
-                        <th style={{ width: "14.6%"}} className="opacity">Status</th>
+                        <th style={{ width: "25.6%"}} className="opacity">Company</th>
+                        <th style={{ width: "12.6%"}} className="opacity">Status</th>
                         <th style={{ width: "12.6%"}} className="opacity">Modify</th>
                     </tr>
                 </thead>

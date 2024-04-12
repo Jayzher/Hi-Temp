@@ -14,6 +14,7 @@ import Profile from './navlinks/Profile';
 import Planner from './navlinks/Planner';
 import CreateNewTask from './navlinks/CreateNewTask';
 import Employee from './navlinks/Employee';
+import Messages from './navlinks/Messages';
 
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
             {/* Employee Routes */}
             <Route path="/Employee" element={<Employee />} />
             <Route path="/Planner" element={<Planner />} />
+            <Route path="/Messages" element={<Messages />} />
           </Routes>
         </Container>
       </Router>

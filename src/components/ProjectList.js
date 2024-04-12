@@ -14,10 +14,11 @@ import UserContext from '../userContext';
 export default function ProjectList({proj}) {
 	// // const {orders, setOrders} = useContext(OrderContext);
 
-	const {projectName, company, address, description, DateCompleted, projExpenses, Status, subTasks, createdOn, Remarks} = proj;
+	const {projectName, company, product, address, description, DateCompleted, projExpenses, Status, subTasks, createdOn, Remarks} = proj;
 	const {user, setUser} = useContext(UserContext);
 	const [Name, setName] = useState(projectName);
 	const [projCompany, setProjCompany] = useState(company);
+	const [projProduct, setProjProduct] = useState(product);
 	const [projAddress, setProjAddress] = useState(address);
 	const [projDescription, setDescription] = useState(description);
 	const [projDateCompleted, setDateCompleted] = useState(new Date());
@@ -83,6 +84,7 @@ export default function ProjectList({proj}) {
 	};
 
 	function edit(e) {
+		e.preventDefault();
 	    fetch(`http://localhost:4000/project/updateProject`, {
 	        method: "PATCH",
 	        headers: {
@@ -93,6 +95,7 @@ export default function ProjectList({proj}) {
 	            projectName: projName,
 	            description: projDescription,
 	            company: projCompany,
+	            product: projProduct,
 	            address: projAddress,
 	            Status: projStatus,
 	            Remarks: projRemarks,
@@ -183,7 +186,13 @@ export default function ProjectList({proj}) {
                     <div className="d-flex flex-row mb-2" style={{justifyContent: "space-around"}}>
                         <Form.Group style={{width: "47vw"}}>
                             <Form.Label className="ms-1">Company / Client:</Form.Label>
-                            <Form.Control type="text" placeholder="Enter task type" name="company" value={projCompany} onChange={e => setProjCompany(e.target.value)} />
+                            <Form.Control type="text" placeholder="Enter Company Name" name="company" value={projCompany} onChange={e => setProjCompany(e.target.value)} />
+                        </Form.Group>
+                    </div>
+                    <div className="d-flex flex-row mb-2" style={{justifyContent: "space-around"}}>
+                        <Form.Group style={{width: "47vw"}}>
+                            <Form.Label className="ms-1">Product:</Form.Label>
+                            <Form.Control type="text" placeholder="Enter Product Name" name="product" value={projProduct} onChange={e => setProjProduct(e.target.value)} />
                         </Form.Group>
                     </div>
                     <Form.Group style={{width: "47vw"}} className="ms-4 me-4">
@@ -225,21 +234,21 @@ export default function ProjectList({proj}) {
 		    </td>
 		    <td  style={{ width: "30%", height: "50px"}}>
 	        	<div className="d-flex align-items-top justify-content-center pt2" style={{ padding: "5px", width: "100%", height: "100%", overflowY: "auto", textOverflow: "hidden", overflowX: "hidden", fontSize: '0.8rem' }}>
+		            {product}
+		        </div>
+		    </td>
+		    <td style={{ width: "25.6%" }}>
+		        <div className="d-flex align-items-center justify-content-center" style={{ height: "50px", fontSize: '0.8rem'}}>
 		            {company}
 		        </div>
 		    </td>
-		    <td style={{ width: "14.6%" }}>
-		        <div className="d-flex align-items-center justify-content-center" style={{ height: "50px", fontSize: '0.8rem'}}>
-		            {formatDate(createdOn)}
-		        </div>
-		    </td>
-		    <td style={{ width: "14.6%" }}>
+		    <td style={{ width: "12.6%" }}>
 		        <div className="d-flex align-items-center justify-content-center" style={{ height: "50px", fontSize: '0.8rem'}}>
 		            {Status}
 		        </div>
 		    </td>
 		    <td style={{ width: "12.6%"}}>
-		        <div className="d-flex align-items-center ml-auto" style={{ height: "50px", width: "76px", fontSize: '0.8rem'}}>
+		        <div className="d-flex align-items-center justify-content-center" style={{ height: "50px", width: "50px", fontSize: '0.8rem'}}>
 		            <button id="bt1" style={{ marginLeft: "20px", marginRight: "20px", padding: "5px" }} onClick={() => sets(projectName)}>Details</button>
 		        </div>
 		    </td>
