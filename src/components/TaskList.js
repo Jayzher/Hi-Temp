@@ -29,7 +29,7 @@ export default function TaskList({tasks}) {
 	const [taskexpenses, setExpenses] = useState();
 	const [taskrefund, setRefund] = useState("");
 	const [taskStatus, setStatus] = useState("");
-	const [assigned, setAssigned] = useState("");
+	const [assigned, setAssigned] = useState(assignedTo[0].fullName);
 	const [Label, setLabel] = useState("Refund");
 	const [active, setActive] = useState();
 	const [ReadOnly, setReadOnly] = useState();
@@ -38,16 +38,16 @@ export default function TaskList({tasks}) {
 	const [show, setShow] = useState(false);
 	const handleClose = () => setShow(false);
 	const [ task, setTask ] = useState(0);
-	const [ id, setId ] = useState(0);
+	const [ id, setId ] = useState(_id);
 
 	useEffect(() => {
-		fetch(`${process.env.REACT_APP_API_URL}/tasks/details`, {
+		fetch(`${process.env.REACT_APP_API_URL}/tasks/TaskDetails`, {
 		    method: "POST",
 		    headers: { 
 		        'Content-Type' : 'application/json'
 		    },
 		    body: JSON.stringify({
-		        tasksId: tasksId
+		        id: id
 		    })
 		})
 		.then(res => res.json())
@@ -63,7 +63,7 @@ export default function TaskList({tasks}) {
 		    setStatus(data.Status);
 		    setAssigned(data.assignedTo[0].fullName);
 		})
-	},[tasksId])
+	},[_id])
 
 	useEffect(() => {
         if (parseFloat(taskrefund) < 0) {
@@ -126,7 +126,7 @@ export default function TaskList({tasks}) {
 	            Authorization: `Bearer ${localStorage.getItem('token')}`
 	        },
 	        body: JSON.stringify({
-	            tasksId: tasksId,
+	            id: id,
 	            projectName: projName,
 	            description: desc,
 	            destination: dest,
@@ -175,7 +175,7 @@ export default function TaskList({tasks}) {
 	}
 
 	function assignTask(fullName, id) {
-        fetch(`http://localhost:4000/tasks/assign`, {
+        fetch(`http://localhost:4000/tasks/assigns`, {
             method: "POST",
             headers: {
                 'Content-Type': 'Application/json'
@@ -220,7 +220,7 @@ export default function TaskList({tasks}) {
 
     function updateSubTask() {
 	    // Check if any task in the tasks array has no projectName or is an empty string, null, or undefined
-	    const hasInvalidTasks = tasks.some(task => !task.projectName || task.projectName === "" || task.projectName === null || task.projectName === undefined);
+	   const hasInvalidTasks = (!tasks.projectName || tasks.projectName === "");
 	    
 	    // If any task is invalid, skip the fetch request
 	    if (hasInvalidTasks) {

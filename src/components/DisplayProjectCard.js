@@ -57,7 +57,6 @@ export default function DisplayProjectCard() {
         <Container>
             <Row className="justify-content-center">
                 {project.map(item => {
-                    console.log(item);
                     return <ProjectCard key={item?._id} proj={item} />;
                 })}
             </Row>

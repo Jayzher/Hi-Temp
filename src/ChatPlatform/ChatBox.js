@@ -43,30 +43,32 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     }
   };
 
-    useEffect(() => {
-      const fetchConversations = async () => {
-        try {
-          const response = await fetch(`${apiUrl}/messages/conversation/${recipient._id}`, {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-          });
-          if (!response.ok) {
-            throw new Error('Failed to fetch conversations');
-          }
-          const data = await response.json();
-          setMessages(data);
-        } catch (error) {
-          console.error('Error fetching conversations:', error);
-        }
-      };
-
-      if (recipient || messages.length === 0) { // Add messages.length check
-        fetchConversations();
+  useEffect(() => {
+    const fetchConversations = async () => {
+      if (!recipient || recipient._id === null) {
+        console.log("Recipient or recipient._id is null");
+        return; // Return early if recipient or recipient._id is null
       }
-    }, [recipient, messages]); // Include messages state in the dependency array
 
+      try {
+        const response = await fetch(`${apiUrl}/messages/conversation/${recipient._id}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
 
+        if (!response.ok) {
+          throw new Error('Failed to fetch conversations');
+        }
+
+        const data = await response.json();
+        setMessages(data);
+      } catch (error) {
+        console.error('Error fetching conversations:', error);
+      }
+    };
+    fetchConversations();
+  }, [recipient, messages]); // Include messages state in the dependency array
 
   useEffect(() => {
     // Event listener for new message

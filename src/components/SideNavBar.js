@@ -3,6 +3,7 @@ import "./comp.css";
 import { Link } from "react-router-dom";
 import UserContext from "../userContext";
 import { useNavigate } from 'react-router-dom';
+import io from 'socket.io-client';
 
 export default function SideNavBar() {
     const { user, setUser } = useContext(UserContext);
@@ -12,17 +13,46 @@ export default function SideNavBar() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        // Request permission for notifications
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+
+        // Establish WebSocket connection
+        const taskUpdated = io('http://localhost:4000');
+
+        // Define event handler for incoming messages
+        const handleTaskUpdated = (message) => {
+            // Check if the received user name matches the current user's name
+            console.log(`${message}, Your Tasks Dashboard has been Updated!`);
+            if (Notification.permission === "granted" && message === user.name) {
+                new Notification('New Message', {
+                    body: `${message}, Your Tasks Dashboard has been Updated!`,
+                });
+            }
+        };
+
+        // Attach event listener for 'TaskUpdated' event
+        taskUpdated.on('TaskUpdated', handleTaskUpdated);
+
+        // Clean up function to disconnect WebSocket and remove event listener
+        return () => {
+            taskUpdated.disconnect();
+            taskUpdated.off('TaskUpdated', handleTaskUpdated);
+        };
+    }, []); // Empty dependency array means this effect runs only once after the component mounts
+
+
+    useEffect(() => {
+        setActiveLink(""); // Reset active link whenever user context changes
+        setProfile(user.profile);
         const token = localStorage.getItem('token');
         if (!token) {
             navigate("/Login");
         } else {
             retrieveUserDetails(token);
         }
-    }, []); // Empty dependency array to run the effect only once on component mount
 
-    useEffect(() => {
-        setActiveLink(""); // Reset active link whenever user context changes
-        setProfile(user.profile);
     }, [user]);
 
     const retrieveUserDetails = (Token) => {

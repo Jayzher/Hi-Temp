@@ -193,6 +193,7 @@ export default function Register() {
               <Form.Label className="fw-bold">Department: </Form.Label>
               <Form.Select onChange={e => setDepartment(e.target.value)} required>
                 <option value="">Select Department</option>
+                <option value="CEO">CEO</option>
                 <GetDepartment />
               </Form.Select>
             </Form.Group>

@@ -50,13 +50,23 @@ const ChatRoom = () => {
   };
 
   useEffect(() => {
-    if (socket) {
-      socket.on('NewUser', (data) => {
+      const newUser = io('http://localhost:4000');
+
+      newUser.on('userStatusChange', (data) => {
         console.log('New user added:', data);
         // Add the new user to the userList state
         setUserList((prevUserList) => [...prevUserList, data]);
       });
-    }
+
+      newUser.on('userStatusChange', (data) => {
+        // Add the new user to the userList state
+        fetchUserList();
+      });
+
+      return () => {
+        newUser.disconnect();
+      };
+
   }, [socket]);
 
   const handleUserSelect = (user) => {

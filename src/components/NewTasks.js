@@ -155,14 +155,15 @@ function NewTasks() {
     }
 
     function assignTask(Id, fullName) {
-        fetch(`${process.env.REACT_APP_API_URL}/tasks/assign`, {
+        fetch(`${process.env.REACT_APP_API_URL}/tasks/assigns`, {
             method: "POST",
             headers: {
                 'Content-Type': 'Application/json'
             },
             body: JSON.stringify({
                 id : Id,
-                fullName: fullName
+                name: fullName,
+                active: true
             })
         })
         .then(res => {
@@ -300,7 +301,8 @@ function NewTasks() {
                         { project === "Tasks" ? (
                             <>
                                 <div className="d-flex flex-row me-auto ms-1">
-                                    <img src={back_arrow_2} alt="Back" className="me-auto ms-1 sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Project")} />
+                                    <img src={back_arrow} alt="Back" className="sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Tasks")} />
+                                    <img src={back_arrow_2} alt="Back" className="ms-1 me-1 sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Project")} />
                                     <img src={Task_svg} alt="Back" className="sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Task Type")} />
                                 </div>
                                 <Form onSubmit={handleSubmit} style={{width: "35vw"}}>
@@ -311,15 +313,15 @@ function NewTasks() {
                                         <Form.Group style={{width: "40vw"}}>
                                             <Form.Label>Project Sub-Tasks: (Optional)</Form.Label>
                                             <Form.Select onChange={handleChange} name="projectName">
-                                                <option value="N/A" Selected>Select Project</option>
+                                                <option value="N/A">Select Project</option>
                                                 <GetProjects />
                                             </Form.Select>
                                         </Form.Group>
                                     </div>
                                     <Form.Group className="ms-4 me-4 mb-2" style={{ width: "32.8vw" }}>
                                         <Form.Label>Department:</Form.Label>
-                                        <Form.Select value={formData.department} onChange={handleChange} required name="department">
-                                            <option value="">Select Department</option>
+                                        <Form.Select onChange={handleChange} required name="department">
+                                            <option value="N/A">Select Department</option>
                                             <GetDepartment />
                                         </Form.Select>
                                     </Form.Group>
@@ -327,7 +329,7 @@ function NewTasks() {
                                         <Form.Group style={{width: "20vw"}} className="ms-4 me-2">
                                             <Form.Label>Task Type:</Form.Label>
                                             <Form.Select onChange={handleChange} required name="taskType" required>
-                                                <option value="N/A" Selected>Select Task Type</option>
+                                                <option value="N/A">Select Task Type</option>
                                                 <GetTaskType department={formData.department} />
                                             </Form.Select>
                                         </Form.Group>
@@ -368,7 +370,8 @@ function NewTasks() {
                         ) : project === "Project" ? (
                             <>  
                                 <div className="d-flex flex-row me-auto ms-1">
-                                    <img src={back_arrow} alt="Back" className="sw-form me-2" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Tasks")} />
+                                    <img src={back_arrow} alt="Back" className="sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Tasks")} />
+                                    <img src={back_arrow_2} alt="Back" className="ms-1 me-1 sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Project")} />
                                     <img src={Task_svg} alt="Back" className="sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Task Type")} />
                                 </div>
                                 <Form className="ms-2" onSubmit={handleSubmit2} style={{width: "35vw"}}>
@@ -406,7 +409,8 @@ function NewTasks() {
                          ) : project === "Task Type" ? (
                             <>  
                                 <div className="d-flex flex-row me-auto ms-1">
-                                    <img src={back_arrow} alt="Back" className="sw-form me-2" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Tasks")} />
+                                    <img src={back_arrow} alt="Back" className="sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Tasks")} />
+                                    <img src={back_arrow_2} alt="Back" className="me-1 ms-1 sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Project")} />
                                     <img src={Task_svg} alt="Back" className="sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Task Type")} />
                                 </div>
                                 <Form className="ms-2 mt-3" onSubmit={e => CreateDepartment(e)} style={{width: "35vw"}}>
