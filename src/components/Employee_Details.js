@@ -3,63 +3,55 @@ import { useNavigate } from 'react-router-dom';
 import EmployeeList from '../components/EmployeeList';
 import Table from 'react-bootstrap/Table';
 import UserContext from '../userContext';
-import io from 'socket.io-client'; // Import Socket.IO client library
+import { SocketProvider, useSocket } from '../SocketProvider';
 
 export default function Employee_Details() {
-    const [users, setUsers] = useState([]); // Updated state variable to store users data
+    const [users, setUsers] = useState([]);
     const { user } = useContext(UserContext);
     const navigate = useNavigate();
-    const socket = io(process.env.REACT_APP_API_URL); // Initialize Socket.IO connection using environment variable
+    const socket = useSocket();
 
     useEffect(() => {
-        // Fetch users data
-        fetchUsersData();
-
-        // Listen for userStatusChange event
-        socket.on('userStatusChange', handleUserStatusChange);
-
-        // Clean up function to remove event listener
-        return () => {
-            socket.off('userStatusChange', handleUserStatusChange);
-            socket.disconnect(); // Disconnect Socket.IO connection when component unmounts
+        const fetchUsersData = async () => {
+            try {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/users/all`, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch users data');
+                }
+                const data = await response.json();
+                setUsers(data);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
         };
-    }, [user.id]); // Fetch data whenever user.id changes
 
-    const fetchUsersData = () => {
-        // If the user is not authenticated, redirect to the Login page
+        const handleUserStatusChange = ({ userId, status }) => {
+            setUsers(prevUsers => {
+                return prevUsers.map(user => {
+                    if (user._id === userId) {
+                        return { ...user, Status: status };
+                    }
+                    return user;
+                });
+            });
+        };
+
         if (!user.id) {
             navigate("/Login");
         } else {
-            // Fetch users data using environment variable
-            fetch(`${process.env.REACT_APP_API_URL}/users/all`, {
-                method: "GET",
-                headers: { 
-                    'Content-Type' : 'application/json'
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                setUsers(data); // Update state with fetched users data
-            })
-            .catch(error => {
-                console.error("Error fetching users:", error);
-                // Handle error, e.g., display an error message to the user
-            });
+            fetchUsersData();
+            socket.on('userStatusChange', handleUserStatusChange);
         }
-    };
 
-    // Function to handle userStatusChange event
-    const handleUserStatusChange = ({ userId, status }) => {
-        // Update the status of the corresponding user in the users array
-        setUsers(prevUsers => {
-            return prevUsers.map(user => {
-                if (user._id === userId) {
-                    return { ...user, Status: status };
-                }
-                return user;
-            });
-        });
-    };
+        return () => {
+            socket.off('userStatusChange', handleUserStatusChange);
+        };
+    }, [user.id, socket]);
 
     return (
         <div className="ms-4 me-4 pt-3 pb-0 mb-0" style={{ height: "100%", width: "50vw", overflow: "hidden"}}>
@@ -75,7 +67,6 @@ export default function Employee_Details() {
                     </tr>
                 </thead>
                 <tbody style={{ background: "rgba(0,0,0,0.1)" }}>
-                    {/* Render user data in the table */}
                     {users.map(user => (
                         <EmployeeList key={user._id} employee={user} />
                     ))}

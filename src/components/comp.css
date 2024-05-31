@@ -1,3 +1,18 @@
+.bg-container {
+  min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #f8f9fa;
+}
+
+.table-container {
+  border: 2px solid black;
+  width: 100%;
+  height: 70vh;
+  background-color: #fff;
+}
+
+
 #modal-body {
     margin-right: 10px; /* Adjust the padding to accommodate the scrollbar width */
 }
@@ -141,7 +156,7 @@
 }
 
 #justify-tab-example-tab-progress.nav-link.active {
-	background-color: #efe49d !important;
+	background-color: #c6fecd !important;
 }
 
 .side-link:hover {

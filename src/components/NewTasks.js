@@ -70,13 +70,13 @@ function NewTasks() {
         }));
     }, []); 
 
-     function create(e) {
+    function create(e) {
         e.preventDefault();
 
         fetch(`${process.env.REACT_APP_API_URL}/tasks/addTask`, {
             method: "POST",
             headers: {
-                'Content-Type': 'Application/json',
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             },
             body: JSON.stringify({
@@ -97,12 +97,45 @@ function NewTasks() {
             console.log(data);
             handleSuccess();
             assignTask(data._id, formData.fullName);
+            updateSubTask(data._id, data.projectName); // Call updateSubTask with the _id of the created task
         })
         .catch(error => {
             console.error("Error:", error);
             // Handle error, e.g., display an error message to the user
         });
     }
+
+
+    function updateSubTask(newTasks, projname) {
+        // Check if any task in the tasks array has no projectName or is an empty string, null, or undefined
+       const hasInvalidTasks = (!projname || projname === "");
+        
+        // If any task is invalid, skip the fetch request
+        if (hasInvalidTasks) {
+            console.log("Tasks contain items with no projectName or invalid projectName. Skipping fetch request.");
+            return;
+        }
+
+        fetch(`http://localhost:4000/project/updateProjectTasks`, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'Application/json'
+            },
+            body: JSON.stringify({
+                tasksId: newTasks,
+                projectName: projname
+            })
+        })
+        .then(res => {
+            console.log(res);
+            window.dispatchEvent(new Event('ProjectCreated'));
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            // Handle error, e.g., display an error message to the user
+        });
+    }
+
 
     function createProject(e) {
         e.preventDefault();

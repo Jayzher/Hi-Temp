@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
+import "./comp.css";
 import { useNavigate } from 'react-router-dom';
 import UserContext from '../userContext';
-import { Button } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
+import GetAllUsers from './GetAllUsers.js';
 
 export default function PlannerList() {
   const [reportList, setReportList] = useState([]);
@@ -12,21 +14,31 @@ export default function PlannerList() {
     Thursday: { Customer: '', Product: '', Remarks: '', Amount: '', Date: '' },
     Friday: { Customer: '', Product: '', Remarks: '', Amount: '', Date: '' }
   });
-
+  const [attachment, setAttachment] = useState('');
+  const [attachmentUrl, setAttachmentUrl] = useState('');
   const [disable, setDisable] = useState(false);
   const [disable2, setDisable2] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    getReportList();
+    if (user.role === 'Employee') {
+      getReportList(user.name);
+    }
   }, [user]);
 
-   useEffect(() => {
+  useEffect(() => {
     const isEmpty = Object.values(reportData).some(day => Object.values(day).some(value => value === ''));
     setDisable2(isEmpty);
-  }, []);
+  }, [reportData]);
+
+  useEffect(() => {
+    updateReportDataDate();
+  }, [user]);
 
   const getWeekDates = () => {
     const today = new Date();
@@ -58,23 +70,21 @@ export default function PlannerList() {
     }));
   };
 
-    useEffect(() => {
-      weekDays.forEach((day, index) => {
-        console.log(`${day} - ${weekDates[index].date}`);
-        const Reportdate = weekDates[index].date;
-        handleChange(Reportdate, day, "Date");
-      });
-    }, [user])
- 
+  const updateReportDataDate = () => {
+    weekDays.forEach((day, index) => {
+      const Reportdate = weekDates[index].date;
+      handleChange(Reportdate, day, "Date");
+    });
+  };
 
-  function getReportList() {
+  const getReportList = (userName) => {
     fetch(`${process.env.REACT_APP_API_URL}/report/MyReports`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        employee: user.name
+        employee: userName
       })
     })
     .then(res => res.json())
@@ -84,16 +94,42 @@ export default function PlannerList() {
     .catch(error => {
       console.error("Error fetching reports:", error);
     });
-  }
+  };
+
+  const searchUsers = () => {
+    fetch(`${process.env.REACT_APP_API_URL}/users/search`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ searchTerm })
+    })
+    .then(res => res.json())
+    .then(data => {
+      setSearchResults(data);
+    })
+    .catch(error => {
+      console.error("Error searching users:", error);
+    });
+  };
+
+  const handleUserSelect = (userName) => {
+    setSelectedUser(userName);
+    getReportList(userName);
+  };
 
   const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
   const generateReport = () => {
-    // Add the Date field to each report object
     const reportDataWithDate = weekDays.map(day => ({
       ...reportData[day],
-      Date: reportData[day].Date // Assuming Date is already properly set in reportData
+      Date: reportData[day].Date
     }));
+
+    const payload = {
+      reportData: reportDataWithDate,
+      attachment
+    };
 
     fetch(`${process.env.REACT_APP_API_URL}/report/generateReport`, {
       method: 'POST',
@@ -101,7 +137,7 @@ export default function PlannerList() {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
-      body: JSON.stringify(reportDataWithDate) // Send the modified reportData with Date field included
+      body: JSON.stringify(payload)
     })
     .then(response => {
       if (!response.ok) {
@@ -118,13 +154,13 @@ export default function PlannerList() {
     navigate("/Planner");
   };
 
-
   function log() {
     console.log(reportData);
   }
 
   function FindByDate(date) {
     const selectedReport = reportList.find(item => item.createdOn === date);
+    console.log(selectedReport);
     if (selectedReport) {
       const newReportData = {
         Monday: {},
@@ -136,9 +172,18 @@ export default function PlannerList() {
 
       selectedReport.reports.forEach(report => {
         newReportData[report.day] = report.details;
+        console.log(report);
       });
 
-      setReportData(newReportData);
+      // Update report data using handleChange function
+      Object.keys(newReportData).forEach(day => {
+        Object.keys(newReportData[day]).forEach(field => {
+          handleChange(newReportData[day][field], day, field);
+        });
+      });
+
+      setAttachment(selectedReport.attachment || '');
+      setAttachmentUrl(selectedReport.attachment || '');
     } else {
       console.error("Report not found for date:", date);
     }
@@ -162,7 +207,7 @@ export default function PlannerList() {
       let minutes = date.getMinutes();
       let ampm = hours >= 12 ? 'PM' : 'AM';
       hours = hours % 12;
-      hours = hours ? hours : 12; // Handle midnight (0 hours)
+      hours = hours ? hours : 12;
       minutes = minutes < 10 ? '0' + minutes : minutes;
       let timeString = hours + ':' + minutes + ' ' + ampm;
       formattedDate += ' ' + timeString;
@@ -171,19 +216,70 @@ export default function PlannerList() {
   }
 
   function resetReportData() {
-    setReportData({
-      Monday: { Customer: '', Product: '', Remarks: '', Amount: '', Date: '' },
-      Tuesday: { Customer: '', Product: '', Remarks: '', Amount: '', Date: '' },
-      Wednesday: { Customer: '', Product: '', Remarks: '', Amount: '', Date: '' },
-      Thursday: { Customer: '', Product: '', Remarks: '', Amount: '', Date: '' },
-      Friday: { Customer: '', Product: '', Remarks: '', Amount: '', Date: '' }
+    updateReportDataDate();
+
+    weekDays.forEach(day => {
+      handleChange('', day, 'Customer');
+      handleChange('', day, 'Product');
+      handleChange('', day, 'Remarks');
+      handleChange('', day, 'Amount');
     });
+
+    setAttachment('');
+    setAttachmentUrl('');
     setDisable(false);
   }
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', 'Upload_Reports');
+
+      fetch(`https://api.cloudinary.com/v1_1/dgzhcuwym/upload`, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        setAttachment(data.secure_url);
+        setAttachmentUrl(data.secure_url);
+      })
+      .catch(error => {
+        console.error('Error uploading file:', error);
+      });
+    }
+  };
+
   return (
-    <div className="d-flex flex-column justify-content-center" style={{height: "fit-content", overflowY: "auto", overflowX: "hidden"}}>
-      <div className="me-5 mt-2 d-flex justify-content-center" style={{ border: "2px solid black", width: "100%", height: "70vh"}}>
+    <div className="d-flex flex-column justify-content-center bg-container" style={{ minHeight: "100vh", overflowY: "auto", overflowX: "hidden", backgroundColor: "#f8f9fa"}}>
+      {user.role !== 'Employee' && (
+        <div className="d-flex flex-row justify-content-around">
+          <div className="mt-3 mb-3 ms-2">
+            <Form.Label className="ms-4 me-4 mb-2">Employee:</Form.Label>
+            <Form.Group className="ms-4 me-4 mb-2 d-flex flex-row" style={{ width: "32.8vw" }}>
+              <Form.Select onChange={e => setSearchTerm(e.target.value)} required>
+                <option value="N/A">Select Employee</option>
+                <GetAllUsers />
+              </Form.Select>
+              <Button className="ms-2" onClick={() => handleUserSelect(searchTerm)}>Check</Button>
+            </Form.Group>
+          </div>
+          <div className="d-flex flex-column justify-content-around mt-3 ms-5" style={{ height: "fit-content", width: "25vw" }}>
+            <Form.Label className="me-4 mb-2">Reports:</Form.Label>
+            <select onChange={(e) => FindByDate(e.target.value)} className="form-select mb-2">
+              <option value="">Select Report</option>
+              {reportList.map(item => (
+                <option key={item._id} value={item.createdOn}>
+                  {`${item.reports[0].details.Date} - ${item.reports[4].details.Date}`}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
+      <div className="me-5 mt-2 d-flex justify-content-center table-container" style={{ border: "2px solid black", width: "100%", height: "70vh", backgroundColor: "#fff" }}>
         <table style={{ width: '84.5vw', borderCollapse: 'collapse', height: "100%", tableLayout: "fixed" }} cellSpacing="0">
           <tbody>
             <tr style={{ height: '5pt' }}>
@@ -196,41 +292,40 @@ export default function PlannerList() {
             </tr>
             {weekDays.map((day, index) => (
               <tr key={day}>
-                <td className="data-cell text-center" style={{border: "solid 1px black"}}>{reportData[day]?.Date }</td>
-                <td className="data-cell text-center" style={{border: "solid 1px black"}}>{weekDates[index].day}</td>         
-                <td className="data-cell pt-1" style={{border: "solid 1px black"}}>
-                  <textarea value={reportData[day]?.Customer || ''} onChange={e => handleChange(e.target.value, day, "Customer")} style={{ width: '100%', height: '100%', border: 'none', outline: 'none', textAlign: 'center' }}/>
+                <td className="data-cell text-center" style={{ border: "solid 1px black" }}>{reportData[day]?.Date}</td>
+                <td className="data-cell text-center" style={{ border: "solid 1px black" }}>{weekDates[index].day}</td>
+                <td className="data-cell pt-1" style={{ border: "solid 1px black" }}>
+                  <textarea value={reportData[day]?.Customer || ''} onChange={e => handleChange(e.target.value, day, "Customer")} style={{ width: '100%', height: '100%', border: 'none', outline: 'none', textAlign: 'center' }} />
                 </td>
-                <td className="data-cell pt-1" style={{border: "solid 1px black"}}>
-                  <textarea value={reportData[day]?.Product || ''} onChange={e => handleChange(e.target.value, day, "Product")} style={{ width: '100%', height: '100%', border: 'none', outline: 'none', textAlign: 'center' }}/>
+                <td className="data-cell pt-1" style={{ border: "solid 1px black" }}>
+                  <textarea value={reportData[day]?.Product || ''} onChange={e => handleChange(e.target.value, day, "Product")} style={{ width: '100%', height: '100%', border: 'none', outline: 'none', textAlign: 'center' }} />
                 </td>
-                <td className="data-cell pt-1" style={{border: "solid 1px black"}}>
-                  <textarea value={reportData[day]?.Remarks || ''} onChange={e => handleChange(e.target.value, day, "Remarks")} style={{ width: '100%', height: '100%', border: 'none', outline: 'none', textAlign: 'center' }}/>
+                <td className="data-cell pt-1" style={{ border: "solid 1px black" }}>
+                  <textarea value={reportData[day]?.Remarks || ''} onChange={e => handleChange(e.target.value, day, "Remarks")} style={{ width: '100%', height: '100%', border: 'none', outline: 'none', textAlign: 'center' }} />
                 </td>
-                <td className="data-cell pt-1" style={{border: "solid 1px black"}}>
-                  <textarea value={reportData[day]?.Amount || ''} onChange={e => handleChange(e.target.value, day, "Amount")} style={{ width: '100%', height: '100%', border: 'none', outline: 'none', textAlign: 'center' }}/>
+                <td className="data-cell pt-1" style={{ border: "solid 1px black" }}>
+                  <textarea value={reportData[day]?.Amount || ''} onChange={e => handleChange(e.target.value, day, "Amount")} style={{ width: '100%', height: '100%', border: 'none', outline: 'none', textAlign: 'center' }} />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <div className="d-flex flex-row justify-content-around mt-3" style={{height: "fit-content", width: "85vw", flexWrap: "wrap"}}>
-      {reportList.map(item => {
-        console.log(item.reports[0].details); // Log the item here
-        return (
-          <div className="mb-2">
-            <Button key={item._id} onClick={() => FindByDate(item.createdOn)}>
-              {`${item.reports[0].details.Date} - ${item.reports[4].details.Date}`}
-            </Button>
-          </div>
-        );
-      })}
+      {user.role === "Employee" && (
+        <div className="d-flex justify-content-center mt-3" style={{ width: "fit-content" }}>
+          <input type="file" onChange={handleFileChange} style={{ marginBottom: '10px' }} />
+        </div>
+      )}
+      <div className="ms-5 mt-3 d-flex">
+        <p className="me-2">File Uploaded:</p>
+        <a href={attachmentUrl} target="_blank" style={{ textAlign: "center", maxWidth: "60vw", width: "fit-content" }}>{attachmentUrl}</a>
       </div>
-      <div className="d-flex justify-content-center mt-3">
-        <Button className="ps-2 pe-2 pt-2 pb-2 me-5" onClick={generateReport} /*disabled={(disable || disable2)}*/>Generate Report</Button>
-        <Button className="ps-2 pe-2 pt-2 pb-2" style={{width: "10vw"}} onClick={resetReportData}>Reset</Button>
-      </div>
+      {user.role === "Employee" && (
+        <div className="d-flex justify-content-center mt-3 mb-5">
+          <Button className="ps-2 pe-2 pt-2 pb-2 me-5" onClick={generateReport} disabled={disable || disable2}>Generate Report</Button>
+          <Button className="ps-2 pe-2 pt-2 pb-2" style={{ width: "10vw" }} onClick={resetReportData}>Reset</Button>
+        </div>
+      )}
     </div>
   );
 }

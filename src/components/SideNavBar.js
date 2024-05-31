@@ -53,7 +53,7 @@ export default function SideNavBar() {
             retrieveUserDetails(token);
         }
 
-    }, [user]);
+    }, [user.id]);
 
     const retrieveUserDetails = (Token) => {
         fetch(`${process.env.REACT_APP_API_URL}/users/details`, {

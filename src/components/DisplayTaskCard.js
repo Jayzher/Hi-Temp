@@ -17,7 +17,7 @@ export default function DisplayTaskCard() {
     const navigate = useNavigate();
     const [sortBy, setSortBy] = useState('createdOn');
     const [sortOrder, setSortOrder] = useState('desc');
-    const [filterStatus, setFilterStatus] = useState('');
+    const [filterStatus, setFilterStatus] = useState('All');
     const [searchName, setSearchName] = useState('');
     const [filteredTasks, setFilteredTasks] = useState([]);
 

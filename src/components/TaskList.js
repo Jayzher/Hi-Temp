@@ -151,7 +151,6 @@ export default function TaskList({tasks}) {
 	            });
 	            assignTask(assigned, _id);
 	            setTaskActive();
-	            updateSubTask();
 	            window.dispatchEvent(new Event('taskCreated'));
 	            console.log(res);
 	        })
@@ -217,38 +216,6 @@ export default function TaskList({tasks}) {
             // Handle error, e.g., display an error message to the user
         });
     }
-
-    function updateSubTask() {
-	    // Check if any task in the tasks array has no projectName or is an empty string, null, or undefined
-	   const hasInvalidTasks = (!tasks.projectName || tasks.projectName === "");
-	    
-	    // If any task is invalid, skip the fetch request
-	    if (hasInvalidTasks) {
-	        console.log("Tasks contain items with no projectName or invalid projectName. Skipping fetch request.");
-	        return;
-	    }
-
-	    fetch(`http://localhost:4000/project/updateProjectTasks`, {
-	        method: "PUT",
-	        headers: {
-	            'Content-Type': 'Application/json'
-	        },
-	        body: JSON.stringify({
-	            tasks: tasks,
-	            Status: taskStatus
-	        })
-	    })
-	    .then(res => {
-	        console.log(res);
-	        window.dispatchEvent(new Event('ProjectCreated'));
-	    })
-	    .catch(error => {
-	        console.error("Error:", error);
-	        // Handle error, e.g., display an error message to the user
-	    });
-	}
-
-
 
 	function sets(e, id) {
 		console.log(e);

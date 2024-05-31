@@ -1,33 +1,26 @@
+// ChatRoom.js
 import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
+import { useSocket } from '../SocketProvider'; // Import useSocket hook from SocketProvider
 import UsersLists from './UsersLists';
 import ChatBox from './ChatBox';
 import '../components/comp.css';
 import './Chat.css';
 
 const ChatRoom = () => {
-  const [socket, setSocket] = useState(null);
+  const socket = useSocket(); // Get the socket instance using useSocket hook
   const [userList, setUserList] = useState([]);
   const [chatBoxes, setChatBoxes] = useState({});
 
   useEffect(() => {
-    const newSocket = io('http://localhost:4000');
-
-    newSocket.on('connect', () => {
-      console.log('WebSocket connection established');
-    });
-
-    setSocket(newSocket);
-
     fetchUserList();
 
     return () => {
-      newSocket.disconnect();
+      // Cleanup logic if needed
     };
   }, []);
 
   const fetchUserList = () => {
-    fetch('http://localhost:4000/users/alldetails')
+    fetch(`${process.env.REACT_APP_API_URL}/users/alldetails`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Failed to fetch user list');
@@ -49,35 +42,29 @@ const ChatRoom = () => {
       .catch((error) => console.error('Error fetching user list:', error));
   };
 
-  useEffect(() => {
-      const newUser = io('http://localhost:4000');
+ useEffect(() => {
+      if (socket) {
+          // Listen for 'userStatusChange' event using the existing socket instance
+          socket.on('userStatusChange', (data) => {
+              console.log('User status changed:', data);
+              fetchUserList(); // Fetch updated user list when status changes
+          });
 
-      newUser.on('userStatusChange', (data) => {
-        console.log('New user added:', data);
-        // Add the new user to the userList state
-        setUserList((prevUserList) => [...prevUserList, data]);
-      });
-
-      newUser.on('userStatusChange', (data) => {
-        // Add the new user to the userList state
-        fetchUserList();
-      });
-
-      return () => {
-        newUser.disconnect();
-      };
-
+          return () => {
+              // Clean up event listener
+              socket.off('userStatusChange');
+          };
+      }
   }, [socket]);
 
   const handleUserSelect = (user) => {
     setChatBoxes((prevChatBoxes) => ({
       ...prevChatBoxes,
-      [user._id]: !prevChatBoxes[user._id], // Toggle visibility
+      [user._id]: !prevChatBoxes[user._id],
     }));
   };
 
   const handleSendMessage = (recipientId, messageContent) => {
-    // Send message to the server using socket
     socket.emit('send_message', { recipientId, content: messageContent });
   };
 
@@ -93,10 +80,10 @@ const ChatRoom = () => {
             <ChatBox
               key={user._id}
               recipient={chatBoxes[user._id] ? user : null}
-              visible={!!chatBoxes[user._id]} // Use !! to convert truthy/falsy value to boolean
-              setChatBoxes={setChatBoxes} // Pass the setChatBoxes function as a prop
-              socket={socket} // Pass the socket instance as a prop
-              handleSendMessage={handleSendMessage} // Pass the handleSendMessage function as a prop
+              visible={!!chatBoxes[user._id]}
+              setChatBoxes={setChatBoxes}
+              socket={socket}
+              handleSendMessage={handleSendMessage}
             />
           ))}
         </div>
