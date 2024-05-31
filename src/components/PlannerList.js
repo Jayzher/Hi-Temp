@@ -254,7 +254,8 @@ export default function PlannerList() {
 
   return (
     <div className="d-flex flex-column justify-content-center bg-container" style={{ minHeight: "100vh", overflowY: "auto", overflowX: "hidden", backgroundColor: "#f8f9fa"}}>
-      {user.role !== 'Employee' && (
+      {(user.role !== 'Employee') ?
+      <>
         <div className="d-flex flex-row justify-content-around">
           <div className="mt-3 mb-3 ms-2">
             <Form.Label className="ms-4 me-4 mb-2">Employee:</Form.Label>
@@ -278,7 +279,24 @@ export default function PlannerList() {
             </select>
           </div>
         </div>
-      )}
+      </>
+      :
+        <>
+          <div style={{marginTop: "5vh"}} className="d-flex flex-row justify-content-around">
+            <div className="d-flex flex-column justify-content-around mt-3 ms-5" style={{ height: "fit-content", width: "25vw" }}>
+              <Form.Label className="me-4 mb-2">Reports:</Form.Label>
+              <select onChange={(e) => FindByDate(e.target.value)} className="form-select mb-2">
+                <option value="">Select Report</option>
+                {reportList.map(item => (
+                  <option key={item._id} value={item.createdOn}>
+                    {`${item.reports[0].details.Date} - ${item.reports[4].details.Date}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </>
+      }
       <div className="me-5 mt-2 d-flex justify-content-center table-container" style={{ border: "2px solid black", width: "100%", height: "70vh", backgroundColor: "#fff" }}>
         <table style={{ width: '84.5vw', borderCollapse: 'collapse', height: "100%", tableLayout: "fixed" }} cellSpacing="0">
           <tbody>

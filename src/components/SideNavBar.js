@@ -19,7 +19,7 @@ export default function SideNavBar() {
         }
 
         // Establish WebSocket connection
-        const taskUpdated = io('http://localhost:4000');
+        const taskUpdated = io(`${process.env.REACT_APP_API_URL}`);
 
         // Define event handler for incoming messages
         const handleTaskUpdated = (message) => {

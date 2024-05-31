@@ -119,7 +119,7 @@ export default function TaskList({tasks}) {
 
 	function edit(e) {
 	    e.preventDefault();
-	    fetch(`http://localhost:4000/tasks/update`, {
+	    fetch(`${process.env.REACT_APP_API_URL}/tasks/update`, {
 	        method: "PUT",
 	        headers: {
 	            'Content-Type': 'Application/json',
@@ -174,7 +174,7 @@ export default function TaskList({tasks}) {
 	}
 
 	function assignTask(fullName, id) {
-        fetch(`http://localhost:4000/tasks/assigns`, {
+        fetch(`${process.env.REACT_APP_API_URL}/tasks/assigns`, {
             method: "POST",
             headers: {
                 'Content-Type': 'Application/json'
@@ -197,7 +197,7 @@ export default function TaskList({tasks}) {
     }
 
     function setTaskActive() {
-        fetch(`http://localhost:4000/tasks/active`, {
+        fetch(`${process.env.REACT_APP_API_URL}/tasks/active`, {
             method: "PATCH",
             headers: {
                 'Content-Type': 'Application/json'

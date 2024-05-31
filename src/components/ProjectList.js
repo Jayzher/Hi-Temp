@@ -85,7 +85,7 @@ export default function ProjectList({proj}) {
 
 	function edit(e) {
 		e.preventDefault();
-	    fetch(`http://localhost:4000/project/updateProject`, {
+	    fetch(`${process.env.REACT_APP_API_URL}/project/updateProject`, {
 	        method: "PATCH",
 	        headers: {
 	            'Content-Type' : 'application/json',

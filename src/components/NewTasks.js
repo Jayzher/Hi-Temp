@@ -116,7 +116,7 @@ function NewTasks() {
             return;
         }
 
-        fetch(`http://localhost:4000/project/updateProjectTasks`, {
+        fetch(`${process.env.REACT_APP_API_URL}/project/updateProjectTasks`, {
             method: "PUT",
             headers: {
                 'Content-Type': 'Application/json'
