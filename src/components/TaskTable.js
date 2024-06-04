@@ -111,7 +111,7 @@ export default function TaskTable() {
     };
 
     return (
-        <div className="ms-4 me-4 pt-3" style={{ height: "100vh", width: "45.5vw", overflow: "hidden"}}>
+        <div id="tasktable-cont" className="ms-4 me-4 pt-3" style={{ height: "100vh", width: "45.5vw", overflow: "hidden"}}>
             <div className="d-flex flex-row justify-content-around align-items-end" style={{ marginBottom: '10px' }}>
                 <input style={{height: "30px"}}
                     className="me-5"
@@ -137,7 +137,7 @@ export default function TaskTable() {
                     </select>
                 </div>
             </div>
-            <div style={{ height: "88vh", width: "45.5vw", overflow: "auto", margin: "0", padding: "0"}}>
+            <div id="tasktable" style={{ height: "88vh", width: "45.5vw", overflow: "auto", margin: "0", padding: "0"}}>
                 <Table style={{ background: "peachpuff"}} striped bordered hover className="text-center m-0">
                     <thead className="opacity p-0 m-0" style={{ position: "sticky", top: "0", zIndex: 1}}>
                         <tr className="opacity m-0 p-0">

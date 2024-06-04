@@ -172,24 +172,24 @@ export default function Register() {
 
   return (
     <div className="dashboard-container">
-      <div className="d-flex flex-row" style={{ height: "fit-content", marginLeft: "15vw", backgroundImage: "linear-gradient( 92.7deg,  rgba(245,212,212,1) 8.5%, rgba(252,251,224,1) 90.2% )" }}>
+      <div id="newEmployees-cont" className="d-flex flex-row" style={{ height: "fit-content", marginLeft: "15vw", backgroundImage: "linear-gradient( 92.7deg,  rgba(245,212,212,1) 8.5%, rgba(252,251,224,1) 90.2% )" }}>
         <div style={{ marginTop: "5vh", height: "100vh" }} className="d-flex flex-row justify-content-center ms-3 ">
-          <Form onSubmit={registerUser} style={{ width: "30vw", height: "fit-content", background: "rgba(0,0,0,0.2)", border: "2px solid black", borderRadius: "10px" }}
+          <Form onSubmit={registerUser} style={{ width: "100%", height: "fit-content", background: "rgba(0,0,0,0.2)", border: "2px solid black", borderRadius: "10px" }}
             className="p-3 d-flex flex-column align-items-center">
             <h1 className="text-center mb-2">Add Employee</h1>
-            <Form.Group style={{ width: "25vw" }} className="mb-3">
+            <Form.Group style={{ width: "95.5%" }} className="mb-3">
               <Form.Label className="fw-bold">Full Name: </Form.Label>
               <Form.Control type="text" placeholder="Enter Full Name" value={name} onChange={e => setName(e.target.value)} required />
             </Form.Group>
-            <Form.Group style={{ width: "25vw" }} className="mb-3">
+            <Form.Group style={{ width: "95.5%" }} className="mb-3">
               <Form.Label className="fw-bold">Username: </Form.Label>
               <Form.Control type="text" placeholder="Enter Username" value={username} onChange={e => setUsername(e.target.value)} autoComplete="off" required />
             </Form.Group>
-            <Form.Group style={{ width: "25vw" }} className="mb-3">
+            <Form.Group style={{ width: "95.5%" }} className="mb-3">
               <Form.Label className="fw-bold">Profile: </Form.Label>
               <Form.Control type="file" onChange={e => setFile(e.target.files[0])} />
             </Form.Group>
-            <Form.Group style={{ width: "25vw" }} className="mb-3">
+            <Form.Group style={{ width: "95.5%" }} className="mb-3">
               <Form.Label className="fw-bold">Department: </Form.Label>
               <Form.Select onChange={e => setDepartment(e.target.value)} required>
                 <option value="">Select Department</option>
@@ -197,7 +197,7 @@ export default function Register() {
                 <GetDepartment />
               </Form.Select>
             </Form.Group>
-            <Form.Group style={{ width: "25vw" }} className="mb-3">
+            <Form.Group style={{ width: "95.5%" }} className="mb-3">
               <Form.Label className="fw-bold">Role: </Form.Label>
               <Form.Select onChange={e => setIsAdmin(e.target.value)} required>
                 <option value="">Select Role</option>
@@ -206,11 +206,11 @@ export default function Register() {
                 <option value="Manager">Manager</option>
               </Form.Select>
             </Form.Group>
-            <Form.Group style={{ width: "25vw" }} className="mb-3">
+            <Form.Group style={{ width: "95.5%" }} className="mb-3">
               <Form.Label className="fw-bold">Password: </Form.Label>
               <div className="d-flex flex-row">
                 <Form.Control
-                  style={{ width: 'calc(25vw - 40px)' }}
+                  style={{ width: 'calc(95.5% - 40px)' }}
                   type={showPassword1 ? 'text' : 'password'}
                   placeholder="Password"
                   value={Password1}
@@ -224,11 +224,11 @@ export default function Register() {
                 </Button>
               </div>
             </Form.Group>
-            <Form.Group style={{ width: "25vw" }} className="mb-3">
+            <Form.Group style={{ width: "95.5%" }} className="mb-3">
               <Form.Label className="fw-bold">Verify Password: </Form.Label>
               <div className="d-flex flex-row">
                 <Form.Control
-                  style={{ width: 'calc(25vw - 40px)' }}
+                  style={{ width: 'calc(95.5% - 40px)' }}
                   type={showPassword2 ? 'text' : 'password'}
                   placeholder="Verify Password"
                   value={Password2}
@@ -254,7 +254,7 @@ export default function Register() {
             }
           </Form>
         </div>
-        <div>
+        <div id="emp-table-cont" style={{width: "60%"}}>
           <Employee_Details />
         </div>
       </div>

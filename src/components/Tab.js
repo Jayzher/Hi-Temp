@@ -12,7 +12,7 @@ function JustifiedExample() {
     <Tabs defaultActiveKey="progress" id="justify-tab-example" style={{paddingLeft: "", width: "84vw", left: "15.1vw", right: "0", position: "absolute"}} className="" justify>
       <Tab style={{marginTop: "4.5vh", left: "15.1vw", position: "absolute", backgroundColor: "burlywood"}} eventKey="progress" title="Projects">
         {/*<div className="d-flex flex-row justify-content-around pt-5 pb-5" style={{backgroundImage: "c6fecdlinear-gradient( 90.5deg,  rgba(255,207,139,1) 1.1%, rgba(255,207,139,0.5) 81.3% )", height: "95.5vh", width: "84vw"}}>*/}
-        <div className="d-flex flex-row justify-content-around pt-5 pb-5" style={{background: "#c6fecd", height: "95.5vh", width: "84vw"}}>
+        <div className="d-flex flex-row justify-content-around pt-5 pb-5 tab-full" style={{background: "#c6fecd", height: "95.5vh", width: "84vw"}}>
           <DisplayProjectCard />
         </div>
       </Tab>

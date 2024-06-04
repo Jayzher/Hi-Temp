@@ -54,8 +54,8 @@ export default function Employee_Details() {
     }, [user.id, socket]);
 
     return (
-        <div className="ms-4 me-4 pt-3 pb-0 mb-0" style={{ height: "100%", width: "50vw", overflow: "hidden"}}>
-            <Table style={{ background: "peachpuff" }} striped bordered hover className="text-center mb-0 pb-0">
+        <div id="employee-table" className="ms-4 pt-3 pb-0 mb-0" style={{ height: "100%", width: "100%", overflow: "hidden"}}>
+            <Table style={{ background: "peachpuff", width: "100%" }} striped bordered hover className="text-center mb-0 pb-0">
                 <thead className="opacity" style={{ position: "sticky", top: "0", zIndex: 1}}>
                     <tr className="opacity">
                         <th className="opacity" style={{ width: "19%", maxWidth: '19%', minWidth: '19%'}}>Name</th>

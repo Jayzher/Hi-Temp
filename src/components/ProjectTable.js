@@ -49,7 +49,7 @@ export default function TaskTable() {
     };
 
     return (
-        <div className="ms-2 me-2 pt-3" style={{ height: "100vh", width: "47.5vw", overflow: "auto"}}>
+        <div id="project-table" className="ms-2 me-2 pt-3" style={{ height: "100vh", width: "47.5vw", overflow: "auto"}}>
             <Table style={{ background: "peachpuff" }} striped bordered hover className="text-center">
                 <thead className="opacity" style={{ position: "sticky", top: "0", zIndex: 1}}>
                     <tr className="opacity"> 

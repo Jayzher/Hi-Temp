@@ -252,8 +252,8 @@ export default function PlannerList() {
     }
   };
 
-  return (
-    <div className="d-flex flex-column justify-content-center bg-container" style={{ minHeight: "100vh", overflowY: "auto", overflowX: "hidden", backgroundColor: "#f8f9fa"}}>
+  return ( 
+    <div className="d-flex flex-column justify-content-center bg-container tab-full" style={{ minHeight: "100vh", overflowY: "auto", overflowX: "hidden", backgroundColor: "#f8f9fa"}}>
       {(user.role !== 'Employee') ?
       <>
         <div className="d-flex flex-row justify-content-around">
@@ -297,8 +297,8 @@ export default function PlannerList() {
           </div>
         </>
       }
-      <div className="me-5 mt-2 d-flex justify-content-center table-container" style={{ border: "2px solid black", width: "100%", height: "70vh", backgroundColor: "#fff" }}>
-        <table style={{ width: '84.5vw', borderCollapse: 'collapse', height: "100%", tableLayout: "fixed" }} cellSpacing="0">
+      <div className="mt-2 d-flex justify-content-center" style={{height: "70vh", backgroundColor: "#fff" }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', height: "100%", tableLayout: "fixed" }} cellSpacing="0">
           <tbody>
             <tr style={{ height: '5pt' }}>
               <HeaderCell text="Date" />

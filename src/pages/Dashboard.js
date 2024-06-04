@@ -18,9 +18,9 @@ export default function Dashboard() {
     }
 
     return (
-        <div style={{background: "azure"}}>
+        <div id="dashboard" style={{background: "azure", position: "absolute !important"}}>
             <SideNavBar />
-            <Tabs style={{position: "sticky", top: "0", zIndex: "2"}} />
+            <Tabs id="tabs" style={{position: "sticky", top: "0", zIndex: "2"}} />
             <div className="fixed-image" onClick={scrollToTop}>
                 <img src={Top_Arrow} alt="Fixed Image" />
             </div>

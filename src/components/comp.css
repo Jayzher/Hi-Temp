@@ -280,3 +280,186 @@ tr:first-child {
     width: 50px; /* Adjust the size as needed */
     height: auto;
 }
+
+/*Mobile Responsive */
+
+/* comp.css */
+
+/* Burger Menu Styles */
+.burger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    z-index: 3;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+}
+
+.burger-bar {
+    width: 100%;
+    height: 3px;
+    background-color: black;
+}
+
+.burger-menu.open .burger-bar:nth-child(2) {
+    opacity: 0;
+}
+
+.burger-menu.open .burger-bar:nth-child(1) {
+    transform: translateY(10px) rotate(45deg);
+}
+
+.burger-menu.open .burger-bar:nth-child(3) {
+    transform: translateY(-10px) rotate(-45deg);
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 15vw;
+    left: 0;
+    z-index: 9998; /* default z-index */
+    position: fixed;
+    height: 100%;
+    background: linear-gradient(92.7deg, rgba(245,212,212,1) 8.5%, rgba(252,251,224,1) 90.2%);
+    border-right: 3px solid black;
+    border-left: 3px solid black;
+    overflow-y: hidden;
+    height: 100vh;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+/* Mobile-specific Styles */
+@media (max-width: 768px) {
+    /* Sidebar Styles */
+    .sidebar {
+        transition: transform 0.3s ease-in-out;
+        transform: translateX(-100%);
+        width: fit-content;
+        z-index: 9998; /* default z-index */
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background: linear-gradient(92.7deg, rgba(245,212,212,1) 8.5%, rgba(252,251,224,1) 90.2%);
+        border-right: 3px solid black;
+        border-left: 3px solid black;
+        overflow-y: hidden;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .burger-menu {
+        display: flex;
+        position: fixed;
+        z-index: 9999;
+    }
+
+    .sidebar {
+        width: 40%;
+        z-index: 9998 !important; /* higher z-index for mobile */
+    }
+
+    .nav-links {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    #dashboard {
+        position: absolute;
+        left: 0;
+    }
+
+    #justify-tab-example-tabpane-progress, #justify-tab-example-tabpane-home {
+        position: absolute !important;
+        left: 0 !important;
+        width: 100vw !important;
+        margin-top: 40px !important;
+    }
+
+    .tab-full {
+        width: 100% !important;
+        margin-top: 0 !important;
+        margin-left: 0 !important;
+        display: block !important;
+    }
+
+    #task-card {
+        width: 80vw !important;
+    }
+
+    #newTask-cont {
+        width: 100vw;
+        flex-direction: column !important;
+    }
+
+    #tasktable, #tasktable-cont, #project-table {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+
+    #newTasks-main {
+        display: flex;
+        flex-direction: column !important;
+        width: 100vw !important;
+        position: absolute !important;
+        height: fit-content !important;
+        justify-content: center !important;
+    }
+
+    #newTask {
+        width: 100vw !important;
+    }
+
+    #project-table {
+        width: 95% !important;
+        padding-left: 18px;
+    }
+
+    #newEmployees-cont {
+        width: 100%;
+        margin-left: 0 !important;
+        flex-direction: column !important;
+    }
+
+    #emp-table-cont, #newEmployees-cont {
+        width: 95% !important;
+        margin-top: 100px;
+        margin-bottom: 50px;
+    }
+
+    #newEmployees-cont {
+        margin-left: 15px !important;
+    }
+
+    #Chatroom-container {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+
+    .user-list-container {
+        width: 30% !important;
+        overflow-y: auto;
+    }
+
+    #chat-box {
+        width: 93% !important;
+        height: 95% !important;
+    }
+}
+
+#newTask {
+    display: flex !important;
+    flex-direction: column !important;
+}
+

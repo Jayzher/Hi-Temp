@@ -85,7 +85,7 @@ export default function UserProfile() {
 	return(
 
 		<div className="dashboard-container" style={{backgroud: "cyan"}}>
-			<div style={{marginLeft: "15vw"}}>
+			<div className="tab-full" style={{marginLeft: "15vw"}}>
 				<div id="profile" style={{backgroundImage: "linear-gradient( 92.7deg,  rgba(245,212,212,1) 8.5%, rgba(252,251,224,1) 90.2% )"}} className="m-0 pt-2">
 					<input
 					  type="file"

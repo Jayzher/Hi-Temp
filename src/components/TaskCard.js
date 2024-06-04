@@ -142,7 +142,7 @@ export default function DisplayCard({ tasks }) {
                 </div>
             </Modal>
             <div style={{width: "fit-content", height: "fit-content", marginTop: '2vh'}}>
-                <Card onClick={handleShow} className="d-flex" style={{ height: "200px", width: '500px', border: "solid 1px black", background: "azure", borderRadius: "10px", overflow: "hidden"}}>
+                <Card id="task-card" onClick={handleShow} className="d-flex" style={{ height: "200px", width: '500px', border: "solid 1px black", background: "azure", borderRadius: "10px", overflow: "hidden"}}>
                     <div className="d-flex flex-row justify-content-between">	
                     	<div className={`bg-${getStatusColor(Status)}`} style={{height: "210px", width: "3%", borderRadius: "10px"}}></div>
                     	<Card.Body className="w-100 opacity d-block" style={{height: "100%", overflow: "hidden", borderRadius: "10px"}}>

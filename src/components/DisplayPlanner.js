@@ -10,7 +10,7 @@ export default function DisplayPlanner() {
 
     return (
         <div className="dashboard-container">
-            <div className="d-flex flex-row align-items-center" style={{height: "100vh", minHeight: "100vh", width: "85vw", marginLeft: "15vw", backgroundImage: "linear-gradient( 92.7deg,  rgba(245,212,212,1) 8.5%, rgba(252,251,224,1) 90.2% )", overflowy: "hidden"}}>
+            <div className="tab-full" style={{height: "100vh", minHeight: "100vh", width: "85vw", marginLeft: "15vw", backgroundImage: "linear-gradient( 92.7deg,  rgba(245,212,212,1) 8.5%, rgba(252,251,224,1) 90.2% )", overflowy: "hidden"}}>
                 <PlannerList />
             </div>
         </div>            

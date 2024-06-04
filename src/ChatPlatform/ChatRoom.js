@@ -69,10 +69,10 @@ const ChatRoom = () => {
   };
 
   return (
-    <div className="dashboard-container" style={{ overflow: "hidden", height: '100vh' }}>
-      <div className="d-flex flex-row" style={{ height: '100vh', maxHeight: '100vh', marginLeft: "15vw", width: '85vw', overflowY: "hidden" }}>
+    <div className="dashboard-container" style={{ overflow: "hidden", height: '100%' }}>
+      <div id="Chatroom-container" className="d-flex flex-row" style={{ height: '100%', maxHeight: '100vh', marginLeft: "15vw", width: '85vw', overflowY: "hidden" }}>
         <div className="user-list-container" style={{ width: '20%', background: '#f0f0f0' }}>
-          <h3 className="ms-5">User List</h3>
+          <h3 className="ms-5 p-2">User List</h3>
           <UsersLists userList={userList} onSelectUser={handleUserSelect} />
         </div>
         <div className="d-flex flex-wrap" style={{ backgroundImage: "linear-gradient( 184.1deg,  rgba(249,255,182,1) 44.7%, rgba(226,255,172,1) 67.2% )", flex: 1 }}>

@@ -328,22 +328,22 @@ function NewTasks() {
 
     return (
         <div className="dashboard-container">
-            <div className="d-flex flex-row" style={{height: "100vh", minHeight: "100vh", width: "fit-content", marginLeft: "15vw", backgroundImage: "linear-gradient( 92.7deg,  rgba(245,212,212,1) 8.5%, rgba(252,251,224,1) 90.2% )", overflowy: "hidden"}}>
-                <div style={{height: "100%", background: "rgba(0, 0, 0, 0.2)"}} className="d-flex flex-row">
-                    <div className="d-flex flex-column align-items-center pt-1 task-div ps-0" style={{background: "rgba(0, 0, 0, 0.0)", height: "100vh", borderRight: "solid 2px black", padding: "15px"}}>
+            <div id="newTasks-main" className="d-flex flex-row tab-full" style={{height: "100%", minHeight: "100vh", width: "fit-content", marginLeft: "15vw", backgroundImage: "linear-gradient( 92.7deg,  rgba(245,212,212,1) 8.5%, rgba(252,251,224,1) 90.2% )", overflowy: "hidden"}}>
+                <div id="newTask-cont" style={{height: "100%", background: "rgba(0, 0, 0, 0.2)"}} className="d-flex flex-row tab-full">
+                    <div id="newTask" className="d-flex flex-column align-items-center pt-1 task-div ps-0" style={{background: "rgba(0, 0, 0, 0.0)", height: "100vh", borderRight: "solid 2px black", padding: "15px"}}>
                         { project === "Tasks" ? (
                             <>
-                                <div className="d-flex flex-row me-auto ms-1">
+                                <div className="d-flex flex-row me-auto ms-5">
                                     <img src={back_arrow} alt="Back" className="sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Tasks")} />
                                     <img src={back_arrow_2} alt="Back" className="ms-1 me-1 sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Project")} />
                                     <img src={Task_svg} alt="Back" className="sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Task Type")} />
                                 </div>
-                                <Form onSubmit={handleSubmit} style={{width: "35vw"}}>
+                                <Form onSubmit={handleSubmit} style={{width: "100%"}}>
                                     <div className="d-flex justify-content-center">
                                         <h1 className="text-center">Create Tasks</h1>
                                     </div>
                                      <div className="d-flex flex-row ms-4 me-2 mb-2" style={{justifyContent: "space-around"}}>
-                                        <Form.Group style={{width: "40vw"}}>
+                                        <Form.Group style={{width: "100%"}}>
                                             <Form.Label>Project Sub-Tasks: (Optional)</Form.Label>
                                             <Form.Select onChange={handleChange} name="projectName">
                                                 <option value="N/A">Select Project</option>
@@ -351,7 +351,7 @@ function NewTasks() {
                                             </Form.Select>
                                         </Form.Group>
                                     </div>
-                                    <Form.Group className="ms-4 me-4 mb-2" style={{ width: "32.8vw" }}>
+                                    <Form.Group className="ms-4 me-4 mb-2" style={{ width: "95.5%" }}>
                                         <Form.Label>Department:</Form.Label>
                                         <Form.Select onChange={handleChange} required name="department">
                                             <option value="N/A">Select Department</option>
@@ -359,28 +359,28 @@ function NewTasks() {
                                         </Form.Select>
                                     </Form.Group>
                                     <div className="d-flex flex-row mb-2" style={{justifyContent: "space-around"}}>
-                                        <Form.Group style={{width: "20vw"}} className="ms-4 me-2">
+                                        <Form.Group style={{width: "50%"}} className="ms-4 me-2">
                                             <Form.Label>Task Type:</Form.Label>
                                             <Form.Select onChange={handleChange} required name="taskType" required>
                                                 <option value="N/A">Select Task Type</option>
                                                 <GetTaskType department={formData.department} />
                                             </Form.Select>
                                         </Form.Group>
-                                        <Form.Group style={{width: "20vw"}} className="ms-4 me-2">
+                                        <Form.Group style={{width: "50%"}} className="ms-4 me-2">
                                             <Form.Label>Due Date:</Form.Label>
                                             <Form.Control type="date" name="duration" value={formData.duration} onChange={handleChange} />
                                         </Form.Group>
                                     </div>
-                                    <Form.Group style={{width: "32.8vw"}} className="ms-4">
+                                    <Form.Group style={{width: "95.5%"}} className="ms-4">
                                         <Form.Label>Destination:</Form.Label>
                                         <Form.Control type="text" name="destination" value={formData.destination} onChange={handleChange} />
                                     </Form.Group>
-                                    <Form.Group className="ms-4 me-4 mb-2" style={{ width: "32.8vw" }}>
+                                    <Form.Group className="ms-4 me-4 mb-2" style={{ width: "95.5%" }}>
                                         <Form.Label>Description:</Form.Label>
                                         <Form.Control as="textarea" rows={3} placeholder="Enter description" name="description" value={formData.description} onChange={handleChange} required />
                                     </Form.Group>
 
-                                    <Form.Group className="ms-4 me-4 mb-2" style={{ width: "32.8vw" }}>
+                                    <Form.Group className="ms-4 me-4 mb-2" style={{ width: "95.5%" }}>
                                         <Form.Label>Assign To:</Form.Label>
                                         <Form.Select onChange={handleChange} required name="fullName" required>
                                             <option value="">Select Employee</option>
@@ -388,7 +388,7 @@ function NewTasks() {
                                         </Form.Select>
                                     </Form.Group>
 
-                                    <Form.Group style={{width: "32.8vw"}}  className="ms-4 me-4 mb-2">
+                                    <Form.Group style={{width: "95.5%"}}  className="ms-4 me-4 mb-2">
                                         <Form.Label>Travel Funds:</Form.Label>
                                         <Form.Control type="text" placeholder="Enter travel funds" name="travelFunds" value={formData.travelFunds} onChange={handleChange} required />
                                     </Form.Group>
@@ -402,32 +402,32 @@ function NewTasks() {
                             </>
                         ) : project === "Project" ? (
                             <>  
-                                <div className="d-flex flex-row me-auto ms-1">
+                                <div className="d-flex flex-row me-auto ms-5">
                                     <img src={back_arrow} alt="Back" className="sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Tasks")} />
                                     <img src={back_arrow_2} alt="Back" className="ms-1 me-1 sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Project")} />
                                     <img src={Task_svg} alt="Back" className="sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Task Type")} />
                                 </div>
-                                <Form className="ms-2" onSubmit={handleSubmit2} style={{width: "35vw"}}>
+                                <Form className="ms-2" onSubmit={handleSubmit2} style={{width: "100%"}}>
                                     <div className="d-flex justify-content-center">
                                         <h1 className="text-center">Create Project</h1>
                                     </div>
-                                    <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
+                                    <Form.Group style={{width: "95.5%"}} className="ms-2 me-3 mb-2">
                                         <Form.Label>Project Name:</Form.Label>
                                         <Form.Control type="text" placeholder="Enter Project Name" name="projectName" value={formData2.projectName} onChange={handleChange2} required />
                                     </Form.Group>
-                                    <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
+                                    <Form.Group style={{width: "95.5%"}} className="ms-2 me-3 mb-2">
                                         <Form.Label>Company:</Form.Label>
                                         <Form.Control type="text" placeholder="Enter Company Name" name="company" value={formData2.company} onChange={handleChange2} required />
                                     </Form.Group>
-                                    <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
+                                    <Form.Group style={{width: "95.5%"}} className="ms-2 me-3 mb-2">
                                         <Form.Label>Product:</Form.Label>
                                         <Form.Control type="text" placeholder="Enter Product Name" name="product" value={formData2.product} onChange={handleChange2} required />
                                     </Form.Group>
-                                    <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
+                                    <Form.Group style={{width: "95.5%"}} className="ms-2 me-3 mb-2">
                                         <Form.Label>Address:</Form.Label>
                                         <Form.Control type="text" name="address" placeholder="Enter Address" value={formData2.address} onChange={handleChange2} />
                                     </Form.Group>
-                                    <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
+                                    <Form.Group style={{width: "95.5%"}} className="ms-2 me-3 mb-2">
                                         <Form.Label>Description:</Form.Label>
                                         <Form.Control as="textarea" rows={5} placeholder="Enter description" name="description" value={formData2.description} onChange={handleChange2} required />
                                     </Form.Group>
@@ -441,16 +441,16 @@ function NewTasks() {
                         
                          ) : project === "Task Type" ? (
                             <>  
-                                <div className="d-flex flex-row me-auto ms-1">
+                                <div className="d-flex flex-row me-auto ms-5">
                                     <img src={back_arrow} alt="Back" className="sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Tasks")} />
                                     <img src={back_arrow_2} alt="Back" className="me-1 ms-1 sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Project")} />
                                     <img src={Task_svg} alt="Back" className="sw-form" style={{height: "50px", width: "50px"}} onClick={e => handleModal("Task Type")} />
                                 </div>
-                                <Form className="ms-2 mt-3" onSubmit={e => CreateDepartment(e)} style={{width: "35vw"}}>
+                                <Form className="ms-2 mt-3" onSubmit={e => CreateDepartment(e)} style={{width: "100%"}}>
                                     <div className="d-flex justify-content-center">
                                         <h1 className="text-center">Create New Department</h1>
                                     </div>
-                                    <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
+                                    <Form.Group style={{width: "95.5%"}} className="ms-2 me-3 mb-2">
                                         <Form.Label>Department:</Form.Label>
                                         <Form.Control type="text" placeholder="Enter Department" name="department" value={formData4.department} onChange={handleChange4} required />
                                     </Form.Group>
@@ -460,22 +460,22 @@ function NewTasks() {
                                         </Button>
                                     </div>
                                 </Form>
-                                <Form className="ms-2" onSubmit={e => addtaskType(e)} style={{width: "35vw"}}>
+                                <Form className="ms-2" onSubmit={e => addtaskType(e)} style={{width: "100%"}}>
                                     <div className="d-flex justify-content-center">
                                         <h1 className="text-center">Add Tasks Types</h1>
                                     </div>
-                                    <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
+                                    <Form.Group style={{width: "95.5%"}} className="ms-2 me-3 mb-2">
                                         <Form.Label>Department:</Form.Label>
                                         <Form.Select value={formData3.department} onChange={handleChange3} required name="department">
                                             <option value="">Select Department</option>
                                             <GetDepartment />
                                         </Form.Select>
                                     </Form.Group>
-                                    <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
+                                    <Form.Group style={{width: "95.5%"}} className="ms-2 me-3 mb-2">
                                         <Form.Label>Task Type:</Form.Label>
                                         <Form.Control type="text" placeholder="Enter Tasks Type" name="taskType" value={formData3.taskType} onChange={handleChange3} required />
                                     </Form.Group>
-                                    <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
+                                    <Form.Group style={{width: "95.5%"}} className="ms-2 me-3 mb-2">
                                         <Form.Label>Description:</Form.Label>
                                         <Form.Control as="textarea" rows={5} name="description" placeholder="Enter Description" value={formData3.description} onChange={handleChange3} />
                                     </Form.Group>
@@ -513,7 +513,7 @@ function NewTasks() {
                             </>
                         ): null}
                     </div>
-                    <div style={{height: "100%", width: "100%"}}>
+                    <div id="table-cont" style={{height: "100%", width: "100%"}}>
                     {(project === "Tasks") ?
                         <TaskTable />
                         :

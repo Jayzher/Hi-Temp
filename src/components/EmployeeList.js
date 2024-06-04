@@ -31,9 +31,9 @@ export default function EmployeeList({ employee, onUpdateStatus }) {
     return (
         <>
             <tr>
-                <td style={{fontSize: '0.8rem', width: '19%', maxWidth: '19%'}}>{employeeName}</td>
+                <td style={{fontSize: '0.8rem', width: '30%', maxWidth: '30%'}}>{employeeName}</td>
                 <td style={{fontSize: '0.8rem', width: '20%', maxWidth: '20%'}}>{employeeUserName}</td>
-                <td style={{fontSize: '0.8rem', width: '20%', maxWidth: '20%'}}>{employeedept}</td>
+                <td style={{fontSize: '0.8rem', width: '40%', maxWidth: '40%'}}>{employeedept}</td>
                 <td style={{fontSize: '0.8rem', width: '20%', maxWidth: '20%'}}>{employeerole}</td>
                 <td style={{fontSize: '0.8rem', width: '10%', maxWidth: '10%'}} className={`${(employeeStatus) ? 'Green' : 'RedOrange'}`}>{(employeeStatus) ? 'Online' : 'Offline'}</td>
                 <td style={{fontSize: '0.8rem', width: '5%', maxWidth: '5%'}}>

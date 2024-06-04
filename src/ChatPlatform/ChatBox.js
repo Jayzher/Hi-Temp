@@ -91,7 +91,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   }
 
   return (
-    <div className={`chat-box ${visible ? 'visible' : 'hidden'} d-flex flex-column ms-3 mt-3`}>
+    <div id="chat-box" className={`chat-box ${visible ? 'visible' : 'hidden'} d-flex flex-column ms-3 mt-3`}>
       <div className="header d-flex flex-row justify-content-between">
         <p style={{ fontSize: '1.1rem', fontWeight: "bolder" }}>{recipient.name}</p>
         <button className="text-center fw-bold" style={{background: "rgba(0, 0, 0, 0.3)", borderRadius: "100px", fontSize: "0.8rem", height: "30px"}} onClick={() => setChatBoxes(prevChatBoxes => ({ ...prevChatBoxes, [recipient._id]: false }))}>
