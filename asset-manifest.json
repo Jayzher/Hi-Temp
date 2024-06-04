@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/Hi-Temp/static/css/main.cb023dcf.css",
-    "main.js": "/Hi-Temp/static/js/main.b25c56b9.js",
+    "main.css": "/Hi-Temp/static/css/main.7d20e831.css",
+    "main.js": "/Hi-Temp/static/js/main.aac3dc08.js",
     "static/media/top-arrow.png": "/Hi-Temp/static/media/top-arrow.f73059766261b8d2b1b8.png",
     "static/media/back-arrow-2.svg": "/Hi-Temp/static/media/back-arrow-2.d6955cf6ef4db3c1a6e9f49657e7a673.svg",
     "static/media/back-arrow.svg": "/Hi-Temp/static/media/back-arrow.44a657854fbd640c55ae2142d81652c7.svg",
     "static/media/tasks-sv.svg": "/Hi-Temp/static/media/tasks-sv.35233bc9c87110f3c8ec5023da0ed83d.svg",
     "index.html": "/Hi-Temp/index.html",
-    "main.cb023dcf.css.map": "/Hi-Temp/static/css/main.cb023dcf.css.map",
-    "main.b25c56b9.js.map": "/Hi-Temp/static/js/main.b25c56b9.js.map"
+    "main.7d20e831.css.map": "/Hi-Temp/static/css/main.7d20e831.css.map",
+    "main.aac3dc08.js.map": "/Hi-Temp/static/js/main.aac3dc08.js.map"
   },
   "entrypoints": [
-    "static/css/main.cb023dcf.css",
-    "static/js/main.b25c56b9.js"
+    "static/css/main.7d20e831.css",
+    "static/js/main.aac3dc08.js"
   ]
 }
