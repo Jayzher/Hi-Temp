@@ -90,7 +90,7 @@ export default function SideNavBar() {
                 <div className="burger-bar"></div>
                 <div className="burger-bar"></div>
             </div>
-            <div id="sidenav" className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{background: "azure"}}>
+            <div id="sidenav" className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{background: "azure", overflowY: "auto"}}>
                 <div id="profile">
                     <img
                         style={{ height: "130px", minWidth: "130px", maxWidth: "135px", border: "solid 3px rgba(0, 0, 0, 0.2)", borderRadius: "100px"}}

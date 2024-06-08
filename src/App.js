@@ -27,7 +27,8 @@ function App() {
     role: null,
     name: null,
     department: null,
-    Tasks: null
+    Tasks: null,
+    changePassword: null
   });
 
   return (

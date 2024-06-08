@@ -106,7 +106,7 @@ export default function UserProfile() {
 				<div id="hr">
 				</div>
 				<div style={{backgroundImage: "radial-gradient( circle 400px at 6.8% 8.3%,  rgba(255,244,169,1) 0%, rgba(255,244,234,1) 100% )", height: "100%"}} className="d-flex flex-row">
-					<div style={{width: "30vw", borderRight: "solid 2px black", padding: "15px", height: "100%"}}>
+					<div style={{width: "30vw", padding: "15px", height: "100%", width: "100%"}}>
 						<h1 className="text-center" style={{fontSize: "1.8rem"}}>Change User Credentials</h1>
 						<div style={{marginTop: "10px", height: "100%", paddingBottom: "10vh"}}>
 							<Form>
@@ -120,14 +120,6 @@ export default function UserProfile() {
 						        <Col>
 						          <label htmlFor="username" className="fw-bold fs-6 pb-1">Username: </label>
 						          <Form.Control placeholder="username" defaultValue={user.username} />
-						        </Col>
-						      </Row>
-						      <Row className="pt-2">
-						        <Col>
-						          <label htmlFor="Bio" className="fw-bold fs-6 pb-2">Bio: </label>
-						          <textarea rows="7" style={{width: "100%", resize: "none"}} className="form-control">
-						          	
-						          </textarea>
 						        </Col>
 						      </Row>
 						      <div className="w-100 d-flex justify-content-center mt-3">

@@ -177,48 +177,48 @@ export default function DisplayTaskCard() {
     };
 
     return (
-        <Container>
-            <div className="d-flex flex-row justify-content-around align-items-end" style={{ marginBottom: '10px' }}>
-            {   (user.role === "Admin") ?
-                <div>
-                    <input style={{height: "30px"}}
-                        type="text"
-                        placeholder="Search by Name"
-                        value={searchName}
-                        onChange={(e) => handleSearchByName(e.target.value)}
-                    />
-                </div>
-                :
-                <div className="d-flex flex-column justify-content-center">
-                    <label className="me-2" htmlFor="status">By Task Type:</label>
-                    <select name="taskType" value={filterStatus} onChange={(e) => handleSearchByTask(e.target.value)}>
-                        <option value="">All</option>
-                        <GetTaskType department={user.department} />
-                    </select>
-                </div>
-            }
-                <div className="d-flex flex-column justify-content-center">
-                    <label className="me-2" htmlFor="status">By Department:</label>
-                    <select name="department" value={filterStatus} onChange={(e) => handleFilterByDepartment(e.target.value)}>
-                        <option value="">All</option>
-                        <GetDepartment />
-                    </select>
-                </div>
-                <div className="d-flex flex-column justify-content-center">
-                    <label className="me-2" htmlFor="status">By Status:</label>
-                    <select name="status" value={filterStatus} onChange={(e) => handleFilterByStatus(e.target.value)}>
-                        <option value="">All</option>
-                        <option value="Completed">Completed</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Failed">Failed</option>
-                    </select>
-                </div>
+    <div style={{width: "100vw"}}>
+        <div id="sorts" className="d-flex flex-row justify-content-around align-items-center" style={{ marginBottom: '10px', width: "100%", height: "fit-content", flexWrap: "wrap" }}>
+        {   (user.role === "Admin") ?
+            <div className="mb-2">
+                <input style={{height: "30px"}}
+                    type="text"
+                    placeholder="Search by Name"
+                    value={searchName}
+                    onChange={(e) => handleSearchByName(e.target.value)}
+                />
             </div>
-            <Row className="justify-content-center">
-                {filteredTasks.map(task => (
-                    <TaskCard key={task?._id} tasks={task} />
-                ))}
-            </Row>
-        </Container>
+            :
+            <div className="d-flex flex-column justify-content-center mb-2">
+                <label className="" htmlFor="status">By Task Type:</label>
+                <select name="taskType" value={filterStatus} onChange={(e) => handleSearchByTask(e.target.value)}>
+                    <option value="">All</option>
+                    <GetTaskType department={user.department} />
+                </select>
+            </div>
+        }
+            <div className="d-flex flex-column justify-content-center mb-2">
+                <label className="" htmlFor="status">By Department:</label>
+                <select name="department" value={filterStatus} onChange={(e) => handleFilterByDepartment(e.target.value)}>
+                    <option value="">All</option>
+                    <GetDepartment />
+                </select>
+            </div>
+            <div className="d-flex flex-column justify-content-center mb-2">
+                <label className="" htmlFor="status">By Status:</label>
+                <select name="status" value={filterStatus} onChange={(e) => handleFilterByStatus(e.target.value)}>
+                    <option value="">All</option>
+                    <option value="Completed">Completed</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Failed">Failed</option>
+                </select>
+            </div>
+        </div>
+        <div className="d-flex flex-row justify-content-center" style={{flexWrap: "wrap"}}>
+            {filteredTasks.map(task => (
+                <TaskCard key={task?._id} tasks={task} />
+            ))}
+        </div>
+    </div>
     );
 }

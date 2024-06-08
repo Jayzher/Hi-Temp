@@ -456,10 +456,79 @@ tr:first-child {
         width: 93% !important;
         height: 95% !important;
     }
+
+    #login {
+        width: 80% !important;
+        margin-right: 8%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    #username {
+        width: 76% !important;
+    }
 }
 
 #newTask {
     display: flex !important;
     flex-direction: column !important;
 }
+
+/* Media query for small devices (max-width: 431px) */
+@media (max-width: 431px) {
+    #username {
+        width: 100% !important; /* Set the width of the username input to 100% */
+    }
+
+    .swal-mobile .swal-title {
+        font-size: 0.4rem !important; /* Adjust font size for title */
+    }
+
+    .swal-mobile .swal-text {
+        font-size: 0.2rem !important; /* Adjust font size for text */
+    }
+
+    .swal-mobile .swal-popup {
+        max-width: 250px !important; /* Adjust the maximum width of the popup container */
+        padding: 10px !important; /* Adjust padding as needed */
+        margin: 20px auto !important; /* Center the popup horizontally and provide some vertical margin */
+    }
+
+    #thisModal {
+        width: 96vw !important;
+        margin-left: 2vw !important;
+        margin-right: 2vw !important;
+    }
+
+    #task-card {
+        height: fit-content !important;
+    }
+
+    .tab-content {
+        width: 100vw !important;
+        left: 0 !important;
+    }
+}
+
+/* Media query for medium devices (min-width: 432px) and small devices (max-width: 767px) */
+@media (min-width: 432px) and (max-width: 767px) {
+    #username {
+        width: 76% !important; /* Set the width of the username input to 93% */
+    }
+}
+
+/* Media query for large devices (min-width: 768px) and small devices (max-width: 1390px) */
+@media (min-width: 768px) and (max-width: 1390px) {
+    #username {
+        width: 93% !important; /* Set the width of the username input to 93% */
+    }
+}
+
+
+
+
+
+
+
 
