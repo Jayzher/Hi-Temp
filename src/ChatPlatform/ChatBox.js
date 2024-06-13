@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Chat.css';
 import { Button } from 'react-bootstrap';
 
@@ -7,9 +7,14 @@ const apiUrl = process.env.REACT_APP_API_URL;
 const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const textareaRef = useRef(null);
+  const chatBoxRef = useRef(null);
 
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
+    textareaRef.current.style.height = 'auto';
+    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    chatBoxRef.current.style.height = `${chatBoxRef.current.style.height - textareaRef.current.scrollHeight}px`;
   };
 
   const handleSubmit = async (e) => {
@@ -35,6 +40,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         }
 
         setMessage('');
+        textareaRef.current.style.height = 'auto';
       } catch (error) {
         console.error('Error sending message:', error);
       }
@@ -68,7 +74,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
       }
     };
     fetchConversations();
-  }, [recipient, messages]); // Include messages state in the dependency array
+  }, [recipient]);
 
   useEffect(() => {
     // Event listener for new message
@@ -91,33 +97,62 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   }
 
   return (
-    <div id="chat-box" className={`chat-box ${visible ? 'visible' : 'hidden'} d-flex flex-column ms-3 mt-3`}>
-      <div className="header d-flex flex-row justify-content-between">
-        <p style={{ fontSize: '1.1rem', fontWeight: "bolder" }}>{recipient.name}</p>
-        <button className="text-center fw-bold" style={{background: "rgba(0, 0, 0, 0.3)", borderRadius: "100px", fontSize: "0.8rem", height: "30px"}} onClick={() => setChatBoxes(prevChatBoxes => ({ ...prevChatBoxes, [recipient._id]: false }))}>
-          X
-        </button>
-      </div>
-      <div className="messages">
-        <div className="messages-container">
-          {messages.map((msg, index) => (
-            <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
-              <p className="msg-content">{msg.content}</p>
-            </div>
-          ))}
+    <div style={{width: "100%", height: "100vh !important"}}>
+      <div id="chat-box" className={`chat-box ${visible ? 'visible' : 'hidden'} flex-column ms-3 mt-3 hide-on-small`} style={{display: "flex"}}>
+        <div className="header d-flex flex-row justify-content-between">
+          <p style={{ fontSize: '1.1rem', fontWeight: "bolder" }}>{recipient.name}</p>
+          <button className="text-center fw-bold" style={{background: "rgba(0, 0, 0, 0.3)", borderRadius: "100px", fontSize: "0.8rem", height: "30px"}} onClick={() => setChatBoxes(prevChatBoxes => ({ ...prevChatBoxes, [recipient._id]: false }))}>
+            X
+          </button>
+        </div>
+        <div className="messages">
+          <div className="messages-container">
+            {messages.map((msg, index) => (
+              <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
+                <p className="msg-content">{msg.content}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="footer">
+          <form className="d-flex flex-row justify-content-around" onSubmit={handleSubmit} style={{ width: '100%' }}>
+            <textarea
+              ref={textareaRef}
+              style={{ height: 'auto', overflow: 'hidden' }}
+              rows="1"
+              className="me-1 textarea-input"
+              value={message}
+              onChange={handleMessageChange}
+              placeholder="Type your message..."
+            />
+            <Button type="submit">Send</Button>
+          </form>
         </div>
       </div>
-      <div className="footer">
-        <form className="d-flex flex-row justify-content-around" onSubmit={handleSubmit} style={{ width: '100%' }}>
-          <textarea
-            sizeable="false"
-            className="me-1 textarea-input"
-            value={message}
-            onChange={handleMessageChange}
-            placeholder="Type your message..."
-          />
-          <Button type="submit">Send</Button>
-        </form>
+      <div className="show-on-small" style={{display: "none"}}>
+        <div className="messages" ref={chatBoxRef} style={{height: `${chatBoxRef + 80}vw`, minHeight: "90vh", overflowY: "auto"}}>
+          <div className="messages-container" style={{maxWidth: "40% !important"}}>
+            {messages.map((msg, index) => (
+              <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
+                <p className="msg-content">{msg.content}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="footer" style={{position: "sticky", width: "100%", right: "0", bottom: "0", background: "linear-gradient(184.1deg, rgb(249, 255, 182) 44.7%, rgb(226, 255, 172) 67.2%)"}}>
+          <form className="d-flex flex-row ms-2 justify-content-end" onSubmit={handleSubmit} style={{ width: '100%'}}>
+            <textarea 
+              ref={textareaRef}
+              style={{ height: 'auto', overflow: 'hidden', width: '100%'}}
+              rows="1"
+              className="me-1 textarea-input"
+              value={message}
+              onChange={handleMessageChange}
+              placeholder="Type your message..."
+            />
+            <Button style={{ maxHeight: "40px", height: "40px" }} type="submit">Send</Button>
+          </form>
+        </div>
       </div>
     </div>
   );

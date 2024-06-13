@@ -42,12 +42,12 @@ export default function EmployeeList({ employee, onUpdateStatus }) {
     return (
         <>
             <tr>
-                <td style={{ fontSize: '0.8rem', width: '30%', maxWidth: '30%' }}>{employeeName}</td>
+                <td style={{ fontSize: '0.8rem'}}>{employeeName}</td>
                 <td style={{ fontSize: '0.8rem', width: '20%', maxWidth: '20%' }}>{employeeUserName}</td>
-                <td style={{ fontSize: '0.8rem', width: '40%', maxWidth: '40%' }}>{employeeDept}</td>
-                <td style={{ fontSize: '0.8rem', width: '20%', maxWidth: '20%' }}>{employeeRole}</td>
-                <td style={{ fontSize: '0.8rem', width: '10%', maxWidth: '10%' }} className={`${(employeeStatus) ? 'Green' : 'RedOrange'}`}>{(employeeStatus) ? 'Online' : 'Offline'}</td>
-                <td style={{ fontSize: '0.8rem', width: '5%', maxWidth: '5%' }}>
+                <td style={{ fontSize: '0.8rem'}}>{employeeDept}</td>
+                <td style={{ fontSize: '0.8rem'}}>{employeeRole}</td>
+                <td style={{ fontSize: '0.8rem', width: "80px"}} className={`${(employeeStatus) ? 'Green' : 'RedOrange'}`}>{(employeeStatus) ? 'Online' : 'Offline'}</td>
+                <td style={{ fontSize: '0.8rem', width: '100px', maxWidth: '100px' }}>
                     <Button variant="primary" onClick={handleShow}>
                         Edit
                     </Button>

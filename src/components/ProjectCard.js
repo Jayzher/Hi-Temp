@@ -205,52 +205,52 @@ export default function ProjectCard({ proj }) {
         <>
             <Modal size="md" id="thisModal" show={show} onHide={handleClose}>
                 <Modal.Body className="d-flex justify-content-center" style={{ background: "peachpuff", borderRadius: "10px"}}>
-                    <Form onSubmit={handleSubmit} style={{ width: "36vw" }}>
+                    <Form onSubmit={handleSubmit} style={{ width: "100%" }}>
                         <div className="d-flex justify-content-center">
                             <h1 className="text-center">Create Tasks</h1>
                         </div>
                         <div className="d-flex flex-row mb-2" style={{ justifyContent: "space-around" }}>
-                            <Form.Group style={{ width: "32.8vw" }}>
+                            <Form.Group style={{width: "100%"}}>
                                 <Form.Label>Project:</Form.Label>
                                 <Form.Control type="text" name="projectName" value={projectName} disabled={true}/> 
                             </Form.Group>
                         </div>
-                        <Form.Group className="ms-4 me-4 mb-2" style={{ width: "32.8vw" }}>
+                        <Form.Group className="mb-2" style={{width: "100%"}}>
                             <Form.Label>Department:</Form.Label>
                             <Form.Select onChange={handleChange} required name="department">
                                 <option value="N/A">Select Department</option>
                                 <GetDepartment />
                             </Form.Select>
                         </Form.Group>
-                        <div className="d-flex flex-row mb-2" style={{ justifyContent: "space-between" }}>
-                            <Form.Group style={{ width: "20vw" }} className="ms-4 me-2">
+                        <div id="project-task-modal" className="d-flex flex-row mb-2" style={{ justifyContent: "space-between" }}>
+                            <Form.Group className="me-2" style={{width: "100%"}}>
                                 <Form.Label>Task Type:</Form.Label>
                                 <Form.Select onChange={handleChange} required name="taskType">
                                     <option value="N/A">Select Task Type</option>
                                     <GetTaskType department={formData.department} />
                                 </Form.Select>
                             </Form.Group>
-                            <Form.Group style={{ width: "20vw" }} className="me-4">
+                            <Form.Group className="" style={{width: "100%"}}>
                                 <Form.Label>Due Date:</Form.Label>
                                 <Form.Control type="date" name="duration" value={formData.duration} onChange={handleChange} />
                             </Form.Group>
                         </div>
-                        <Form.Group style={{ width: "32.8vw" }} className="ms-4">
+                        <Form.Group className="" style={{width: "100%"}}>
                             <Form.Label>Destination:</Form.Label>
                             <Form.Control type="text" name="destination" value={formData.destination} onChange={handleChange} />
                         </Form.Group>
-                        <Form.Group className="ms-4 me-4 mb-2" style={{ width: "32.8vw" }}>
+                        <Form.Group className="mb-2" style={{width: "100%"}}>
                             <Form.Label>Description:</Form.Label>
                             <Form.Control as="textarea" rows={3} placeholder="Enter description" name="description" value={formData.description} onChange={handleChange} required />
                         </Form.Group>
-                        <Form.Group className="ms-4 me-4 mb-2" style={{ width: "32.8vw" }}>
+                        <Form.Group className="mb-2" style={{width: "100%"}}>
                             <Form.Label>Assign To:</Form.Label>
                             <Form.Select onChange={handleChange} required name="fullName">
                                 <option value="">Select Employee</option>
                                 <GetTeam department={formData.department} />
                             </Form.Select>
                         </Form.Group>
-                        <Form.Group style={{ width: "32.8vw" }} className="ms-4 me-4 mb-2">
+                        <Form.Group className="mb-2" style={{width: "100%"}}>
                             <Form.Label>Travel Funds:</Form.Label>
                             <Form.Control type="text" placeholder="Enter travel funds" name="travelFunds" value={formData.travelFunds} onChange={handleChange} required />
                         </Form.Group>
@@ -317,7 +317,7 @@ export default function ProjectCard({ proj }) {
                             </>
                         }
                     </div>
-                    <table className="text-center" style={{ width: "100%", borderCollapse: "collapse", display: collapsed ? "none" : "table" }}>
+                    <table className="task-table text-center" style={{ width: "100%", borderCollapse: "collapse", display: collapsed ? "none" : "table" }}>
                         <thead>
                             <tr>
                                 <th style={{ border: "1px solid lightgrey", padding: "8px" }}>Task</th>

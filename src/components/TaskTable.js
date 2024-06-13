@@ -112,47 +112,51 @@ export default function TaskTable() {
 
     return (
         <div id="tasktable-cont" className="ms-4 me-4 pt-3" style={{ height: "100vh", width: "45.5vw", overflow: "hidden"}}>
-            <div className="d-flex flex-row justify-content-around align-items-end" style={{ marginBottom: '10px' }}>
-                <input style={{height: "30px"}}
-                    className="me-5"
-                    type="text"
-                    placeholder="Search by Name"
-                    value={searchName}
-                    onChange={(e) => handleSearchByName(e.target.value)}
-                />
-                <div className="d-flex flex-column me-4 justify-content-center">
-                    <label className="me-2" htmlFor="status">By Department:</label>
-                    <select name="department" value={filterStatus} onChange={(e) => handleFilterByDepartment(e.target.value)}>
-                        <option value="">All</option>
-                        <GetDepartment />
-                    </select>
+            <div className="d-flex flex-row justify-content-around align-items-center" style={{ marginBottom: '10px', flexWrap: "wrap"}}>
+                <div>
+                    <input style={{height: "30px", width: "100%"}}
+                        className="me-5"
+                        type="text"
+                        placeholder="Search by Name"
+                        value={searchName}
+                        onChange={(e) => handleSearchByName(e.target.value)}
+                    />
                 </div>
-                <div className="d-flex flex-column justify-content-center">
-                    <label className="me-2" htmlFor="status">By Status:</label>
-                    <select name="status" value={filterStatus} onChange={(e) => handleFilterByStatus(e.target.value)}>
-                        <option value="">All</option>
-                        <option value="Completed">Completed</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Failed">Failed</option>
-                    </select>
+                <div className="d-flex justify-content-around align-items-center">
+                    <div className="d-flex flex-column me-4 justify-content-center">
+                        <label className="me-2" htmlFor="status">By Department:</label>
+                        <select name="department" value={filterStatus} onChange={(e) => handleFilterByDepartment(e.target.value)}>
+                            <option value="">All</option>
+                            <GetDepartment />
+                        </select>
+                    </div>
+                    <div className="d-flex flex-column justify-content-center">
+                        <label className="me-2" htmlFor="status">By Status:</label>
+                        <select name="status" value={filterStatus} onChange={(e) => handleFilterByStatus(e.target.value)}>
+                            <option value="">All</option>
+                            <option value="Completed">Completed</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Failed">Failed</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div id="tasktable" style={{ height: "88vh", width: "45.5vw", overflow: "auto", margin: "0", padding: "0"}}>
-                <Table style={{ background: "peachpuff"}} striped bordered hover className="text-center m-0">
-                    <thead className="opacity p-0 m-0" style={{ position: "sticky", top: "0", zIndex: 1}}>
-                        <tr className="opacity m-0 p-0">
-                            <th className={`opacity ${getSortIndicatorClass('taskType')}`} style={{ width: "30%"}} onClick={() => handleSort('taskType')}>Task Type</th>
-                            <th className={`opacity ${getSortIndicatorClass('name')}`} style={{ width: "26%"}} onClick={() => handleSort('name')}>Name</th>
-                            <th className={`opacity ${getSortIndicatorClass('dueDate')}`} style={{ width: "16.6%"}} onClick={() => handleSort('dueDate')}>Due Date</th>
-                            <th style={{ width: "16.6%"}}>Status</th>
-                            <th style={{ width: "10%"}} onClick={() => handleSort('modify')}>Modify</th>
-                        </tr>
-                    </thead>
-                    <tbody style={{ background: "rgba(0,0,0,0.1)"}}>
-                        {filteredTasks.map((task, index) => (
-                            <TaskList key={index} tasks={task} />
-                        ))}
-                    </tbody>
+            <div id="tasktable" style={{ height: "88vh", width: "100%", overflow: "auto", margin: "0", padding: "0"}}>
+                <Table className="unique-task-table text-center m-0 w-100" style={{ background: "peachpuff"}} striped bordered hover>
+                  <thead className="opacity p-0 m-0" style={{ position: "sticky", top: "0", zIndex: 1}}>
+                    <tr className="opacity m-0 p-0">
+                      <th className={`opacity ${getSortIndicatorClass('taskType')}`} style={{ width: "30%"}} onClick={() => handleSort('taskType')}>Task Type</th>
+                      <th className={`opacity ${getSortIndicatorClass('name')}`} style={{ width: "26%"}} onClick={() => handleSort('name')}>Name</th>
+                      <th className={`opacity hide-on-small-screen ${getSortIndicatorClass('dueDate')}`} style={{ width: "16.6%"}} onClick={() => handleSort('dueDate')}>Due Date</th>
+                      <th style={{ width: "16.6%"}}>Status</th>
+                      <th style={{ width: "80px"}} onClick={() => handleSort('modify')}>Modify</th>
+                    </tr>
+                  </thead>
+                  <tbody style={{ background: "rgba(0,0,0,0.1)"}}>
+                    {filteredTasks.map((task, index) => (
+                      <TaskList key={index} tasks={task} />
+                    ))}
+                  </tbody>
                 </Table>
             </div>
         </div>

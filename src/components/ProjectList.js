@@ -176,34 +176,34 @@ export default function ProjectList({proj}) {
 		      <Modal.Title className="">Modify</Modal.Title>
 		    </Modal.Header>
 		    <Modal.Body className="d-flex justify-content-center" style={{background: "peachpuff"}}>
-				<Form onSubmit={e => edit(e)} style={{width: "50vw"}}>
-                    <div className="d-flex flex-row ms-4 me-4 mb-2" style={{justifyContent: "space-around"}}>
-                        <Form.Group style={{width: "50vw"}}>
+				<Form onSubmit={e => edit(e)} style={{width: "100%"}}>
+                    <div className="d-flex flex-row mb-2" style={{justifyContent: "space-around"}}>
+                        <Form.Group style={{width: "100%"}}>
                             <Form.Label className="ms-1">Project Name:</Form.Label>
                             <Form.Control type="text" placeholder="Enter Project Name" name="projectName" disabled={true} value={Name} onChange={e => setName(e.target.value)} />
                         </Form.Group>
                     </div>
                     <div className="d-flex flex-row mb-2" style={{justifyContent: "space-around"}}>
-                        <Form.Group style={{width: "47vw"}}>
+                        <Form.Group style={{width: "100%"}}>
                             <Form.Label className="ms-1">Company / Client:</Form.Label>
                             <Form.Control type="text" placeholder="Enter Company Name" name="company" value={projCompany} onChange={e => setProjCompany(e.target.value)} />
                         </Form.Group>
                     </div>
                     <div className="d-flex flex-row mb-2" style={{justifyContent: "space-around"}}>
-                        <Form.Group style={{width: "47vw"}}>
+                        <Form.Group style={{width: "100%"}}>
                             <Form.Label className="ms-1">Product:</Form.Label>
                             <Form.Control type="text" placeholder="Enter Product Name" name="product" value={projProduct} onChange={e => setProjProduct(e.target.value)} />
                         </Form.Group>
                     </div>
-                    <Form.Group style={{width: "47vw"}} className="ms-4 me-4">
+                    <Form.Group style={{width: "100%"}} className="">
                         <Form.Label className="ms-1">Address:</Form.Label>
                         <Form.Control type="text" placeholder="Enter Address" name="address" value={projAddress} onChange={e => setProjAddress(e.target.value)} />
                     </Form.Group>
-                    <Form.Group className="ms-4 me-4 mb-2" style={{ width: "47vw" }}>
+                    <Form.Group className=" mb-2" style={{ width: "100%" }}>
                         <Form.Label className="ms-1">Description:</Form.Label>
                         <Form.Control as="textarea" rows={5} placeholder="Enter description" name="description" value={projDescription} onChange={e => setDescription(e.target.value)} />
                     </Form.Group>
-                    <Form.Group className="ms-4 me-4 mb-2" style={{ width: "47vw" }}>
+                    <Form.Group className=" mb-2" style={{ width: "100%" }}>
                         <Form.Label className="ms-1">Status:</Form.Label>
                         <Form.Select type="text" placeholder="Enter Status" name="Status" value={projStatus} onChange={e => setStatus(e.target.value)} >
                         	<option value="In Progress">In Progress</option>
@@ -211,11 +211,11 @@ export default function ProjectList({proj}) {
                             <option value="Failed">Failed</option>
                         </Form.Select>
                     </Form.Group>
-                    <Form.Group className="ms-4 me-4 mb-2" style={{ width: "47vw" }}>
+                    <Form.Group className=" mb-2" style={{ width: "100%" }}>
                         <Form.Label className="ms-1">Remarks:</Form.Label>
                         <Form.Control as="textarea" rows={5} placeholder="Enter Remarks" name="Remarks" value={projRemarks} onChange={e => setRemarks(e.target.value)} />
                     </Form.Group>
-                    <div className="d-flex flex-row mt-2=3" style={{justifyContent: "center"}}>
+                    <div className="d-flex flex-row mt-2" style={{justifyContent: "center"}}>
                         <Button variant="primary" className="pl-3 pr-3 me-4" type="submit" onClick={handleClose}>
                             Update
                         </Button>

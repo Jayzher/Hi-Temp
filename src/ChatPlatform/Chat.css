@@ -104,9 +104,13 @@
   padding: 5px;
   border-radius: 10px;
   color: #fff;
-  text-align: right;
+  text-align: left;
   align-self: flex-end; /* Align sent messages to the right */
   margin-bottom: 5px;
+  max-width: 50%; /* Limit message width to 50% of container */
+  word-wrap: break-word; /* Wrap long words */
+  overflow-wrap: break-word; /* Ensure content wraps within container */
+  word-break: break-word; /* Break words when necessary */
 }
 
 .received {
@@ -117,6 +121,10 @@
   text-align: left;
   align-self: flex-start; /* Align received messages to the left */
   margin-bottom: 5px;
+  max-width: 50%; /* Limit message width to 50% of container */
+  word-wrap: break-word; /* Wrap long words */
+  overflow-wrap: break-word; /* Ensure content wraps within container */
+  word-break: break-word; /* Break words when necessary */
 }
 
 .form {

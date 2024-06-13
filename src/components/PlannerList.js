@@ -283,10 +283,10 @@ export default function PlannerList() {
     <div className="d-flex flex-column justify-content-center bg-container tab-full" style={{ minHeight: "100vh", overflowY: "auto", overflowX: "hidden", backgroundColor: "#f8f9fa"}}>
       {(user.role !== 'Employee') ?
       <>
-        <div className="d-flex flex-row justify-content-around">
-          <div className="mt-3 mb-3">
+        <div id="reports-select" className="d-flex flex-row justify-content-around align-items-center mt-4">
+          <div className="mt-3 mb-2" style={{ width: "100%" }}>
             <Form.Label className="ms-4 me-4 mb-2">Employee:</Form.Label>
-            <Form.Group className="ms-4 me-4 mb-2 d-flex flex-row" style={{ width: "32.8vw" }}>
+            <Form.Group className="ms-4 me-4 mb-2 d-flex flex-row">
               <Form.Select onChange={e => setSearchTerm(e.target.value)} required>
                 <option value="N/A">Select Employee</option>
                 <GetAllUsers />
@@ -294,7 +294,7 @@ export default function PlannerList() {
               <Button className="ms-2" onClick={() => handleUserSelect(searchTerm)}>Check</Button>
             </Form.Group>
           </div>
-          <div className="d-flex flex-column justify-content-around mt-3 ms-5" style={{ height: "fit-content", width: "25vw" }}>
+          <div className="d-flex flex-column justify-content-around ms-5 me-5" style={{ height: "fit-content", width: "87%"}}>
             <Form.Label className="me-4 mb-2">Reports:</Form.Label>
             <select onChange={(e) => FindByDate(e.target.value)} className="form-select mb-2">
               <option value="">Select Report</option>
@@ -310,7 +310,7 @@ export default function PlannerList() {
       :
         <>
           <div style={{marginTop: "5vh"}} className="d-flex flex-row justify-content-around">
-            <div className="d-flex flex-column justify-content-around mt-3 ms-5" style={{ height: "fit-content", width: "25vw" }}>
+            <div className="d-flex flex-column justify-content-around mt-3 ms-5" style={{ height: "fit-content", width: "60%" }}>
               <Form.Label className="me-4 mb-2">Reports:</Form.Label>
               <select onChange={(e) => FindByDate(e.target.value)} className="form-select mb-2">
                 <option value="">Select Report</option>
@@ -324,8 +324,8 @@ export default function PlannerList() {
           </div>
         </>
       }
-      <div className="mt-2 d-flex justify-content-center" style={{height: "70vh", backgroundColor: "#fff" }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', height: "100%", tableLayout: "fixed" }} cellSpacing="0">
+      <div className="unique-table-container">
+        <table className="unique-table" style={{ width: '100%', borderCollapse: 'collapse', height: "100%", tableLayout: "fixed" }} cellSpacing="0">
           <tbody>
             <tr style={{ height: '4pt' }}>
               <HeaderCell text="Date" />
@@ -340,35 +340,40 @@ export default function PlannerList() {
                 <td className="data-cell text-center" style={{ border: "solid 1px black" }}>{reportData[day]?.Date}</td>
                 <td className="data-cell text-center" style={{ border: "solid 1px black" }}>{weekDates[index].day}</td>
                 <td className="data-cell pt-1" style={{ border: "solid 1px black" }}>
-                  <textarea value={reportData[day]?.Customer || ''} onChange={e => handleChange(e.target.value, day, "Customer")} style={{ width: '100%', height: '100%', border: 'none', outline: 'none', textAlign: 'center' }} />
+                  <textarea value={reportData[day]?.Customer || ''} onChange={e => handleChange(e.target.value, day, "Customer")} style={{ width: '100%', height: '100%', border: 'none', outline: 'none', textAlign: 'center', fontSize: "0.8rem" }} />
                 </td>
                 <td className="data-cell pt-1" style={{ border: "solid 1px black" }}>
-                  <textarea value={reportData[day]?.Product || ''} onChange={e => handleChange(e.target.value, day, "Product")} style={{ width: '100%', height: '100%', border: 'none', outline: 'none', textAlign: 'center' }} />
+                  <textarea value={reportData[day]?.Product || ''} onChange={e => handleChange(e.target.value, day, "Product")} style={{ width: '100%', height: '100%', border: 'none', outline: 'none', textAlign: 'center', fontSize: "0.8rem" }} />
                 </td>
                 <td className="data-cell pt-1" style={{ border: "solid 1px black" }}>
-                  <textarea value={reportData[day]?.Remarks || ''} onChange={e => handleChange(e.target.value, day, "Remarks")} style={{ width: '100%', height: '100%', border: 'none', outline: 'none', textAlign: 'center' }} />
+                  <textarea value={reportData[day]?.Remarks || ''} onChange={e => handleChange(e.target.value, day, "Remarks")} style={{ width: '100%', height: '100%', border: 'none', outline: 'none', textAlign: 'center', fontSize: "0.8rem" }} />
                 </td>
                 <td className="data-cell pt-1" style={{ border: "solid 1px black" }}>
-                  <textarea value={reportData[day]?.Amount || ''} onChange={e => handleChange(e.target.value, day, "Amount")} style={{ width: '100%', height: '100%', border: 'none', outline: 'none', textAlign: 'center' }} />
+                  <textarea value={reportData[day]?.Amount || ''} onChange={e => handleChange(e.target.value, day, "Amount")} style={{ width: '100%', height: '100%', border: 'none', outline: 'none', textAlign: 'center', fontSize: "0.8rem" }} />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
       {user.role === "Employee" && (
         <div className="d-flex justify-content-center mt-3" style={{ width: "fit-content" }}>
           <input type="file" onChange={handleFileChange} style={{ marginBottom: '10px' }} />
         </div>
       )}
-      <div className="ms-5 mt-3 d-flex">
-        <p className="me-2">File Uploaded:</p>
-        <a href={attachmentUrl} target="_blank" style={{ textAlign: "center", maxWidth: "60vw", width: "fit-content" }}>{attachmentUrl}</a>
+      <div className="d-flex justify-content-center mt-3 mb-5">
+        <div id="attachment-link" className="mt-3 d-flex ms-4" style={{marginRight: "auto"}}>
+          <p className="me-2" >File Uploaded:</p>
+          <a href={attachmentUrl} target="_blank" style={{ textAlign: "center", whiteSpace: "normal", wordBreak: "break-word", overflowWrap: "break-word" }}>{attachmentUrl}</a>
+        </div>
       </div>
       {user.role === "Employee" && (
         <div className="d-flex justify-content-center mt-3 mb-5">
-          <Button className="ps-2 pe-2 pt-2 pb-2 me-5" onClick={generateReport} disabled={disable || disable2}>Generate Report</Button>
-          <Button className="ps-2 pe-2 pt-2 pb-2" style={{ width: "10vw" }} onClick={resetReportData}>Reset</Button>
+          <div id="report-buttons" style={{width: "20vw"}} className="d-flex flex-column justify-content-center mt-3 mb-5">
+            <Button className="ps-2 pe-2 pt-2 pb-2 mb-3" onClick={generateReport} disabled={disable || disable2}>Generate Report</Button>
+            <Button className="ps-2 pe-2 pt-2 pb-2" onClick={resetReportData}>Reset</Button>
+          </div>
         </div>
       )}
     </div>

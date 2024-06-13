@@ -116,7 +116,6 @@ export default function SideNavBar() {
                             </>
                         }
                         <Link style={{ textDecoration: "none" }} to="/Messages" className="nav-link" onClick={() => handleLinkClick("Messages")}><li className={`side-link ps-3 ${activeLink === "Messages" ? "active" : ""}`}>Messages</li></Link>
-                        <Link style={{ textDecoration: "none" }} to="/" className="nav-link" onClick={() => handleLinkClick("announcements")}><li className={`side-link ps-3 ${activeLink === "announcements" ? "active" : ""}`}>Announcements</li></Link>
                         <Link style={{ textDecoration: "none" }} to="/Logout" className="nav-link"><li className="side-link" style={{ border: "1px solid black", bottom: "0", position: "absolute", textAlign: "center" }}>Logout</li></Link>
                     </ul>
                 </nav>

@@ -131,27 +131,27 @@ export default function DisplayProjectCard() {
         <Container>
             <Modal size="md" id="thisModal" show={show} onHide={handleClose}>
                 <Modal.Body className="d-flex justify-content-center" style={{ background: "peachpuff", borderRadius: "10px"}} closeButton>
-                    <Form className="ms-2" onSubmit={handleSubmit2} style={{width: "35vw"}}>
+                    <Form className="ms-2" onSubmit={handleSubmit2} style={{width: "100%"}}>
                         <div className="d-flex justify-content-center">
                             <h1 className="text-center">Create Project</h1>
                         </div>
-                        <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
+                        <Form.Group className="ms-2 me-3 mb-2">
                             <Form.Label>Project Name:</Form.Label>
                             <Form.Control type="text" placeholder="Enter Project Name" name="projectName" value={formData2.projectName} onChange={handleChange2} required />
                         </Form.Group>
-                        <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
+                        <Form.Group className="ms-2 me-3 mb-2">
                             <Form.Label>Company:</Form.Label>
                             <Form.Control type="text" placeholder="Enter Company Name" name="company" value={formData2.company} onChange={handleChange2} required />
                         </Form.Group>
-                        <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
+                        <Form.Group className="ms-2 me-3 mb-2">
                             <Form.Label>Product:</Form.Label>
                             <Form.Control type="text" placeholder="Enter Product Name" name="product" value={formData2.product} onChange={handleChange2} required />
                         </Form.Group>
-                        <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
+                        <Form.Group className="ms-2 me-3 mb-2">
                             <Form.Label>Address:</Form.Label>
                             <Form.Control type="text" name="address" placeholder="Enter Address" value={formData2.address} onChange={handleChange2} />
                         </Form.Group>
-                        <Form.Group style={{width: "34vw"}} className="ms-2 me-3 mb-2">
+                        <Form.Group className="ms-2 me-3 mb-2">
                             <Form.Label>Description:</Form.Label>
                             <Form.Control as="textarea" rows={5} placeholder="Enter description" name="description" value={formData2.description} onChange={handleChange2} required />
                         </Form.Group>

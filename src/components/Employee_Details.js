@@ -79,15 +79,15 @@ export default function Employee_Details() {
 
     return (
         <div id="employee-table" className="ms-4 pt-3 pb-0 mb-0" style={{ height: "100%", width: "100%", overflow: "hidden" }}>
-            <Table style={{ background: "peachpuff", width: "100%" }} striped bordered hover className="text-center mb-0 pb-0">
+            <Table style={{ background: "peachpuff", width: "95%" }} striped bordered hover className="text-center mb-0 pb-0">
                 <thead className="opacity" style={{ position: "sticky", top: "0", zIndex: 1 }}>
                     <tr className="opacity">
-                        <th className="opacity" style={{ width: "19%", maxWidth: '19%', minWidth: '19%' }}>Name</th>
-                        <th className="opacity" style={{ width: "19.8%", maxWidth: '19.8%', minWidth: '19.8%' }}>Username</th>
-                        <th style={{ width: "19.8%", maxWidth: '19.8%', minWidth: '19.8%' }} className="opacity">Department</th>
-                        <th style={{ width: "19.8%", maxWidth: '19.8', minWidth: '19.8%' }} className="opacity">Role</th>
-                        <th style={{ width: "10%", maxWidth: '10%', minWidth: '10%' }} className="opacity">Status</th>
-                        <th style={{ width: "5%", maxWidth: '5%', minWidth: '5%' }} className="opacity">Modify</th>
+                        <th className="opacity" style={{fontSize: '0.8rem'}}>Name</th>
+                        <th className="opacity" style={{fontSize: '0.8rem', width: "19.8%", maxWidth: '19.8%', minWidth: '19.8%' }}>Username</th>
+                        <th style={{fontSize: '0.8rem' }} className="opacity">Department</th>
+                        <th style={{fontSize: '0.8rem' }} className="opacity">Role</th>
+                        <th style={{ fontSize: '0.8rem', width: "80px"}} className="opacity">Status</th>
+                        <th style={{fontSize: '0.8rem', width: "100px", maxWidth: '100px', minWidth: '100px' }} className="opacity">Modify</th>
                     </tr>
                 </thead>
                 <tbody style={{ background: "rgba(0,0,0,0.1)" }}>
@@ -97,5 +97,6 @@ export default function Employee_Details() {
                 </tbody>
             </Table>
         </div>
+
     );
 }

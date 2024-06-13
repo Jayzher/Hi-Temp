@@ -330,7 +330,7 @@ function NewTasks() {
         <div className="dashboard-container">
             <div id="newTasks-main" className="d-flex flex-row tab-full" style={{height: "100%", minHeight: "100vh", width: "fit-content", marginLeft: "15vw", backgroundImage: "linear-gradient( 92.7deg,  rgba(245,212,212,1) 8.5%, rgba(252,251,224,1) 90.2% )", overflowy: "hidden"}}>
                 <div id="newTask-cont" style={{height: "100%", background: "rgba(0, 0, 0, 0.2)"}} className="d-flex flex-row tab-full">
-                    <div id="newTask" className="d-flex flex-column align-items-center pt-1 task-div ps-0" style={{background: "rgba(0, 0, 0, 0.0)", height: "100vh", borderRight: "solid 2px black", padding: "15px"}}>
+                    <div id="newTask" className="d-flex flex-column align-items-center pt-1 task-div ps-0" style={{width: "100vw !important", background: "rgba(0, 0, 0, 0.0)", height: "100%", borderRight: "solid 2px black", padding: "15px"}}>
                         { project === "Tasks" ? (
                             <>
                                 <div className="d-flex flex-row me-auto ms-5">

@@ -107,7 +107,7 @@ export default function DisplayCard({ tasks }) {
                                 <Card.Text className="ps-3 pe-3 fs-6 mb-2" >
                                     {assignedTo[0].fullName}
                                 </Card.Text>
-                                <div className="d-flex flex-row justify-content-around" style={{background: "rgba(0, 0, 0, 0.2)", border: "solid black 2px"}}>
+                                <div id="refund_cont" className="d-flex flex-row justify-content-around" style={{background: "rgba(0, 0, 0, 0.2)", border: "solid black 2px"}}>
                                 	<div className="d-flex flex-column">
     	                            	<label style={{fontWeight: "bold", fontSize: "1rem"}} className="">Travel Funds:</label>
     		                            <Card.Text className="ps-3 pe-3 fs-6 mb-2" >
@@ -179,8 +179,9 @@ export default function DisplayCard({ tasks }) {
 		                            {Status}
 		                        </Card.Text>
 	                        </div>
+                            <label id="task_date" style={{fontSize: "0.7rem", display: "none"}} className="mt-auto">{formattedDate}</label>
 	                    </Card.Body>
-	                    <div className="d-flex flex-column pb-2 justify-content-center" style={{height: "200px", width: "150px"}}>
+	                    <div id="task_profile" className="d-flex flex-column pb-2 justify-content-center" style={{height: "200px", width: "150px"}}>
 	                    	<img src={`${userData.profile}`} alt="userProfile" className="ms-auto" style={{height: "100px", width:"100px", borderRadius: "10px", border: "solid rgba(0, 0, 0, 0.3) 1px"}} />
 	                    	<label style={{fontSize: "0.7rem"}} className="mt-auto">{formattedDate}</label>
 	                    </div>

@@ -322,6 +322,14 @@ thead th {
   transform: translateX(0);
 }
 
+.hide-on-small {
+    display: flex !important;
+}
+
+.show-on-small {
+    display: none;
+}
+
 /* Mobile-specific Styles */
 @media (max-width: 768px) {
   .sidebar {
@@ -337,6 +345,15 @@ thead th {
     border-right: 3px solid black;
     border-left: 3px solid black;
     overflow-y: hidden;
+  }
+
+  .hide-on-small {
+    display: none !important;
+  }
+
+  .show-on-small {
+    display: flex !important;
+    flex-direction: column;
   }
 
   .sidebar.open {
@@ -392,6 +409,27 @@ thead th {
     margin-left: 0 !important;
   }
 
+  @media (max-width: 561px) {
+    #unique-project-table th:nth-child(2),
+    #unique-project-table td:nth-child(2) {
+      display: none;
+    }
+  }
+
+@media (max-width: 680px) {   
+    th:nth-child(4),
+    td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 470px) {   
+    th:nth-child(2),
+    td:nth-child(2) {
+        display: none;
+    }
+}
+
   #newTasks-main {
     display: flex;
     flex-direction: column !important;
@@ -405,11 +443,6 @@ thead th {
     width: 100vw !important;
   }
 
-  #project-table {
-    width: 95% !important;
-    padding-left: 18px;
-  }
-
   #newEmployees-cont {
     width: 100%;
     margin-left: 0 !important;
@@ -417,7 +450,6 @@ thead th {
   }
 
   #emp-table-cont, #newEmployees-cont {
-    width: 95% !important;
     margin-top: 100px;
     margin-bottom: 50px;
   }
@@ -506,7 +538,7 @@ thead th {
 }
 
 /* Media query for medium devices (min-width: 432px) and small devices (max-width: 767px) */
-@media (min-width: 432px) and (max-width: 767px) {
+@media (max-width: 767px) {
   #username {
     width: 76% !important;
   }
@@ -549,12 +581,105 @@ thead th {
     width: 100vw !important;
     left: 0 !important;
   }
+
+  #refund_cont {
+    display: flex !important;
+    flex-direction: column !important;
+  }
 }
 
 /* Media query for large devices (min-width: 768px) and small devices (max-width: 1390px) */
 @media (min-width: 768px) and (max-width: 1390px) {
   #username {
     width: 93% !important;
+  }
+}
+
+/* Media query for large devices (min-width: 768px) and small devices (max-width: 1390px) */
+@media (max-width: 442px) {
+    #task_profile {
+        display: none !important;
+    }
+
+    #task_date {
+        display: inline-block !important;
+    }
+
+    #project-modal-body {
+        width: 100% !important;
+    }
+
+    #project-task-modal,  #project-task-modal div {
+        margin: 0 !important;
+        flex-direction: column !important;
+        justify-content: center;
+    }
+
+    #report-buttons {
+        flex-direction: column !important;
+        width: 60vw !important;
+    }
+
+    #attachment-link {
+        display: flex;
+        flex-direction: column;
+        width: 90% !important;
+    }
+}
+
+.unique-table-container {
+  overflow-x: auto; /* Enable horizontal scrolling */
+}
+
+.unique-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.unique-table td, .unique-table th {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: center;
+}
+
+@media (max-width: 1000px) {
+  .unique-table-container {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Enable smooth scrolling on touch devices */
+  }
+
+  .unique-table {
+    min-width: 900px; /* Ensure the table is wider than the viewport */
+  }
+}
+
+
+@media (max-width: 700px) {
+    .task-table th:nth-child(3),
+    .task-table td:nth-child(3) {
+        display: none;
+    }
+
+    .task-table tr {
+        font-size: 0.8rem !important;
+    }
+
+    #reports-select {
+        flex-direction: column !important;
+    }
+}
+
+@media (max-width: 532px) {
+  .unique-task-table th:nth-child(3),
+  .unique-task-table td:nth-child(3) {
+    display: none;
+  }
+
+  .unique-task-table th:nth-child(2),
+  .unique-task-table th:nth-child(2) {
+    width: fit-content !important;
   }
 }
 
