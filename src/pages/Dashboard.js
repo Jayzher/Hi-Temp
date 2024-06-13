@@ -2,7 +2,7 @@ import Tabs from '../components/Tab';
 import SideNavBar from "../components/SideNavBar";
 import UserContext from '../userContext';
 import { useContext, useEffect } from "react";
-import "../components/comp.css";
+import "../components/Style.css";
 import { useNavigate } from 'react-router-dom';
 import Top_Arrow from "../images/top-arrow.png";
 

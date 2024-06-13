@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useSocket } from '../SocketProvider'; // Import useSocket hook from SocketProvider
 import UsersLists from './UsersLists';
 import ChatBox from './ChatBox';
-import '../components/comp.css';
+import '../components/Style.css';
 import './Chat.css';
 
 const ChatRoom = () => {

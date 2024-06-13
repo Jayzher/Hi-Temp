@@ -1,4 +1,4 @@
-import './comp.css';
+import './Style.css';
 import React, { useState, useEffect, useContext } from 'react';
 import { Button, Modal, Form } from "react-bootstrap";
 import GetTeam from './GetTeam';

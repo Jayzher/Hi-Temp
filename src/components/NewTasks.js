@@ -1,4 +1,4 @@
-import "./comp.css";
+import "./Style.css";
 import { Form, Button } from 'react-bootstrap';
 import UserContext from '../userContext';
 import { useContext, useEffect, useState } from "react";

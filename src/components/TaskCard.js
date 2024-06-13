@@ -1,4 +1,4 @@
-import './comp.css';
+import './Style.css';
 import React, { useState, useEffect, useContext } from 'react';
 import UserContext from '../userContext';
 import { Card, Button } from 'react-bootstrap';
@@ -141,8 +141,8 @@ export default function DisplayCard({ tasks }) {
                     </Modal.Footer>
                 </div>
             </Modal>
-            <div style={{width: "fit-content", height: "fit-content", marginTop: '2vh'}}>
-                <Card id="task-card" onClick={handleShow} className="d-flex" style={{ height: "100%", width: '500px', border: "solid 1px black", background: "azure", borderRadius: "10px", overflow: "hidden"}}>
+            <div className="d-flex justify-content-center" style={{width: "fit-content", height: "fit-content", marginTop: '2vh'}}>
+                <Card id="task-card" onClick={handleShow} className="d-flex" style={{ height: "fit-content", width: '500px', border: "solid 1px black", background: "azure", borderRadius: "10px", overflow: "hidden"}}>
                     <div className="d-flex flex-row justify-content-between">	
                     	<div className={`bg-${getStatusColor(Status)}`} style={{maxHeight: "250px", width: "3%", borderRadius: "10px"}}></div>
                     	<Card.Body className="w-100 opacity d-block" style={{height: "100%", overflow: "hidden", borderRadius: "10px"}}>

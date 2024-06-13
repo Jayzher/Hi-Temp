@@ -1,3 +1,4 @@
+import './Style.css';
 import { Container, Row } from 'react-bootstrap';
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -177,8 +178,8 @@ export default function DisplayTaskCard() {
     };
 
     return (
-    <div style={{width: "100vw"}}>
-        <div id="sorts" className="d-flex flex-row justify-content-around align-items-center" style={{ marginBottom: '10px', width: "100%", height: "fit-content", flexWrap: "wrap" }}>
+    <div>
+        <div id="sorts" className="d-flex flex-row justify-content-around align-items-center" style={{ marginBottom: '10px', width: "100%", height: "fit-content", flexWrap: "wrap"}}>
         {   (user.role === "Admin") ?
             <div className="mb-2">
                 <input style={{height: "30px"}}
@@ -214,7 +215,7 @@ export default function DisplayTaskCard() {
                 </select>
             </div>
         </div>
-        <div className="d-flex flex-row justify-content-center" style={{flexWrap: "wrap"}}>
+        <div className="d-flex flex-row justify-content-around Card-container" style={{flexWrap: "wrap", width: "100%"}}>
             {filteredTasks.map(task => (
                 <TaskCard key={task?._id} tasks={task} />
             ))}

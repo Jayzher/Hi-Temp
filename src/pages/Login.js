@@ -1,4 +1,4 @@
-import "../components/comp.css";
+import "../components/Style.css";
 import React, { useState, useContext } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Form, InputGroup, Button, Container } from 'react-bootstrap';

@@ -1,4 +1,4 @@
-import "./comp.css";
+import "./Style.css";
 import { Link } from 'react-router-dom';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';

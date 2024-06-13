@@ -1,4 +1,4 @@
-import './comp.css';
+import './Style.css';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import Tasks from './Tasks.js';
@@ -29,9 +29,9 @@ function JustifiedExample() {
             width: "100%", 
             minHeight: "100vh" 
         }}>*/}
-        <div className="d-flex flex-row justify-content-around pt-5 pb-5" style={{
+        <div id="tab-displaycard" className="d-flex flex-row justify-content-center pt-5 pb-5" style={{
             height: "fit-content", 
-            width: "100vw", 
+            width: "84vw", 
             minHeight: "100vh" 
         }}>
             <DisplayTaskCard />

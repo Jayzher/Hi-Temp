@@ -1,4 +1,4 @@
-import './comp.css';
+import './Style.css';
 import React, { useState, useEffect, useContext } from 'react';
 import UserContext from '../userContext';
 import { Card, Button } from 'react-bootstrap';

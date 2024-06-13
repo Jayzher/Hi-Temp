@@ -1,7 +1,7 @@
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Carousel from 'react-bootstrap/Carousel';
-import './comp.css';
+import './Style.css';
 import { Link } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import Form from 'react-bootstrap/Form';

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import "./comp.css";
+import "./Style.css";
 import { useNavigate } from 'react-router-dom';
 import UserContext from '../userContext';
 import { Button, Form } from 'react-bootstrap';
@@ -39,6 +39,23 @@ export default function PlannerList() {
   useEffect(() => {
     updateReportDataDate();
   }, [user]);
+
+  useEffect(() => {
+    // Attach event listeners for focus and blur
+    const textareas = document.querySelectorAll('.data-cell textarea');
+    textareas.forEach(textarea => {
+      textarea.addEventListener('focus', handleFocus);
+      textarea.addEventListener('blur', handleBlur);
+    });
+
+    return () => {
+      // Clean up event listeners
+      textareas.forEach(textarea => {
+        textarea.removeEventListener('focus', handleFocus);
+        textarea.removeEventListener('blur', handleBlur);
+      });
+    };
+  }, [reportData]);
 
   const getWeekDates = () => {
     const today = new Date();
@@ -252,12 +269,22 @@ export default function PlannerList() {
     }
   };
 
+  const handleFocus = (event) => {
+    const row = event.target.closest('tr');
+    row.classList.add('enlarged');
+  }
+
+  const handleBlur = (event) => {
+    const row = event.target.closest('tr');
+    row.classList.remove('enlarged');
+  }
+
   return ( 
     <div className="d-flex flex-column justify-content-center bg-container tab-full" style={{ minHeight: "100vh", overflowY: "auto", overflowX: "hidden", backgroundColor: "#f8f9fa"}}>
       {(user.role !== 'Employee') ?
       <>
         <div className="d-flex flex-row justify-content-around">
-          <div className="mt-3 mb-3 ms-2">
+          <div className="mt-3 mb-3">
             <Form.Label className="ms-4 me-4 mb-2">Employee:</Form.Label>
             <Form.Group className="ms-4 me-4 mb-2 d-flex flex-row" style={{ width: "32.8vw" }}>
               <Form.Select onChange={e => setSearchTerm(e.target.value)} required>
@@ -300,7 +327,7 @@ export default function PlannerList() {
       <div className="mt-2 d-flex justify-content-center" style={{height: "70vh", backgroundColor: "#fff" }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', height: "100%", tableLayout: "fixed" }} cellSpacing="0">
           <tbody>
-            <tr style={{ height: '5pt' }}>
+            <tr style={{ height: '4pt' }}>
               <HeaderCell text="Date" />
               <HeaderCell text="Day" />
               <HeaderCell text="Customer" />
