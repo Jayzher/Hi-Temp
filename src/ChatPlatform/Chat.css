@@ -77,15 +77,16 @@
 }
 
 .messages {
-  height: calc(100% - 70px);
-  overflow-y: auto;
+  overflow-y: auto !important;
   background: azure;
+  padding-bottom: 20px !important;
 }
 
 .messages-container {
   padding: 10px; /* Add padding to the container */
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 
 .messages > div {

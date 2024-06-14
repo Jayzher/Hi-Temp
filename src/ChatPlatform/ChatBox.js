@@ -7,15 +7,26 @@ const apiUrl = process.env.REACT_APP_API_URL;
 const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const [textareaHeight, setTextareaHeight] = useState(0);
+  const [paddingBottom, setPaddingBottom] = useState(0);
   const textareaRef = useRef(null);
-  const chatBoxRef = useRef(null);
+  const messagesContainerRef = useRef(null);
 
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
+    adjustTextareaHeight();
+  };
+
+  const adjustTextareaHeight = () => {
     textareaRef.current.style.height = 'auto';
     textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    chatBoxRef.current.style.height = `${chatBoxRef.current.style.height - textareaRef.current.scrollHeight}px`;
+    setTextareaHeight(textareaRef.current.scrollHeight);
+    setPaddingBottom(textareaHeight - 30);
   };
+
+  useEffect(() => {
+    setPaddingBottom(textareaHeight - 30);
+  }, [textareaHeight])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,6 +52,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
 
         setMessage('');
         textareaRef.current.style.height = 'auto';
+        setTextareaHeight(0);
       } catch (error) {
         console.error('Error sending message:', error);
       }
@@ -77,27 +89,30 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   }, [recipient]);
 
   useEffect(() => {
-    // Event listener for new message
     const handleMessageEvent = (newMessage) => {
-      // Add the new message to the messages array
       setMessages(prevMessages => [...prevMessages, newMessage]);
     };
 
-    // Listen for new messages emitted from the server
     window.addEventListener('new_message', handleMessageEvent);
 
-    // Clean up the event listener
     return () => {
       window.removeEventListener('new_message', handleMessageEvent);
     };
   }, []);
+
+  useEffect(() => {
+    // Scroll to the bottom of the messages container when new messages arrive
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   if (!recipient) {
     return null;
   }
 
   return (
-    <div style={{width: "100%", height: "100vh !important"}}>
+    <div style={{ width: "100%", height: "100vh" }}>
       <div id="chat-box" className={`chat-box ${visible ? 'visible' : 'hidden'} flex-column ms-3 mt-3 hide-on-small`} style={{display: "flex"}}>
         <div className="header d-flex flex-row justify-content-between">
           <p style={{ fontSize: '1.1rem', fontWeight: "bolder" }}>{recipient.name}</p>
@@ -118,7 +133,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
           <form className="d-flex flex-row justify-content-around" onSubmit={handleSubmit} style={{ width: '100%' }}>
             <textarea
               ref={textareaRef}
-              style={{ height: 'auto', overflow: 'hidden' }}
+              style={{ height: 'auto', overflow: 'hidden', width: '80%' }}
               rows="1"
               className="me-1 textarea-input"
               value={message}
@@ -129,28 +144,26 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
           </form>
         </div>
       </div>
-      <div className="show-on-small" style={{display: "none"}}>
-        <div className="messages" ref={chatBoxRef} style={{height: `${chatBoxRef + 80}vw`, minHeight: "90vh", overflowY: "auto"}}>
-          <div className="messages-container" style={{maxWidth: "40% !important"}}>
-            {messages.map((msg, index) => (
-              <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
-                <p className="msg-content">{msg.content}</p>
-              </div>
-            ))}
-          </div>
+      <div className="show-on-small" style={{ display: "none", height: "100%", minHeight: "90vh" }}>
+        <div className="messages-container" ref={messagesContainerRef} style={{ flexGrow: 1, overflowY: 'auto', position: "fixed", bottom: "10vh", width: "100%", height: `82vh`, paddingBottom: `${paddingBottom}px` }}>
+          {messages.map((msg, index) => (
+            <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
+              <p className="msg-content">{msg.content}</p>
+            </div>
+          ))}
         </div>
-        <div className="footer" style={{position: "sticky", width: "100%", right: "0", bottom: "0", background: "linear-gradient(184.1deg, rgb(249, 255, 182) 44.7%, rgb(226, 255, 172) 67.2%)"}}>
-          <form className="d-flex flex-row ms-2 justify-content-end" onSubmit={handleSubmit} style={{ width: '100%'}}>
-            <textarea 
+        <div className="footer" style={{ position: "fixed", zIndex: "10", width: "100%", right: "0", bottom: "0", background: "linear-gradient(184.1deg, rgb(249, 255, 182) 44.7%, rgb(226, 255, 172) 67.2%)", padding: "10px 0" }}>
+          <form className="d-flex flex-row ms-2 justify-content-end align-items-center" onSubmit={handleSubmit} style={{ width: '100%' }}>
+            <textarea
               ref={textareaRef}
-              style={{ height: 'auto', overflow: 'hidden', width: '100%'}}
-              rows="1"
+              style={{ height: 'auto', overflow: 'hidden', width: '80%' }}
+              rows="2"
               className="me-1 textarea-input"
               value={message}
               onChange={handleMessageChange}
               placeholder="Type your message..."
             />
-            <Button style={{ maxHeight: "40px", height: "40px" }} type="submit">Send</Button>
+            <Button type="submit" style={{ width: '20%' }}>Send</Button>
           </form>
         </div>
       </div>

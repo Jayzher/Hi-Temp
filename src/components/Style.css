@@ -450,14 +450,10 @@ thead th {
   }
 
   #emp-table-cont, #newEmployees-cont {
-    margin-top: 100px;
-    margin-bottom: 50px;
+    margin-top: 50px;
+    margin-bottom: 40px;
   }
-
-  #newEmployees-cont {
-    margin-left: 15px !important;
-  }
-
+  
   #Chatroom-container {
     width: 100% !important;
     margin-left: 0 !important;

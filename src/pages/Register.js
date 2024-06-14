@@ -172,8 +172,8 @@ export default function Register() {
 
   return (
     <div className="dashboard-container">
-      <div id="newEmployees-cont" className="d-flex flex-row" style={{ height: "fit-content", marginLeft: "15vw", backgroundImage: "linear-gradient( 92.7deg,  rgba(245,212,212,1) 8.5%, rgba(252,251,224,1) 90.2% )" }}>
-        <div style={{ marginTop: "5vh", height: "100vh" }} className="d-flex flex-row justify-content-center ms-3 w-100">
+      <div id="newEmployees-cont" className="d-flex flex-row justify-content-center" style={{ height: "fit-content", marginLeft: "15vw", backgroundImage: "linear-gradient( 92.7deg,  rgba(245,212,212,1) 8.5%, rgba(252,251,224,1) 90.2% )" }}>
+        <div style={{height: "100%" }} className="d-flex flex-row justify-content-center w-100">
           <Form onSubmit={registerUser} style={{ width: "100%", height: "fit-content", background: "rgba(0,0,0,0.2)", border: "2px solid black", borderRadius: "10px" }}
             className="p-3 d-flex flex-column align-items-center">
             <h1 className="text-center mb-2">Add Employee</h1>

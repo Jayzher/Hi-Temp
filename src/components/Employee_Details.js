@@ -78,8 +78,8 @@ export default function Employee_Details() {
     };
 
     return (
-        <div id="employee-table" className="ms-4 pt-3 pb-0 mb-0" style={{ height: "100%", width: "100%", overflow: "hidden" }}>
-            <Table style={{ background: "peachpuff", width: "95%" }} striped bordered hover className="text-center mb-0 pb-0">
+        <div id="employee-table" className="pt-3 pb-0 mb-0" style={{ height: "100%", width: "100%", overflow: "hidden", position: "relative" }}>
+            <Table style={{ background: "peachpuff", width: "100%"}} striped bordered hover className="text-center mb-0 pb-0">
                 <thead className="opacity" style={{ position: "sticky", top: "0", zIndex: 1 }}>
                     <tr className="opacity">
                         <th className="opacity" style={{fontSize: '0.8rem'}}>Name</th>
