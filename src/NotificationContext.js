@@ -1,23 +1,25 @@
 // src/NotificationContext.js
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const NotificationContext = createContext();
 
-export const useNotification = () => useContext(NotificationContext);
+export const useNotification = () => {
+  return useContext(NotificationContext);
+};
 
 export const NotificationProvider = ({ children }) => {
-  const [notification, setNotification] = useState({ message: '', show: false });
+  const [notification, setNotification] = useState(null);
 
   const showNotification = (message) => {
-    setNotification({ message, show: true });
+    setNotification(message);
   };
 
-  const closeNotification = () => {
-    setNotification({ ...notification, show: false });
+  const hideNotification = () => {
+    setNotification(null);
   };
 
   return (
-    <NotificationContext.Provider value={{ notification, showNotification, closeNotification }}>
+    <NotificationContext.Provider value={{ notification, showNotification, hideNotification }}>
       {children}
     </NotificationContext.Provider>
   );

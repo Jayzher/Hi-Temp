@@ -17,8 +17,12 @@ import Employee from './navlinks/Employee';
 import Messages from './navlinks/Messages';
 
 
-function App() {
 
+function App() {
+  const { showNotification } = useNotification();
+  const navigate = useNavigate();
+  const socket = useSocket();
+  const { user } = useContext(UserContext);
   const [user, setUser] = useState({
     id: null,
     Status: null,
@@ -31,13 +35,27 @@ function App() {
     changePassword: null
   });
 
+   useEffect(() => {
+    if (socket) {
+      socket.on('new_message', (newMessage) => {
+        if (newMessage.recipientId === user.id) {
+          showNotification(newMessage.content);
+        }
+      });
+
+      return () => {
+        socket.off('new_message');
+      };
+    }
+  }, [socket, user.id, showNotification]);
+
   return (
-    <UserProvider value={{ user, setUser }}>
+     <UserProvider value={{ user, setUser }}>
       <Router>
         <AppNavBar />
         <Container>
           <Routes>
-            <Route path="/Hi-Temp" element={<Home />} />
+            <Route path="/" element={<Home />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/Logout" element={<Logout />} />
             <Route path="/TasksCreate" element={<CreateNewTask />} />

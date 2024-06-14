@@ -1,7 +1,7 @@
 // src/components/Notification.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Chat.css';
+import './Notification.css';
 
 const Notification = ({ message, show, handleClose }) => {
   const navigate = useNavigate();
@@ -10,16 +10,15 @@ const Notification = ({ message, show, handleClose }) => {
 
   const handleNotificationClick = () => {
     handleClose();
-    navigate('/Messages');
+    navigate('/Messages'); // Navigate to the Messages page
   };
 
   return (
     <div className="notification">
-      <div className="notification-content">
+      <div className="notification-content" onClick={handleNotificationClick}>
         <span>{message}</span>
         <button onClick={handleClose} className="close-btn">&times;</button>
       </div>
-      <div className="notification-overlay" onClick={handleNotificationClick}></div>
     </div>
   );
 };
