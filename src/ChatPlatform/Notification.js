@@ -1,7 +1,7 @@
 // src/components/Notification.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Notification.css';
+import './Chat.css';
 
 const Notification = ({ message, show, handleClose }) => {
   const navigate = useNavigate();
