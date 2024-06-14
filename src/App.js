@@ -22,7 +22,6 @@ function App() {
   const { showNotification } = useNotification();
   const navigate = useNavigate();
   const socket = useSocket();
-  const { user } = useContext(UserContext);
   const [user, setUser] = useState({
     id: null,
     Status: null,
