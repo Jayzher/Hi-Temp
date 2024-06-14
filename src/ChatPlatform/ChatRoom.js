@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSocket } from '../SocketProvider'; // Import useSocket hook from SocketProvider
 import UsersLists from './UsersLists';
 import ChatBox from './ChatBox';
+import Notification from './Notification'; // Import Notification component
 import '../components/Style.css';
 import './Chat.css';
 
@@ -11,6 +12,8 @@ const ChatRoom = () => {
   const [chatBoxes, setChatBoxes] = useState({});
   const [showUsers, setShowUsers] = useState(true); // Add state to control the visibility of the user list
   const [isMobile, setIsMobile] = useState(window.innerWidth < 700); // State to track if the device is mobile
+  const [newMessage, setNewMessage] = useState(null); // State to store new message content
+  const [showNotification, setShowNotification] = useState(false); // State to control notification visibility
 
   useEffect(() => {
     fetchUserList();
@@ -61,6 +64,10 @@ const ChatRoom = () => {
           ...prevChatBoxes,
           [newMessage.recipientId]: true,
         }));
+
+        // Set new message and show notification
+        setNewMessage(newMessage.content);
+        setShowNotification(true);
       });
 
       return () => {
@@ -89,13 +96,14 @@ const ChatRoom = () => {
     setChatBoxes({}); // Hide all chat boxes
   };
 
+  const handleCloseNotification = () => {
+    setShowNotification(false);
+    setNewMessage(null);
+  };
+
   return (
     <div className="dashboard-container" style={{ overflow: "hidden", height: '100vh' }}>
       <div id="Chatroom-container" className="d-flex flex-row" style={{ height: '100%', maxHeight: '100vh', marginLeft: "15vw", width: '85vw', overflowY: "hidden" }}>
-        <div className="user-list-container" style={{ width: '20%', background: '#f0f0f0'}} hidden={!showUsers} >
-          <h3 className="ms-5 p-2">User List</h3>
-          <UsersLists userList={userList} onSelectUser={handleUserSelect} />
-        </div>
         <div className="d-flex flex-wrap" style={{ backgroundImage: "linear-gradient(184.1deg, rgba(249,255,182,1) 44.7%, rgba(226,255,172,1) 67.2%)", flex: 1, position: 'relative' }}>
           {!showUsers && isMobile && (
             <div className="d-flex align-items-center justify-content-end" style={{ background: "rgba(0, 0, 0, 0.7)", height: "fit-content", width: "100%", padding: "5px", position: 'absolute', top: '0', zIndex: "10"}}>
@@ -104,6 +112,10 @@ const ChatRoom = () => {
               </button>
             </div>
           )}
+          <div className="user-list-container" style={{ width: '20%', background: '#f0f0f0'}} hidden={!showUsers} >
+            <h3 className="ms-5 p-2">User List</h3>
+            <UsersLists userList={userList} onSelectUser={handleUserSelect} />
+          </div>
           {userList.map((user) => (
             <ChatBox
               key={user._id}
@@ -116,6 +128,11 @@ const ChatRoom = () => {
           ))}
         </div>
       </div>
+      <Notification
+        message={newMessage}
+        show={showNotification}
+        handleClose={handleCloseNotification}
+      />
     </div>
   );
 };
