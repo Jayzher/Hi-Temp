@@ -417,15 +417,15 @@ thead th {
   }
 
 @media (max-width: 680px) {   
-    th:nth-child(4),
-    td:nth-child(4) {
+    #employee-table th:nth-child(4),
+    #employee-table td:nth-child(4) {
         display: none;
     }
 }
 
 @media (max-width: 470px) {   
-    th:nth-child(2),
-    td:nth-child(2) {
+    #employee-table th:nth-child(2),
+    #employee-table td:nth-child(2) {
         display: none;
     }
 }
