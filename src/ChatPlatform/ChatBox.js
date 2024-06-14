@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Chat.css';
 import { Button } from 'react-bootstrap';
+import { useSocket } from '../SocketProvider'; // Assuming you have SocketProvider set up
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const ChatBox = ({ recipient, visible, setChatBoxes }) => {
+  const socket = useSocket(); // Get the socket instance using useSocket hook
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [textareaHeight, setTextareaHeight] = useState(0);
@@ -26,7 +28,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
 
   useEffect(() => {
     setPaddingBottom(textareaHeight - 30);
-  }, [textareaHeight])
+  }, [textareaHeight]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -93,12 +95,16 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
       setMessages(prevMessages => [...prevMessages, newMessage]);
     };
 
-    window.addEventListener('new_message', handleMessageEvent);
+    if (socket) {
+      socket.on('new_message', handleMessageEvent);
+    }
 
     return () => {
-      window.removeEventListener('new_message', handleMessageEvent);
+      if (socket) {
+        socket.off('new_message', handleMessageEvent);
+      }
     };
-  }, []);
+  }, [socket, recipient]);
 
   useEffect(() => {
     // Scroll to the bottom of the messages container when new messages arrive
@@ -121,7 +127,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
           </button>
         </div>
         <div className="messages">
-          <div className="messages-container">
+          <div className="messages-container" style={{minHeight: "100%"}} ref={messagesContainerRef}>
             {messages.map((msg, index) => (
               <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
                 <p className="msg-content">{msg.content}</p>

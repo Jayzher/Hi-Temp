@@ -97,8 +97,7 @@ const ChatRoom = () => {
         <div className="d-flex flex-wrap" style={{ backgroundImage: "linear-gradient(184.1deg, rgba(249,255,182,1) 44.7%, rgba(226,255,172,1) 67.2%)", flex: 1, position: 'relative' }}>
           {!showUsers && isMobile && (
             <div className="d-flex align-items-center justify-content-end" style={{ background: "rgba(0, 0, 0, 0.7)", height: "fit-content", width: "100%", padding: "5px", position: 'absolute', top: '0', zIndex: "10"}}>
-              <p></p>
-              <button onClick={handleBackClick} style={{ }}>
+              <button onClick={handleBackClick} style={{ color: 'white', border: 'none', background: 'transparent', cursor: 'pointer' }}>
                 &#8592; Back
               </button>
             </div>

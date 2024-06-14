@@ -80,6 +80,7 @@
   overflow-y: auto !important;
   background: azure;
   padding-bottom: 20px !important;
+  height: 100%;
 }
 
 .messages-container {
