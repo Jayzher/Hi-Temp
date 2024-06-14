@@ -1,4 +1,3 @@
-// ChatRoom.js
 import React, { useState, useEffect } from 'react';
 import { useSocket } from '../SocketProvider'; // Import useSocket hook from SocketProvider
 import UsersLists from './UsersLists';
@@ -55,15 +54,18 @@ const ChatRoom = () => {
 
   useEffect(() => {
     if (socket) {
-      // Listen for 'userStatusChange' event using the existing socket instance
-      socket.on('userStatusChange', (data) => {
-        console.log('User status changed:', data);
-        fetchUserList(); // Fetch updated user list when status changes
+      // Listen for 'new_message' event using the existing socket instance
+      socket.on('new_message', (newMessage) => {
+        // Update messages for the recipient in chatBoxes state
+        setChatBoxes((prevChatBoxes) => ({
+          ...prevChatBoxes,
+          [newMessage.recipientId]: true,
+        }));
       });
 
       return () => {
         // Clean up event listener
-        socket.off('userStatusChange');
+        socket.off('new_message');
       };
     }
   }, [socket]);
