@@ -15,7 +15,7 @@ import Planner from './navlinks/Planner';
 import CreateNewTask from './navlinks/CreateNewTask';
 import Employee from './navlinks/Employee';
 import Messages from './navlinks/Messages';
-
+import { useNotification } from './NotificationContext'; // Import useNotification
 
 
 function App() {
