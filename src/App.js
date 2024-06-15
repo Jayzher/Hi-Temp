@@ -1,7 +1,7 @@
 // src/App.js
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
@@ -16,7 +16,6 @@ import Employee from './navlinks/Employee';
 import Messages from './navlinks/Messages';
 import { UserProvider } from './userContext';
 import { useNotification } from './NotificationContext'; // Import useNotification
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { useSocket } from './SocketProvider'; // Import useSocket
 
 function App() {
@@ -40,6 +39,7 @@ function App() {
       socket.on('new_message', (newMessage) => {
         if (newMessage.recipientId === user.id) {
           showNotification(newMessage.content);
+          navigate('/Messages');
         }
       });
 
@@ -47,7 +47,7 @@ function App() {
         socket.off('new_message');
       };
     }
-  }, [socket, user.id, showNotification]);
+  }, [socket, user.id, showNotification, navigate]);
 
   return (
     <UserProvider value={{ user, setUser }}>
