@@ -1,5 +1,7 @@
+// src/App.js
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
@@ -7,16 +9,15 @@ import Logout from './pages/Logout';
 import AppNavBar from './components/AppNavBar';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Tabs from './components/Tab';
-import { UserProvider } from './userContext';
-import {useState, useEffect} from 'react';
+import CreateNewTask from './navlinks/CreateNewTask';
 import Profile from './navlinks/Profile';
 import Planner from './navlinks/Planner';
-import CreateNewTask from './navlinks/CreateNewTask';
 import Employee from './navlinks/Employee';
 import Messages from './navlinks/Messages';
+import { UserProvider } from './userContext';
 import { useNotification } from './NotificationContext'; // Import useNotification
-
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useSocket } from './SocketProvider'; // Import useSocket
 
 function App() {
   const { showNotification } = useNotification();
@@ -34,7 +35,7 @@ function App() {
     changePassword: null
   });
 
-   useEffect(() => {
+  useEffect(() => {
     if (socket) {
       socket.on('new_message', (newMessage) => {
         if (newMessage.recipientId === user.id) {
@@ -49,7 +50,7 @@ function App() {
   }, [socket, user.id, showNotification]);
 
   return (
-     <UserProvider value={{ user, setUser }}>
+    <UserProvider value={{ user, setUser }}>
       <Router>
         <AppNavBar />
         <Container>
@@ -72,6 +73,5 @@ function App() {
     </UserProvider>
   );
 }
-
 
 export default App;

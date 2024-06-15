@@ -5,8 +5,8 @@ import './index.css';
 import App from './App';
 import { BrowserRouter as Router } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { SocketProvider } from './SocketProvider'; // Assuming you have implemented SocketProvider correctly
-import { NotificationProvider } from './NotificationContext'; // Assuming you have implemented NotificationProvider correctly
+import { SocketProvider } from './SocketProvider';
+import { NotificationProvider } from './NotificationContext';
 
 const root = document.getElementById('root');
 createRoot(root).render(
