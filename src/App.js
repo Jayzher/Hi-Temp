@@ -15,10 +15,22 @@ import Planner from './navlinks/Planner';
 import Employee from './navlinks/Employee';
 import Messages from './navlinks/Messages';
 import { UserProvider } from './userContext';
-import { useNotification } from './NotificationContext'; // Import useNotification
-import { useSocket } from './SocketProvider'; // Import useSocket
+import { NotificationProvider, useNotification } from './NotificationContext'; // Import NotificationProvider and useNotification
+import { useSocket, SocketProvider } from './SocketProvider'; // Ensure to import SocketProvider as well
 
 function App() {
+  return (
+    <UserProvider>
+      <NotificationProvider>
+        <SocketProvider url="https://hi-temp-database.onrender.com">
+          <AppContent />
+        </SocketProvider>
+      </NotificationProvider>
+    </UserProvider>
+  );
+}
+
+function AppContent() {
   const { showNotification } = useNotification();
   const navigate = useNavigate();
   const socket = useSocket();
@@ -31,7 +43,7 @@ function App() {
     name: null,
     department: null,
     Tasks: null,
-    changePassword: null
+    changePassword: null,
   });
 
   useEffect(() => {
@@ -50,27 +62,25 @@ function App() {
   }, [socket, user.id, showNotification, navigate]);
 
   return (
-    <UserProvider value={{ user, setUser }}>
-      <Router>
-        <AppNavBar />
-        <Container>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/Login" element={<Login />} />
-            <Route path="/Logout" element={<Logout />} />
-            <Route path="/TasksCreate" element={<CreateNewTask />} />
-            {/* Dashboard Routes */}
-            <Route path="/Dashboard" element={<Dashboard />} />
-            <Route path="/Dashboard/:taskId" element={<Dashboard />} />
-            <Route path="/Dashboard/profile" element={<Profile />} />
-            {/* Employee Routes */}
-            <Route path="/Employee" element={<Employee />} />
-            <Route path="/Planner" element={<Planner />} />
-            <Route path="/Messages" element={<Messages />} />
-          </Routes>
-        </Container>
-      </Router>
-    </UserProvider>
+    <Router>
+      <AppNavBar />
+      <Container>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/Logout" element={<Logout />} />
+          <Route path="/TasksCreate" element={<CreateNewTask />} />
+          {/* Dashboard Routes */}
+          <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/Dashboard/:taskId" element={<Dashboard />} />
+          <Route path="/Dashboard/profile" element={<Profile />} />
+          {/* Employee Routes */}
+          <Route path="/Employee" element={<Employee />} />
+          <Route path="/Planner" element={<Planner />} />
+          <Route path="/Messages" element={<Messages />} />
+        </Routes>
+      </Container>
+    </Router>
   );
 }
 
