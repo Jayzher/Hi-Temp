@@ -8,7 +8,7 @@ const Notification = ({ message, show, handleClose }) => {
     if (show) {
       const timer = setTimeout(() => {
         handleClose();
-      }, 5000); // Automatically close after 5 seconds
+      }, 5000); // Automatically close after 3 seconds
 
       return () => clearTimeout(timer);
     }
