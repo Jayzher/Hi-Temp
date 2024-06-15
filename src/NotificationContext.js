@@ -8,18 +8,18 @@ export const useNotification = () => {
 };
 
 export const NotificationProvider = ({ children }) => {
-  const [notification, setNotification] = useState(null);
+  const [notification, setNotification] = useState({ message: '', show: false });
 
   const showNotification = (message) => {
-    setNotification(message);
+    setNotification({ message, show: true });
   };
 
-  const hideNotification = () => {
-    setNotification(null);
+  const closeNotification = () => {
+    setNotification({ message: '', show: false });
   };
 
   return (
-    <NotificationContext.Provider value={{ notification, showNotification, hideNotification }}>
+    <NotificationContext.Provider value={{ notification, showNotification, closeNotification }}>
       {children}
     </NotificationContext.Provider>
   );

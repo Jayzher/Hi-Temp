@@ -15,17 +15,13 @@ import Planner from './navlinks/Planner';
 import Employee from './navlinks/Employee';
 import Messages from './navlinks/Messages';
 import { UserProvider } from './userContext';
-import { NotificationProvider, useNotification } from './NotificationContext'; // Import NotificationProvider and useNotification
-import { useSocket, SocketProvider } from './SocketProvider'; // Ensure to import SocketProvider as well
+import { useNotification } from './NotificationContext';
+import { useSocket } from './SocketProvider';
 
 function App() {
   return (
     <UserProvider>
-      <NotificationProvider>
-        <SocketProvider url="https://hi-temp-database.onrender.com">
-          <AppContent />
-        </SocketProvider>
-      </NotificationProvider>
+      <AppContent />
     </UserProvider>
   );
 }
@@ -70,11 +66,9 @@ function AppContent() {
           <Route path="/Login" element={<Login />} />
           <Route path="/Logout" element={<Logout />} />
           <Route path="/TasksCreate" element={<CreateNewTask />} />
-          {/* Dashboard Routes */}
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/Dashboard/:taskId" element={<Dashboard />} />
           <Route path="/Dashboard/profile" element={<Profile />} />
-          {/* Employee Routes */}
           <Route path="/Employee" element={<Employee />} />
           <Route path="/Planner" element={<Planner />} />
           <Route path="/Messages" element={<Messages />} />
