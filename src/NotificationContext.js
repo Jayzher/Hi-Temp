@@ -1,4 +1,3 @@
-// src/NotificationContext.js
 import React, { createContext, useContext, useState } from 'react';
 
 const NotificationContext = createContext();
@@ -8,18 +7,19 @@ export const useNotification = () => {
 };
 
 export const NotificationProvider = ({ children }) => {
-  const [notification, setNotification] = useState({ message: '', show: false });
+  const [notifications, setNotifications] = useState([]);
 
   const showNotification = (message) => {
-    setNotification({ message, show: true });
+    const id = Date.now();
+    setNotifications((prev) => [...prev, { id, message }]);
   };
 
-  const closeNotification = () => {
-    setNotification({ message: '', show: false });
+  const hideNotification = (id) => {
+    setNotifications((prev) => prev.filter((notification) => notification.id !== id));
   };
 
   return (
-    <NotificationContext.Provider value={{ notification, showNotification, closeNotification }}>
+    <NotificationContext.Provider value={{ notifications, showNotification, hideNotification }}>
       {children}
     </NotificationContext.Provider>
   );

@@ -1,25 +1,28 @@
-// src/components/Notification.js
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Chat.css';
+// Notification.js
+import React, { useEffect } from 'react';
+import { Toast, ToastContainer } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Notification = ({ message, show, handleClose }) => {
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (show) {
+      const timer = setTimeout(() => {
+        handleClose();
+      }, 5000); // Automatically close after 5 seconds
 
-  if (!show) return null;
-
-  const handleNotificationClick = () => {
-    handleClose();
-    navigate('/Messages'); // Navigate to the Messages page
-  };
+      return () => clearTimeout(timer);
+    }
+  }, [show, handleClose]);
 
   return (
-    <div className="notification">
-      <div className="notification-content" onClick={handleNotificationClick}>
-        <span>{message}</span>
-        <button onClick={handleClose} className="close-btn">&times;</button>
-      </div>
-    </div>
+    <ToastContainer position="top-end" className="p-3">
+      <Toast onClose={handleClose} show={show} delay={3000} autohide>
+        <Toast.Header>
+          <strong className="me-auto">New Message</strong>
+        </Toast.Header>
+        <Toast.Body>{message}</Toast.Body>
+      </Toast>
+    </ToastContainer>
   );
 };
 
