@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
@@ -15,13 +14,20 @@ import Planner from './navlinks/Planner';
 import Employee from './navlinks/Employee';
 import Messages from './navlinks/Messages';
 import { UserProvider } from './userContext';
-import { useNotification } from './NotificationContext';
-import { useSocket } from './SocketProvider';
+import { NotificationProvider, useNotification } from './NotificationContext';
+import { SocketProvider, useSocket } from './SocketProvider';
 
 function App() {
   return (
     <UserProvider>
-      <AppContent />
+      <NotificationProvider>
+        <SocketProvider>
+          <Router>
+            <AppNavBar />
+            <AppContent />
+          </Router>
+        </SocketProvider>
+      </NotificationProvider>
     </UserProvider>
   );
 }
@@ -44,37 +50,37 @@ function AppContent() {
 
   useEffect(() => {
     if (socket) {
-      socket.on('new_message', (newMessage) => {
+      const handleNewMessage = (newMessage) => {
         if (newMessage.recipientId === user.id) {
           showNotification(newMessage.content);
           navigate('/Messages');
         }
-      });
+      };
+
+      socket.on('new_message', handleNewMessage);
 
       return () => {
-        socket.off('new_message');
+        socket.off('new_message', handleNewMessage);
       };
     }
   }, [socket, user.id, showNotification, navigate]);
 
   return (
-    <Router>
-      <AppNavBar />
-      <Container>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/Login" element={<Login />} />
-          <Route path="/Logout" element={<Logout />} />
-          <Route path="/TasksCreate" element={<CreateNewTask />} />
-          <Route path="/Dashboard" element={<Dashboard />} />
-          <Route path="/Dashboard/:taskId" element={<Dashboard />} />
-          <Route path="/Dashboard/profile" element={<Profile />} />
-          <Route path="/Employee" element={<Employee />} />
-          <Route path="/Planner" element={<Planner />} />
-          <Route path="/Messages" element={<Messages />} />
-        </Routes>
-      </Container>
-    </Router>
+    <Container>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/Logout" element={<Logout />} />
+        <Route path="/Register" element={<Register />} />
+        <Route path="/TasksCreate" element={<CreateNewTask />} />
+        <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/Dashboard/:taskId" element={<Dashboard />} />
+        <Route path="/Dashboard/profile" element={<Profile />} />
+        <Route path="/Employee" element={<Employee />} />
+        <Route path="/Planner" element={<Planner />} />
+        <Route path="/Messages" element={<Messages />} />
+      </Routes>
+    </Container>
   );
 }
 
