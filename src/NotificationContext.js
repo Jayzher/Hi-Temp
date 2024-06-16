@@ -18,11 +18,11 @@ export const useNotification = () => {
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
 
-  // Function to show a notification
-  const showNotification = (message) => {
+  // Function to show a notification with sender information
+  const showNotification = (sender, message) => {
     const id = Date.now();
-    setNotifications((prevNotifications) => [...prevNotifications, { id, message }]);
-    _toast.info(message);
+    setNotifications((prevNotifications) => [...prevNotifications, { id, sender, message }]);
+    _toast.info(`New message from ${sender}: ${message}`);
   };
 
   // Function to hide a notification based on its ID
