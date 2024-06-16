@@ -3,6 +3,7 @@ import { useSocket } from '../SocketProvider'; // Import useSocket hook from Soc
 import UsersLists from './UsersLists';
 import ChatBox from './ChatBox';
 import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import '../components/Style.css';
 import './Chat.css';
