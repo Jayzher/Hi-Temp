@@ -75,15 +75,9 @@ const ChatRoom = () => {
 
   const handleNewMessage = (newMessage) => {
     const senderName = newMessage.sender?.name || 'Unknown';
-    showNotification(`New message from ${senderName}`);
-    setChatBoxes((prevChatBoxes) => ({
-      ...prevChatBoxes,
-      [newMessage.sender.id]: true, // Open the chat box of the sender automatically
-    }));
-  };
-
-  const handleNotificationClick = () => {
-    navigate('/Messages');
+    if (senderName !== user.name) {
+      showNotification(`New message from ${senderName}`);
+    }
   };
 
   const handleUserSelect = (user) => {

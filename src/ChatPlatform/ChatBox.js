@@ -95,26 +95,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   }, [recipient]);
 
   useEffect(() => {
-    const handleMessageEvent = (newMessage) => {
-      // Only add new messages to the state and show notification if received from another user
-      if (newMessage.sender.id !== user.id) {
-        setMessages(prevMessages => [...prevMessages, newMessage]);
-        toast.info(`New message from ${newMessage.sender.name}: ${newMessage.content}`);
-      }
-    };
-
-    if (socket) {
-      socket.on('new_message', handleMessageEvent);
-    }
-
-    return () => {
-      if (socket) {
-        socket.off('new_message', handleMessageEvent);
-      }
-    };
-  }, [socket, recipient, user]);
-
-  useEffect(() => {
     // Scroll to the bottom of the messages container when new messages arrive
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
