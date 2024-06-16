@@ -1,4 +1,7 @@
+// NotificationContext.js
 import React, { createContext, useContext, useState } from 'react';
+import { toast as _toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const NotificationContext = createContext();
 
@@ -12,6 +15,7 @@ export const NotificationProvider = ({ children }) => {
   const showNotification = (message) => {
     const id = Date.now();
     setNotifications((prev) => [...prev, { id, message }]);
+    _toast.info(message);
   };
 
   const hideNotification = (id) => {
@@ -20,6 +24,7 @@ export const NotificationProvider = ({ children }) => {
 
   return (
     <NotificationContext.Provider value={{ notifications, showNotification, hideNotification }}>
+      <ToastContainer />
       {children}
     </NotificationContext.Provider>
   );
