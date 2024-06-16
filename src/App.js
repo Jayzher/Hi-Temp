@@ -10,7 +10,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Tabs from './components/Tab';
 import { UserProvider } from './userContext';
-import { NotificationProvider, useNotification } from './NotificationContext'; // Ensure correct path
+import { NotificationProvider } from './NotificationContext'; // Ensure correct path
 
 import Profile from './navlinks/Profile';
 import Planner from './navlinks/Planner';
@@ -19,8 +19,6 @@ import Employee from './navlinks/Employee';
 import Messages from './navlinks/Messages';
 
 function App() {
-  const { notifications } = useNotification(); // Using the useNotification hook to access notifications
-
   const [user, setUser] = useState({
     id: null,
     Status: null,
