@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useSocket } from '../SocketProvider'; // Import useSocket hook from SocketProvider
 import UsersLists from './UsersLists';
 import ChatBox from './ChatBox';
-import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import 'react-toastify/dist/ReactToastify.css';
+import { useNotification } from '../NotificationContext'; // Adjust the path as needed
 import '../components/Style.css';
 import './Chat.css';
 
 const ChatRoom = () => {
   const socket = useSocket(); // Get the socket instance using useSocket hook
+  const { showNotification } = useNotification();
   const [userList, setUserList] = useState([]);
   const [chatBoxes, setChatBoxes] = useState({});
   const [showUsers, setShowUsers] = useState(true); // Add state to control the visibility of the user list
@@ -55,7 +55,7 @@ const ChatRoom = () => {
       })
       .catch((error) => {
         console.error('Error fetching user list:', error);
-        toast.error('Failed to fetch user list');
+        showNotification('Failed to fetch user list');
       });
   };
 
@@ -68,13 +68,9 @@ const ChatRoom = () => {
 
         // Notify user about the new message
         if (newMessage.sender && newMessage.sender.name) {
-          toast.info(`New message from ${newMessage.sender.name}`, {
-            onClick: () => handleNotificationClick(),
-          });
+          showNotification(`New message from ${newMessage.sender.name}`);
         } else {
-          toast.info('New message received', {
-            onClick: () => handleNotificationClick(),
-          });
+          showNotification('New message received');
         }
       });
 
@@ -83,7 +79,7 @@ const ChatRoom = () => {
         socket.off('new_message');
       };
     }
-  }, [socket]);
+  }, [socket, showNotification]);
 
   const handleNotificationClick = () => {
     navigate('/Messages'); // Navigate to /Messages route
@@ -101,7 +97,7 @@ const ChatRoom = () => {
 
   const handleSendMessage = (recipientId, messageContent) => {
     socket.emit('send_message', { recipientId, content: messageContent });
-    toast.success('Message sent');
+    showNotification('Message sent');
   };
 
   const handleBackClick = () => {
@@ -111,7 +107,6 @@ const ChatRoom = () => {
 
   return (
     <div className="dashboard-container" style={{ overflow: "hidden", height: '100vh' }}>
-      <ToastContainer />
       <div id="Chatroom-container" className="d-flex flex-row" style={{ height: '100%', maxHeight: '100vh', marginLeft: "15vw", width: '85vw', overflowY: "hidden" }}>
         {!showUsers && isMobile && (
           <div className="d-flex align-items-center justify-content-end" style={{ background: "rgba(0, 0, 0, 0.7)", height: "fit-content", width: "100%", padding: "5px", position: 'absolute', top: '0', zIndex: "10"}}>
