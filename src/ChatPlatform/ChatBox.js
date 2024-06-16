@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import './Chat.css';
 import { Button } from 'react-bootstrap';
 import { useSocket } from '../SocketProvider'; // Assuming you have SocketProvider set up
-import { UserContext } from '../userContext'; // Adjust the path as needed
+import UserContext from '../userContext';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
