@@ -66,13 +66,7 @@ const ChatRoom = () => {
         // Log the newMessage object to debug
         console.log('New message received:', newMessage);
 
-        // Update messages for the recipient in chatBoxes state
-        setChatBoxes((prevChatBoxes) => ({
-          ...prevChatBoxes,
-          [newMessage.recipient.id]: true,
-        }));
-
-        // Check if senderName is defined
+        // Notify user about the new message
         if (newMessage.sender && newMessage.sender.name) {
           toast.info(`New message from ${newMessage.sender.name}`, {
             onClick: () => handleNotificationClick(),
@@ -94,7 +88,6 @@ const ChatRoom = () => {
   const handleNotificationClick = () => {
     navigate('/Messages'); // Navigate to /Messages route
   };
-
 
   const handleUserSelect = (user) => {
     setChatBoxes((prevChatBoxes) => ({
