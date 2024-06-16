@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import './Chat.css';
 import { Button } from 'react-bootstrap';
 import { useSocket } from '../SocketProvider'; // Assuming you have SocketProvider set up
-import UserContext from '../userContext';
+import UserContext from '../userContext'; // Adjust the path as needed
+import { toast } from 'react-toastify'; // Import toast from react-toastify
+import 'react-toastify/dist/ReactToastify.css';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -94,9 +96,10 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
 
   useEffect(() => {
     const handleMessageEvent = (newMessage) => {
-      // Only add new messages to state if the sender is not the current user
+      // Only add new messages to the state and show notification if received from another user
       if (newMessage.sender.id !== user.id) {
         setMessages(prevMessages => [...prevMessages, newMessage]);
+        toast.info(`New message from ${newMessage.sender.name}: ${newMessage.content}`);
       }
     };
 
