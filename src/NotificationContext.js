@@ -2,8 +2,10 @@ import React, { createContext, useContext, useState } from 'react';
 import { toast as _toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// Create a context object
 const NotificationContext = createContext();
 
+// Custom hook to consume the context
 export const useNotification = () => {
   const context = useContext(NotificationContext);
   if (!context) {
@@ -12,32 +14,25 @@ export const useNotification = () => {
   return context;
 };
 
+// Provider component that wraps around the application
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
 
+  // Function to show a notification
   const showNotification = (message) => {
-    try {
-      const id = Date.now();
-      setNotifications((prev) => [...prev, { id, message }]);
-      _toast.info(message);
-    } catch (error) {
-      console.error('Error showing notification:', error);
-      // Optionally handle or log the error here
-    }
+    const id = Date.now();
+    setNotifications((prevNotifications) => [...prevNotifications, { id, message }]);
+    _toast.info(message);
   };
 
+  // Function to hide a notification based on its ID
   const hideNotification = (id) => {
-    try {
-      setNotifications((prev) => prev.filter((notification) => notification.id !== id));
-    } catch (error) {
-      console.error('Error hiding notification:', error);
-      // Optionally handle or log the error here
-    }
+    setNotifications((prevNotifications) => prevNotifications.filter((notification) => notification.id !== id));
   };
 
   return (
     <NotificationContext.Provider value={{ notifications, showNotification, hideNotification }}>
-      <ToastContainer />
+      <ToastContainer /> {/* The ToastContainer can be rendered here */}
       {children}
     </NotificationContext.Provider>
   );
