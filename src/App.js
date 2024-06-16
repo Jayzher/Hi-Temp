@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
@@ -9,8 +10,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Tabs from './components/Tab';
 import { UserProvider } from './userContext';
-import { useNotification } from './NotificationContext'; // Adjust the path as needed
-import { useState, useEffect } from 'react';
+import { NotificationProvider, useNotification } from './NotificationContext'; // Ensure correct path
+
 import Profile from './navlinks/Profile';
 import Planner from './navlinks/Planner';
 import CreateNewTask from './navlinks/CreateNewTask';
