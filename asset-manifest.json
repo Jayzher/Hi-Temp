@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/Hi-Temp/static/css/main.efc0a977.css",
-    "main.js": "/Hi-Temp/static/js/main.3aab1a61.js",
+    "main.js": "/Hi-Temp/static/js/main.288b0d97.js",
     "static/media/top-arrow.png": "/Hi-Temp/static/media/top-arrow.f73059766261b8d2b1b8.png",
     "static/media/back-arrow-2.svg": "/Hi-Temp/static/media/back-arrow-2.d6955cf6ef4db3c1a6e9f49657e7a673.svg",
     "static/media/back-arrow.svg": "/Hi-Temp/static/media/back-arrow.44a657854fbd640c55ae2142d81652c7.svg",
     "static/media/tasks-sv.svg": "/Hi-Temp/static/media/tasks-sv.35233bc9c87110f3c8ec5023da0ed83d.svg",
     "index.html": "/Hi-Temp/index.html",
     "main.efc0a977.css.map": "/Hi-Temp/static/css/main.efc0a977.css.map",
-    "main.3aab1a61.js.map": "/Hi-Temp/static/js/main.3aab1a61.js.map"
+    "main.288b0d97.js.map": "/Hi-Temp/static/js/main.288b0d97.js.map"
   },
   "entrypoints": [
     "static/css/main.efc0a977.css",
-    "static/js/main.3aab1a61.js"
+    "static/js/main.288b0d97.js"
   ]
 }
