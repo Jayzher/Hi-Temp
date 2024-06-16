@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import './Chat.css';
 import { Button } from 'react-bootstrap';
 import { useSocket } from '../SocketProvider'; // Assuming you have SocketProvider set up
-import { UserContext } from '../userContext'; // Adjust the path as needed
+import UserContext from '../userContext';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const socket = useSocket();
-  const { user } = useContext(UserContext); // Assuming UserContext provides user information
+  const { user, setUser } = useContext(UserContext);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [textareaHeight, setTextareaHeight] = useState(0);
