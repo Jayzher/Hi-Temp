@@ -19,7 +19,7 @@ import Employee from './navlinks/Employee';
 import Messages from './navlinks/Messages';
 
 function App() {
-  const { notifications } = useNotification();
+  const { notifications } = useNotification(); // Ensure useNotification is correctly imported and used
 
   const [user, setUser] = useState({
     id: null,
@@ -40,7 +40,7 @@ function App() {
           <AppNavBar />
           <Container>
             <Routes>
-              <Route path="/Hi-Temp" element={<Home />} />
+              <Route path="/" element={<Home />} />
               <Route path="/Login" element={<Login />} />
               <Route path="/Logout" element={<Logout />} />
               <Route path="/TasksCreate" element={<CreateNewTask />} />
