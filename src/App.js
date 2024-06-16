@@ -34,8 +34,8 @@ function App() {
   });
 
   return (
+  <NotificationProvider>  
     <UserProvider value={{ user, setUser }}>
-      <NotificationProvider>
         <Router>
           <AppNavBar />
           <Container>
@@ -55,8 +55,8 @@ function App() {
             </Routes>
           </Container>
         </Router>
-      </NotificationProvider>
     </UserProvider>
+  </NotificationProvider>
   );
 }
 
