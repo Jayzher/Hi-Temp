@@ -3,18 +3,17 @@ import { useSocket } from '../SocketProvider'; // Import useSocket hook from Soc
 import UsersLists from './UsersLists';
 import ChatBox from './ChatBox';
 import { ToastContainer, toast } from 'react-toastify';
-import { useHistory } from 'react-router-dom'; // Import useHistory from react-router-dom
 import 'react-toastify/dist/ReactToastify.css';
 import '../components/Style.css';
 import './Chat.css';
 
 const ChatRoom = () => {
   const socket = useSocket(); // Get the socket instance using useSocket hook
-  const history = useHistory(); // Get the history instance from useHistory
   const [userList, setUserList] = useState([]);
   const [chatBoxes, setChatBoxes] = useState({});
   const [showUsers, setShowUsers] = useState(true); // Add state to control the visibility of the user list
   const [isMobile, setIsMobile] = useState(window.innerWidth < 700); // State to track if the device is mobile
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchUserList();
@@ -92,8 +91,9 @@ const ChatRoom = () => {
   }, [socket]);
 
   const handleNotificationClick = () => {
-    history.push('/Messages'); // Navigate to /Messages route
+    navigate('/Messages'); // Navigate to /Messages route
   };
+
 
   const handleUserSelect = (user) => {
     setChatBoxes((prevChatBoxes) => ({
