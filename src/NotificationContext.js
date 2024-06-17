@@ -32,23 +32,6 @@ export const NotificationProvider = ({ children }) => {
     setNotifications((prevNotifications) => prevNotifications.filter((notification) => notification.id !== id));
   };
 
-  // Effect to handle incoming messages from the socket
-  useEffect(() => {
-    const handleNewMessage = (newMessage) => {
-      showNotification(`New message from ${newMessage.sender.name}: ${newMessage.content}`);
-    };
-
-    if (socket) {
-      socket.on('new_message', handleNewMessage);
-    }
-
-    return () => {
-      if (socket) {
-        socket.off('new_message', handleNewMessage);
-      }
-    };
-  }, [socket]);
-
   return (
     <NotificationContext.Provider value={{ notifications, showNotification, hideNotification }}>
       <ToastContainer /> {/* The ToastContainer can be rendered here */}
