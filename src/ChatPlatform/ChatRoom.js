@@ -30,6 +30,8 @@ const ChatRoom = () => {
     };
   }, []);
 
+  //Modified
+
   const fetchUserList = () => {
     fetch(`${process.env.REACT_APP_API_URL}/users/alldetails`)
       .then((response) => {

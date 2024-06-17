@@ -26,6 +26,8 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     setPaddingBottom(textareaHeight - 30);
   };
 
+  //Modified
+
   useEffect(() => {
     setPaddingBottom(textareaHeight - 30);
   }, [textareaHeight]);
