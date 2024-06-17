@@ -63,6 +63,13 @@ const ChatRoom = () => {
 
   useEffect(() => {
     if (socket) {
+      setChatBoxes((prevChatBoxes) => {
+        const updatedChatBoxes = { ...prevChatBoxes };
+        if (!updatedChatBoxes[recipientId]) {
+          updatedChatBoxes[recipientId] = true;
+        }
+        return updatedChatBoxes;
+      });
       socket.on('new_message', handleNewMessage);
 
       return () => {
@@ -105,16 +112,7 @@ const ChatRoom = () => {
 
   const handleSendMessage = (recipientId, messageContent) => {
     socket.emit('send_message', { recipientId, content: messageContent });
-    showNotification('Message sent');
-
     // Update chat box state to show sent message
-    setChatBoxes((prevChatBoxes) => {
-      const updatedChatBoxes = { ...prevChatBoxes };
-      if (!updatedChatBoxes[recipientId]) {
-        updatedChatBoxes[recipientId] = true;
-      }
-      return updatedChatBoxes;
-    });
   };
 
   const handleBackClick = () => {

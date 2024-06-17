@@ -4,6 +4,7 @@ import { Button } from 'react-bootstrap';
 import { useSocket } from '../SocketProvider'; // Assuming you have SocketProvider set up
 import UserContext from '../userContext'; // Adjust the path as needed
 import { toast } from 'react-toastify'; // Import toast from react-toastify
+import { useNotification } from '../NotificationContext'; // Adjust the path as needed
 import 'react-toastify/dist/ReactToastify.css';
 
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -17,6 +18,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const [paddingBottom, setPaddingBottom] = useState(0);
   const textareaRef = useRef(null);
   const messagesContainerRef = useRef(null);
+  const { showNotification } = useNotification();
 
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
@@ -55,10 +57,10 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         if (!response.ok) {
           throw new Error('Failed to send message');
         }
-
         setMessage('');
         textareaRef.current.style.height = 'auto';
         setTextareaHeight(0);
+        showNotification('Message sent');
       } catch (error) {
         console.error('Error sending message:', error);
       }
@@ -109,14 +111,12 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         if (newMessage.recipient._id === user.id) {
           // Update messages state with the new message
           setMessages(prevMessages => [...prevMessages, newMessage]);
-          toast.info(`New message from ${newMessage.sender.name}: ${newMessage.content}`);
+          showNotification(`New message from ${newMessage.sender.name}: ${newMessage.content}`);
         }
       };
 
       // Listen for new messages from socket
       socket.on('new_message', handleMessageEvent);
-      
-      fetchInitialConversation();
 
       return () => {
         // Clean up socket listener when component unmounts
