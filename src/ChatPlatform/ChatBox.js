@@ -4,7 +4,6 @@ import { Button } from 'react-bootstrap';
 import { useSocket } from '../SocketProvider'; // Assuming you have SocketProvider set up
 import UserContext from '../userContext'; // Adjust the path as needed
 import { toast } from 'react-toastify'; // Import toast from react-toastify
-import { useNotification } from '../NotificationContext'; // Adjust the path as needed
 import 'react-toastify/dist/ReactToastify.css';
 
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -18,7 +17,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const [paddingBottom, setPaddingBottom] = useState(0);
   const textareaRef = useRef(null);
   const messagesContainerRef = useRef(null);
-  const { showNotification } = useNotification();
 
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
@@ -57,10 +55,10 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         if (!response.ok) {
           throw new Error('Failed to send message');
         }
+
         setMessage('');
         textareaRef.current.style.height = 'auto';
         setTextareaHeight(0);
-        showNotification('Message sent');
       } catch (error) {
         console.error('Error sending message:', error);
       }
@@ -69,34 +67,52 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     }
   };
 
-  // Function to fetch initial conversation
-  const fetchInitialConversation = async () => {
-    if (!recipient || !recipient._id) {
-      return; // Return early if recipient or recipient._id is null
-    }
-
-    try {
-      const response = await fetch(`${apiUrl}/messages/conversation/${recipient._id}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch conversations');
+  useEffect(() => {
+    const fetchConversations = async () => {
+      if (!recipient || recipient._id === null) {
+        console.log("Recipient or recipient._id is null");
+        return; // Return early if recipient or recipient._id is null
       }
 
-      const data = await response.json();
-      setMessages(data);
-    } catch (error) {
-      console.error('Error fetching conversations:', error);
-    }
-  };
+      try {
+        const response = await fetch(`${apiUrl}/messages/conversation/${recipient._id}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch conversations');
+        }
+
+        const data = await response.json();
+        setMessages(data);
+      } catch (error) {
+        console.error('Error fetching conversations:', error);
+      }
+    };
+    fetchConversations();
+  }, [recipient]);
 
   useEffect(() => {
-    // Fetch initial conversation when recipient changes or component mounts
-    fetchInitialConversation();
-  }, [recipient]);
+    const handleMessageEvent = (newMessage) => {
+      // Only add new messages to the state and show notification if received from another user
+      if (newMessage.sender.id !== user.id) {
+        setMessages(prevMessages => [...prevMessages, newMessage]);
+        toast.info(`New message from ${newMessage.sender.name}: ${newMessage.content}`);
+      }
+    };
+
+    if (socket) {
+      socket.on('new_message', handleMessageEvent);
+    }
+
+    return () => {
+      if (socket) {
+        socket.off('new_message', handleMessageEvent);
+      }
+    };
+  }, [socket, recipient, user]);
 
   useEffect(() => {
     // Scroll to the bottom of the messages container when new messages arrive
@@ -104,21 +120,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
     }
   }, [messages]);
-
-  useEffect(() => {
-    if (socket) {
-      
-      fetchInitialConversation();
-
-      // Listen for new messages from socket
-      socket.on('new_message', handleMessageEvent);
-
-      return () => {
-        // Clean up socket listener when component unmounts
-        socket.off('new_message', handleMessageEvent);
-      };
-    }
-  }, [socket, user]);
 
   if (!recipient) {
     return null;
