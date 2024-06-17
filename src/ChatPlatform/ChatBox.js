@@ -107,14 +107,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
 
   useEffect(() => {
     if (socket) {
-      const handleMessageEvent = (newMessage) => {
-        if (newMessage.recipient._id === user.id) {
-          // Update messages state with the new message
-          setMessages(prevMessages => [...prevMessages, newMessage]);
-          showNotification(`New message from ${newMessage.sender.name}: ${newMessage.content}`);
-        }
-      };
-
+      
       fetchInitialConversation();
 
       // Listen for new messages from socket
