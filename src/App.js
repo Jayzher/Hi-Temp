@@ -9,7 +9,7 @@ import Logout from './pages/Logout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Tabs from './components/Tab';
-import UserProvider from './userContext'; // Ensure correct path
+import { UserProvider } from './userContext';
 import { NotificationProvider } from './NotificationContext'; // Ensure correct path
 
 import Profile from './navlinks/Profile';
@@ -41,7 +41,6 @@ function App() {
               <Route path="/" element={<Home />} /> 
               <Route path="/Login" element={<Login />} /> 
               <Route path="/Logout" element={<Logout />} /> 
-              <Route path="/Register" element={<Register />} /> 
               <Route path="/TasksCreate" element={<CreateNewTask />} /> 
               {/* Dashboard Routes */}
               <Route path="/Dashboard" element={<Dashboard />} /> 

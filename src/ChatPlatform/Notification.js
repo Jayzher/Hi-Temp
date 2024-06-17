@@ -32,7 +32,7 @@ export const NotificationProvider = ({ children }) => {
 
   return (
     <NotificationContext.Provider value={{ notifications, showNotification, hideNotification }}>
-      <ToastContainer /> {/* The ToastContainer can be rendered here */}
+      <ToastContainer />
       {children}
     </NotificationContext.Provider>
   );

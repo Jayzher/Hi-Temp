@@ -8,7 +8,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../components/Style.css';
 import './Chat.css';
 import UserContext from '../userContext'; // Import UserContext
-import { useNotification } from '../NotificationContext';
 
 const ChatRoom = () => {
   const socket = useSocket();
@@ -18,7 +17,6 @@ const ChatRoom = () => {
   const [showUsers, setShowUsers] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
   const navigate = useNavigate();
-  const { showNotification } = useNotification();
 
   useEffect(() => {
     fetchUserList();
@@ -65,7 +63,7 @@ const ChatRoom = () => {
 
   useEffect(() => {
     if (socket) {
-      const handleNewMessage = (newMessage) => {
+      socket.on('new_message', (newMessage) => {
         console.log('New message received:', newMessage);
 
         if (
@@ -87,22 +85,20 @@ const ChatRoom = () => {
             }
             return updatedChatBoxes;
           });
-
+         
           if (newMessage.receiver.name === user.name) {
             showNotification(`New message from ${newMessage.sender.name}`);
           } else if (newMessage.sender.name === user.name) {
-            showNotification(`Message sent`);
+            showNotification(`Message Sent`);
           }
         }
-      };
-
-      socket.on('new_message', handleNewMessage);
+      });
 
       return () => {
-        socket.off('new_message', handleNewMessage);
+        socket.off('new_message');
       };
     }
-  }, [socket, user, showNotification]);
+  }, [socket, user]);
 
   const handleNotificationClick = () => {
     navigate('/Messages');
@@ -196,7 +192,8 @@ const ChatRoom = () => {
               visible={chatBoxes[user._id]?.visible}
               setChatBoxes={setChatBoxes}
               messages={chatBoxes[user._id]?.messages || []}
-              handleSendMessage={handleSendMessage} // Pass handleSendMessage function
+              socket={socket}
+              handleSendMessage={handleSendMessage}
             />
           ))}
         </div>
