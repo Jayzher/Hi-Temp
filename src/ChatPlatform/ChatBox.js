@@ -92,7 +92,12 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
 
   useEffect(() => {
     const handleMessageEvent = (newMessage) => {
-      setMessages(prevMessages => [...prevMessages, newMessage]);
+      if (
+        (newMessage.recipient.id === recipient._id && newMessage.sender.id === socket.userId) ||
+        (newMessage.sender.id === recipient._id && newMessage.recipient.id === socket.userId)
+      ) {
+        setMessages(prevMessages => [...prevMessages, newMessage]);
+      }
     };
 
     if (socket) {

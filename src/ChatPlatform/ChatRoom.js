@@ -78,24 +78,6 @@ const ChatRoom = () => {
         const isRecipient = newMessage.recipient.id === user.id;
         const isSender = newMessage.sender.id === user.id;
 
-        setChatBoxes((prevChatBoxes) => {
-          const updatedChatBoxes = { ...prevChatBoxes };
-
-          if (isRecipient) {
-            const senderBox = updatedChatBoxes[newMessage.sender.id] || { visible: false, messages: [] };
-            senderBox.messages = [...senderBox.messages, newMessage];
-            updatedChatBoxes[newMessage.sender.id] = senderBox;
-          }
-
-          if (isSender) {
-            const recipientBox = updatedChatBoxes[newMessage.recipient.id] || { visible: false, messages: [] };
-            recipientBox.messages = [...recipientBox.messages, newMessage];
-            updatedChatBoxes[newMessage.recipient.id] = recipientBox;
-          }
-
-          return updatedChatBoxes;
-        });
-
         if (isRecipient) {
           showNotification(`New message from ${newMessage.sender.name}`);
         }
@@ -125,15 +107,6 @@ const ChatRoom = () => {
   const handleSendMessage = (recipientId, messageContent) => {
     const message = { recipientId, content: messageContent };
     socket.emit('send_message', message);
-    const newMessage = { content: messageContent, sender: { id: user.id, name: user.name } };
-
-    setChatBoxes((prevChatBoxes) => ({
-      ...prevChatBoxes,
-      [recipientId]: {
-        ...prevChatBoxes[recipientId],
-        messages: [...(prevChatBoxes[recipientId]?.messages || []), newMessage],
-      },
-    }));
     showNotification('Message sent');
   };
 
