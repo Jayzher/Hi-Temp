@@ -1,22 +1,22 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useSocket } from '../SocketProvider'; // Import useSocket hook from SocketProvider
+import React, { useState, useEffect } from 'react';
+import { useSocket } from '../SocketProvider';
 import UsersLists from './UsersLists';
 import ChatBox from './ChatBox';
 import { useNavigate } from 'react-router-dom';
-import { useNotification } from '../NotificationContext'; // Adjust the path as needed
+import { useNotification } from '../NotificationContext';
 import '../components/Style.css';
 import './Chat.css';
-import UserContext from '../userContext'; // Adjust the path as needed
+
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const ChatRoom = () => {
-  const socket = useSocket(); // Get the socket instance using useSocket hook
-  const { showNotification } = useNotification(); // Access showNotification from NotificationContext
+  const socket = useSocket();
+  const { showNotification } = useNotification();
   const [userList, setUserList] = useState([]);
   const [chatBoxes, setChatBoxes] = useState({});
-  const [showUsers, setShowUsers] = useState(true); // Add state to control the visibility of the user list
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 700); // State to track if the device is mobile
+  const [showUsers, setShowUsers] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
 
   useEffect(() => {
     fetchUserList();
@@ -24,7 +24,7 @@ const ChatRoom = () => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 700);
       if (window.innerWidth >= 700) {
-        setShowUsers(true); // Show user list if screen width is greater than or equal to 700px
+        setShowUsers(true);
       }
     };
 
@@ -36,7 +36,7 @@ const ChatRoom = () => {
   }, []);
 
   const fetchUserList = () => {
-    fetch(`${process.env.REACT_APP_API_URL}/users/alldetails`)
+    fetch(`${apiUrl}/users/alldetails`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Failed to fetch user list');
@@ -74,68 +74,36 @@ const ChatRoom = () => {
   }, [socket]);
 
   const handleNewMessage = (newMessage) => {
-    console.log('New message received:', newMessage);
     const senderName = newMessage.sender?.name || 'Unknown';
-    if (newMessage.recipient.id === user.id) {
-      // Display notification for new message
-      showNotification(`New message from ${newMessage.sender.name}: ${newMessage.content}`);
-    }
-
-    // Update chat box state to show new messages
-    const { sender, receiver, content } = newMessage;
-    const relevantUserId = sender.id !== user.id ? sender.id : receiver.id;
-
-    setChatBoxes((prevChatBoxes) => {
-      const updatedChatBoxes = { ...prevChatBoxes };
-      if (!updatedChatBoxes[relevantUserId]) {
-        updatedChatBoxes[relevantUserId] = true;
-      }
-      return updatedChatBoxes;
-    });
-
-    // Ensure the relevant chat box updates its messages
-    setUserList((prevUserList) =>
-      prevUserList.map((u) => {
-        if (u._id === relevantUserId) {
-          return {
-            ...u,
-            messages: [...(u.messages || []), newMessage],
-          };
-        }
-        return u;
-      })
-    );
-  };
-
-  const handleUserSelect = (selectedUser) => {
+    showNotification(`New message from ${senderName}`);
     setChatBoxes((prevChatBoxes) => ({
       ...prevChatBoxes,
-      [selectedUser._id]: true,
+      [newMessage.sender.id]: true, // Open the chat box of the sender automatically
+    }));
+  };
+
+  const handleNotificationClick = () => {
+    navigate('/Messages');
+  };
+
+  const handleUserSelect = (user) => {
+    setChatBoxes((prevChatBoxes) => ({
+      ...prevChatBoxes,
+      [user._id]: !prevChatBoxes[user._id],
     }));
     if (isMobile) {
-      setShowUsers(false); // Hide user list when a user is selected on mobile
+      setShowUsers(false);
     }
   };
 
   const handleSendMessage = (recipientId, messageContent) => {
     socket.emit('send_message', { recipientId, content: messageContent });
-
-    // Ensure the relevant chat box updates its messages
-    setUserList((prevUserList) =>
-      prevUserList.map((u) => {
-        if (u._id === recipientId) {
-          return {
-            ...u,
-            messages: [...(u.messages || []), { sender: user, content: messageContent }],
-          };
-        }
-        return u;
-      })
-    );
+    showNotification('Message sent');
   };
 
   const handleBackClick = () => {
-    setShowUsers(true); // Show user list on back button click
+    setShowUsers(true);
+    setChatBoxes({});
   };
 
   return (
