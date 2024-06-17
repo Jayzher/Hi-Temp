@@ -32,24 +32,24 @@ function App() {
   });
 
   return (
-    <UserProvider value={{ user, setUser }}> {/* Providing user context */}
-      <NotificationProvider> {/* Providing notification context */}
+    <UserProvider value={{ user, setUser }}>
+      <NotificationProvider>
         <Router>
-          <AppNavBar /> {/* Displaying the application navigation bar */}
-          <Container> {/* Using Bootstrap Container to wrap content */}
+          <AppNavBar /> 
+          <Container> 
             <Routes>
-              <Route path="/" element={<Home />} /> {/* Default Home route */}
-              <Route path="/Login" element={<Login />} /> {/* Login route */}
-              <Route path="/Logout" element={<Logout />} /> {/* Logout route */}
-              <Route path="/TasksCreate" element={<CreateNewTask />} /> {/* Route to create new tasks */}
+              <Route path="/" element={<Home />} /> 
+              <Route path="/Login" element={<Login />} /> 
+              <Route path="/Logout" element={<Logout />} /> 
+              <Route path="/TasksCreate" element={<CreateNewTask />} /> 
               {/* Dashboard Routes */}
-              <Route path="/Dashboard" element={<Dashboard />} /> {/* Dashboard main route */}
-              <Route path="/Dashboard/:taskId" element={<Dashboard />} /> {/* Dashboard route with taskId parameter */}
-              <Route path="/Dashboard/profile" element={<Profile />} /> {/* Dashboard profile route */}
+              <Route path="/Dashboard" element={<Dashboard />} /> 
+              <Route path="/Dashboard/:taskId" element={<Dashboard />} />
+              <Route path="/Dashboard/profile" element={<Profile />} />
               {/* Employee Routes */}
-              <Route path="/Employee" element={<Employee />} /> {/* Employee main route */}
-              <Route path="/Planner" element={<Planner />} /> {/* Planner route */}
-              <Route path="/Messages" element={<Messages />} /> {/* Messages route */}
+              <Route path="/Employee" element={<Employee />} />
+              <Route path="/Planner" element={<Planner />} />
+              <Route path="/Messages" element={<Messages />} />
             </Routes>
           </Container>
         </Router>

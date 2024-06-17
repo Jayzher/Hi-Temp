@@ -1,29 +1,39 @@
-// Notification.js
-import React, { useEffect } from 'react';
-import { Toast, ToastContainer } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { createContext, useContext, useState } from 'react';
+import { toast as _toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const Notification = ({ message, show, handleClose }) => {
-  useEffect(() => {
-    if (show) {
-      const timer = setTimeout(() => {
-        handleClose();
-      }, 5000); // Automatically close after 3 seconds
+// Create a context object
+const NotificationContext = createContext();
 
-      return () => clearTimeout(timer);
-    }
-  }, [show, handleClose]);
-
-  return (
-    <ToastContainer position="top-end" className="p-3">
-      <Toast onClose={handleClose} show={show} delay={3000} autohide>
-        <Toast.Header>
-          <strong className="me-auto">New Message</strong>
-        </Toast.Header>
-        <Toast.Body>{message}</Toast.Body>
-      </Toast>
-    </ToastContainer>
-  );
+// Custom hook to consume the context
+export const useNotification = () => {
+  const context = useContext(NotificationContext);
+  if (!context) {
+    throw new Error('useNotification must be used within a NotificationProvider');
+  }
+  return context;
 };
 
-export default Notification;
+// Provider component that wraps around the application
+export const NotificationProvider = ({ children }) => {
+  const [notifications, setNotifications] = useState([]);
+
+  // Function to show a notification with sender information
+  const showNotification = (sender, message) => {
+    const id = Date.now();
+    setNotifications((prevNotifications) => [...prevNotifications, { id, sender, message }]);
+    _toast.info(`New message from ${sender}: ${message}`);
+  };
+
+  // Function to hide a notification based on its ID
+  const hideNotification = (id) => {
+    setNotifications((prevNotifications) => prevNotifications.filter((notification) => notification.id !== id));
+  };
+
+  return (
+    <NotificationContext.Provider value={{ notifications, showNotification, hideNotification }}>
+      <ToastContainer /> {/* The ToastContainer can be rendered here */}
+      {children}
+    </NotificationContext.Provider>
+  );
+};
