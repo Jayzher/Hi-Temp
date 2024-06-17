@@ -61,7 +61,6 @@ const ChatRoom = () => {
     fetchData();
   };
 
-
   const initializeChatBoxes = (data) => {
     const updatedChatBoxes = {};
     data.forEach((user) => {
@@ -76,28 +75,33 @@ const ChatRoom = () => {
   useEffect(() => {
     if (socket) {
       const handleNewMessage = (newMessage) => {
-        if (newMessage.recipient.id === user.id || newMessage.sender.id === user.id) {
-          setChatBoxes((prevChatBoxes) => {
-            const updatedChatBoxes = { ...prevChatBoxes };
-            const senderBox = updatedChatBoxes[newMessage.sender.id] || { visible: false, messages: [] };
-            const recipientBox = updatedChatBoxes[newMessage.recipient.id] || { visible: false, messages: [] };
+        const isRecipient = newMessage.recipient.id === user.id;
+        const isSender = newMessage.sender.id === user.id;
 
+        setChatBoxes((prevChatBoxes) => {
+          const updatedChatBoxes = { ...prevChatBoxes };
+
+          if (isRecipient) {
+            // Only update the sender's chat box for the recipient
+            const senderBox = updatedChatBoxes[newMessage.sender.id] || { visible: false, messages: [] };
             senderBox.visible = true;
             senderBox.messages = [...senderBox.messages, newMessage];
+            updatedChatBoxes[newMessage.sender.id] = senderBox;
+          } else if (isSender) {
+            // Only update the recipient's chat box for the sender
+            const recipientBox = updatedChatBoxes[newMessage.recipient.id] || { visible: false, messages: [] };
             recipientBox.visible = true;
             recipientBox.messages = [...recipientBox.messages, newMessage];
-
-            updatedChatBoxes[newMessage.sender.id] = senderBox;
             updatedChatBoxes[newMessage.recipient.id] = recipientBox;
-
-            return updatedChatBoxes;
-          });
-
-          if (newMessage.recipient.id === user.id) {
-            showNotification(`New message from ${newMessage.sender.name}`);
-          } else if (newMessage.sender.id === user.id) {
-            showNotification('Message sent');
           }
+
+          return updatedChatBoxes;
+        });
+
+        if (isRecipient) {
+          showNotification(`New message from ${newMessage.sender.name}`);
+        } else if (isSender) {
+          showNotification('Message sent');
         }
       };
 
@@ -158,10 +162,10 @@ const ChatRoom = () => {
             return (
               <ChatBox
                 key={user._id}
-                recipient={chatBox && chatBox.visible ? user : null}
-                visible={chatBox && chatBox.visible}
+                recipient={chatBox?.visible ? user : null}
+                visible={chatBox?.visible}
                 setChatBoxes={setChatBoxes}
-                messages={chatBox && chatBox.messages ? chatBox.messages : []}
+                messages={chatBox?.messages || []}
                 handleSendMessage={handleSendMessage}
               />
             );
