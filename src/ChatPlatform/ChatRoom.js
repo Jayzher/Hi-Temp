@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import '../components/Style.css';
 import './Chat.css';
-import UserContext from '../UserContext'; // Import UserContext
+import UserContext from '../userContext'; // Import UserContext
 
 const ChatRoom = () => {
   const socket = useSocket();
