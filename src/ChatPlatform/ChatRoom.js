@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../components/Style.css';
 import './Chat.css';
 import UserContext from '../userContext'; // Import UserContext
+import { useNotification } from '../NotificationContext'; 
 
 const ChatRoom = () => {
   const socket = useSocket();
@@ -17,6 +18,7 @@ const ChatRoom = () => {
   const [showUsers, setShowUsers] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
 
   useEffect(() => {
     fetchUserList();
@@ -46,11 +48,10 @@ const ChatRoom = () => {
       .then((data) => {
         setUserList(data);
         setChatBoxes((prevChatBoxes) => {
-          const updatedChatBoxes = { ...prevChatBoxes };
+          const updatedChatBoxes = {};
           data.forEach((user) => {
-            if (!updatedChatBoxes[user._id]) {
-              updatedChatBoxes[user._id] = { visible: true, messages: [] };
-            }
+            // Initialize chat box visibility based on recipient
+            updatedChatBoxes[user._id] = { visible: false, messages: [] };
           });
           return updatedChatBoxes;
         });
@@ -85,7 +86,7 @@ const ChatRoom = () => {
             }
             return updatedChatBoxes;
           });
-         
+
           if (newMessage.receiver.name === user.name) {
             showNotification(`New message from ${newMessage.sender.name}`);
           } else if (newMessage.sender.name === user.name) {
@@ -106,22 +107,12 @@ const ChatRoom = () => {
 
   const handleUserSelect = (selectedUser) => {
     setChatBoxes((prevChatBoxes) => {
-      const updatedChatBoxes = { ...prevChatBoxes };
-
-      // Toggle the visibility of the selected user's chat box
-      updatedChatBoxes[selectedUser._id] = {
-        ...updatedChatBoxes[selectedUser._id],
-        visible: !updatedChatBoxes[selectedUser._id]?.visible,
-      };
-
-      // Ensure other chat boxes remain unchanged
-      Object.keys(updatedChatBoxes).forEach((key) => {
-        if (key !== selectedUser._id) {
-          updatedChatBoxes[key] = {
-            ...updatedChatBoxes[key],
-            visible: false, // Close all other chat boxes
-          };
-        }
+      const updatedChatBoxes = {};
+      Object.keys(prevChatBoxes).forEach((key) => {
+        updatedChatBoxes[key] = {
+          ...prevChatBoxes[key],
+          visible: key === selectedUser._id ? !prevChatBoxes[key]?.visible : false,
+        };
       });
 
       return updatedChatBoxes;
