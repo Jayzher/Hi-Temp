@@ -74,17 +74,6 @@ const ChatRoom = () => {
             newMessage.sender.name === user.name
               ? newMessage.receiver._id
               : newMessage.sender._id;
-
-          setChatBoxes((prevChatBoxes) => {
-            const updatedChatBoxes = { ...prevChatBoxes };
-            if (updatedChatBoxes[relevantUserId]) {
-              updatedChatBoxes[relevantUserId].messages = [
-                ...(updatedChatBoxes[relevantUserId].messages || []),
-                newMessage,
-              ];
-            }
-            return updatedChatBoxes;
-          });
          
           if (newMessage.receiver.name === user.name) {
             showNotification(`New message from ${newMessage.sender.name}`);
