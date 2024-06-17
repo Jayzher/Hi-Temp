@@ -47,7 +47,7 @@ const ChatRoom = () => {
           const updatedChatBoxes = { ...prevChatBoxes };
           data.forEach((user) => {
             if (!updatedChatBoxes[user._id]) {
-              updatedChatBoxes[user._id] = false;
+              updatedChatBoxes[user._id] = { visible: false, messages: [] };
             }
           });
           return updatedChatBoxes;
@@ -106,8 +106,8 @@ const ChatRoom = () => {
     setChatBoxes((prevChatBoxes) => ({
       ...prevChatBoxes,
       [user._id]: {
+        ...prevChatBoxes[user._id],
         visible: !prevChatBoxes[user._id]?.visible,
-        messages: prevChatBoxes[user._id]?.messages || [],
       },
     }));
     if (isMobile) {
@@ -125,7 +125,7 @@ const ChatRoom = () => {
       if (updatedChatBoxes[recipientId]) {
         updatedChatBoxes[recipientId].messages = [
           ...(updatedChatBoxes[recipientId].messages || []),
-          { content: messageContent, sender: { id: 'self' } }, // 'self' indicates the sender is the current user
+          { content: messageContent, sender: { _id: 'self' } }, // 'self' indicates the sender is the current user
         ];
       }
       return updatedChatBoxes;
@@ -134,7 +134,13 @@ const ChatRoom = () => {
 
   const handleBackClick = () => {
     setShowUsers(true); // Show user list on back button click
-    setChatBoxes({}); // Hide all chat boxes
+    setChatBoxes((prevChatBoxes) => {
+      const updatedChatBoxes = { ...prevChatBoxes };
+      Object.keys(updatedChatBoxes).forEach((key) => {
+        updatedChatBoxes[key].visible = false;
+      });
+      return updatedChatBoxes;
+    });
   };
 
   return (
@@ -184,6 +190,7 @@ const ChatRoom = () => {
               recipient={chatBoxes[user._id] ? user : null}
               visible={chatBoxes[user._id]?.visible}
               setChatBoxes={setChatBoxes}
+              messages={chatBoxes[user._id]?.messages || []}
               socket={socket}
               handleSendMessage={handleSendMessage}
             />
