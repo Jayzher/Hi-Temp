@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast as _toast, ToastContainer } from 'react-toastify';
-import { useSocket } from '../SocketProvider'; // Assuming you have SocketProvider set up
+import { useSocket } from './SocketProvider'; // Assuming you have SocketProvider set up
 import 'react-toastify/dist/ReactToastify.css';
 
 // Create a context object
