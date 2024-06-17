@@ -4,12 +4,11 @@ import { Button } from 'react-bootstrap';
 import { useSocket } from '../SocketProvider'; // Assuming you have SocketProvider set up
 import UserContext from '../userContext'; // Adjust the path as needed
 import { toast } from 'react-toastify'; // Import toast from react-toastify
-import { useNotification } from '../NotificationContext'; // Adjust the path as needed
 import 'react-toastify/dist/ReactToastify.css';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
-const ChatBox = ({ recipient, visible, setChatBoxes }) => {
+const ChatBox = ({ recipient, visible, setChatBoxes, handleSendMessage }) => {
   const socket = useSocket();
   const { user } = useContext(UserContext); // Assuming UserContext provides user information
   const [message, setMessage] = useState('');
@@ -18,7 +17,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const [paddingBottom, setPaddingBottom] = useState(0);
   const textareaRef = useRef(null);
   const messagesContainerRef = useRef(null);
-  const { showNotification } = useNotification();
 
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
@@ -40,27 +38,10 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     e.preventDefault();
     if (message.trim() !== '' && recipient && recipient._id) {
       try {
-        const response = await fetch(`${apiUrl}/messages/send`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
-          body: JSON.stringify({
-            content: message,
-            recipientId: recipient._id,
-            recipientName: recipient.name,
-            department: recipient.department
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to send message');
-        }
+        await handleSendMessage(recipient._id, message);
         setMessage('');
         textareaRef.current.style.height = 'auto';
         setTextareaHeight(0);
-        showNotification('Message sent');
       } catch (error) {
         console.error('Error sending message:', error);
       }
@@ -69,123 +50,103 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     }
   };
 
-  // Function to fetch initial conversation
-  const fetchInitialConversation = async () => {
+  const fetchConversations = async () => {
     if (!recipient || !recipient._id) {
-      return; // Return early if recipient or recipient._id is null
+      return; // Return early if recipient or recipient._id is undefined
     }
-
     try {
-      const response = await fetch(`${apiUrl}/messages/conversation/${recipient._id}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-
+      const response = await fetch(`${apiUrl}/conversations/${recipient._id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch conversations');
       }
-
       const data = await response.json();
-      setMessages(data);
+      setMessages(data.conversation);
     } catch (error) {
       console.error('Error fetching conversations:', error);
     }
   };
 
   useEffect(() => {
-    // Fetch initial conversation when recipient changes or component mounts
-    fetchInitialConversation();
+    fetchConversations();
   }, [recipient]);
 
   useEffect(() => {
-    // Scroll to the bottom of the messages container when new messages arrive
+    if (socket) {
+      const handleNewMessage = (newMessage) => {
+        if (newMessage.sender._id === recipient._id || newMessage.recipient._id === user._id) {
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
+        }
+      };
+
+      socket.on('new_message', handleNewMessage);
+
+      return () => {
+        socket.off('new_message', handleNewMessage);
+      };
+    }
+  }, [socket, recipient, user]);
+
+  useEffect(() => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
     }
   }, [messages]);
-
-  useEffect(() => {
-    if (socket) {
-      const handleMessageEvent = (newMessage) => {
-        if (newMessage.recipient._id === user.id) {
-          // Update messages state with the new message
-          setMessages(prevMessages => [...prevMessages, newMessage]);
-          showNotification(`New message from ${newMessage.sender.name}: ${newMessage.content}`);
-        }
-      };
-
-      fetchInitialConversation();
-
-      // Listen for new messages from socket
-      socket.on('new_message', handleMessageEvent);
-
-      return () => {
-        // Clean up socket listener when component unmounts
-        socket.off('new_message', handleMessageEvent);
-      };
-    }
-  }, [socket, user]);
 
   if (!recipient) {
     return null;
   }
 
   return (
-    <div style={{ width: "100%", height: "100vh" }}>
-      <div id="chat-box" className={`chat-box ${visible ? 'visible' : 'hidden'} flex-column ms-3 mt-3 hide-on-small`} style={{ display: "flex" }}>
-        <div className="header d-flex flex-row justify-content-between">
-          <p style={{ fontSize: '1.1rem', fontWeight: "bolder" }}>{recipient.name}</p>
-          <button className="text-center fw-bold" style={{ background: "rgba(0, 0, 0, 0.3)", borderRadius: "100px", fontSize: "0.8rem", height: "30px" }} onClick={() => setChatBoxes(prevChatBoxes => ({ ...prevChatBoxes, [recipient._id]: false }))}>
-            X
-          </button>
-        </div>
-        <div className="messages">
-          <div className="messages-container" style={{ minHeight: "100%" }} ref={messagesContainerRef}>
-            {messages.map((msg, index) => (
-              <div key={index} className={msg.sender.id === user.id ? 'sent' : 'received'}>
-                <p className="msg-content">{msg.content}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="footer">
-          <form className="d-flex flex-row justify-content-around" onSubmit={handleSubmit} style={{ width: '100%' }}>
-            <textarea
-              ref={textareaRef}
-              style={{ height: 'auto', overflow: 'hidden', width: '80%' }}
-              rows="1"
-              className="me-1 textarea-input"
-              value={message}
-              onChange={handleMessageChange}
-              placeholder="Type your message..."
-            />
-            <Button type="submit">Send</Button>
-          </form>
-        </div>
+    <div
+      className={`chat-box ${visible ? 'visible' : ''}`}
+      style={{
+        position: 'fixed',
+        bottom: '0',
+        right: '0',
+        width: '100%',
+        maxWidth: '400px',
+        height: '80%',
+        maxHeight: '400px',
+        background: 'white',
+        border: '1px solid #ddd',
+        boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+        zIndex: '1000',
+        display: visible ? 'block' : 'none',
+        flexDirection: 'column',
+      }}
+    >
+      <div className="chat-box-header" style={{ backgroundColor: '#f7f7f7', padding: '10px', borderBottom: '1px solid #ddd' }}>
+        <h5>{recipient.name}</h5>
+        <Button
+          variant="secondary"
+          onClick={() => setChatBoxes((prev) => ({ ...prev, [recipient._id]: false }))}
+        >
+          Close
+        </Button>
       </div>
-      <div className="show-on-small" style={{ display: "none", height: "100%", minHeight: "90vh" }}>
-        <div className="messages-container" ref={messagesContainerRef} style={{ flexGrow: 1, overflowY: 'auto', position: "fixed", bottom: "10vh", width: "100%", height: `82vh`, paddingBottom: `${paddingBottom}px` }}>
-          {messages.map((msg, index) => (
-            <div key={index} className={msg.sender.id === user.id ? 'sent' : 'received'}>
-              <p className="msg-content">{msg.content}</p>
+      <div className="chat-box-messages" ref={messagesContainerRef} style={{ flex: '1', padding: '10px', overflowY: 'auto' }}>
+        {messages.map((msg, index) => (
+          <div key={index} className={`message ${msg.sender._id === user._id ? 'sent' : 'received'}`}>
+            <div className="message-content">
+              <p>{msg.content}</p>
+              <span className="message-sender">{msg.sender.name}</span>
             </div>
-          ))}
-        </div>
-        <div className="footer" style={{ position: "fixed", zIndex: "10", width: "100%", right: "0", bottom: "0", background: "linear-gradient(184.1deg, rgb(249, 255, 182) 44.7%, rgb(226, 255, 172) 67.2%)", padding: "10px 0" }}>
-          <form className="d-flex flex-row ms-2 justify-content-end align-items-center" onSubmit={handleSubmit} style={{ width: '100%' }}>
-            <textarea
-              ref={textareaRef}
-              style={{ height: 'auto', overflow: 'hidden', width: '80%' }}
-              rows="2"
-              className="me-1 textarea-input"
-              value={message}
-              onChange={handleMessageChange}
-              placeholder="Type your message..."
-            />
-            <Button type="submit" style={{ width: '20%' }}>Send</Button>
-          </form>
-        </div>
+          </div>
+        ))}
+      </div>
+      <div className="chat-box-input" style={{ padding: '10px', borderTop: '1px solid #ddd' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
+          <textarea
+            ref={textareaRef}
+            value={message}
+            onChange={handleMessageChange}
+            rows="1"
+            style={{ resize: 'none', paddingBottom: paddingBottom }}
+          />
+          <Button type="submit" variant="primary" style={{ marginTop: '10px' }}>
+            Send
+          </Button>
+        </form>
       </div>
     </div>
   );

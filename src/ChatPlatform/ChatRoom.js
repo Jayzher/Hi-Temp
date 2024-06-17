@@ -77,14 +77,13 @@ const ChatRoom = () => {
     console.log('New message received:', newMessage);
     const senderName = newMessage.sender?.name || 'Unknown';
     if (newMessage.recipient.id === user.id) {
-      // Update messages state with the new message
-      setMessages(prevMessages => [...prevMessages, newMessage]);
+      // Display notification for new message
       showNotification(`New message from ${newMessage.sender.name}: ${newMessage.content}`);
     }
 
     // Update chat box state to show new messages
     const { sender, receiver, content } = newMessage;
-    const relevantUserId = sender.id !== user.id ? receiver.id : sender.id;
+    const relevantUserId = sender.id !== user.id ? sender.id : receiver.id;
 
     setChatBoxes((prevChatBoxes) => {
       const updatedChatBoxes = { ...prevChatBoxes };
@@ -93,16 +92,25 @@ const ChatRoom = () => {
       }
       return updatedChatBoxes;
     });
+
+    // Ensure the relevant chat box updates its messages
+    setUserList((prevUserList) =>
+      prevUserList.map((u) => {
+        if (u._id === relevantUserId) {
+          return {
+            ...u,
+            messages: [...(u.messages || []), newMessage],
+          };
+        }
+        return u;
+      })
+    );
   };
 
-  const handleNotificationClick = () => {
-    navigate('/Messages'); // Navigate to /Messages route
-  };
-
-  const handleUserSelect = (user) => {
+  const handleUserSelect = (selectedUser) => {
     setChatBoxes((prevChatBoxes) => ({
       ...prevChatBoxes,
-      [user._id]: !prevChatBoxes[user._id],
+      [selectedUser._id]: true,
     }));
     if (isMobile) {
       setShowUsers(false); // Hide user list when a user is selected on mobile
@@ -111,19 +119,23 @@ const ChatRoom = () => {
 
   const handleSendMessage = (recipientId, messageContent) => {
     socket.emit('send_message', { recipientId, content: messageContent });
-    setChatBoxes((prevChatBoxes) => {
-      const updatedChatBoxes = { ...prevChatBoxes };
-      if (!updatedChatBoxes[recipientId]) {
-        updatedChatBoxes[recipientId] = true;
-      }
-      return updatedChatBoxes;
-    });
-    // Update chat box state to show sent message
+
+    // Ensure the relevant chat box updates its messages
+    setUserList((prevUserList) =>
+      prevUserList.map((u) => {
+        if (u._id === recipientId) {
+          return {
+            ...u,
+            messages: [...(u.messages || []), { sender: user, content: messageContent }],
+          };
+        }
+        return u;
+      })
+    );
   };
 
   const handleBackClick = () => {
     setShowUsers(true); // Show user list on back button click
-    setChatBoxes({}); // Hide all chat boxes
   };
 
   return (
