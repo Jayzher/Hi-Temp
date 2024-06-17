@@ -1,22 +1,58 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useReducer } from 'react';
 import './Chat.css';
 import { Button } from 'react-bootstrap';
 import { useSocket } from '../SocketProvider';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
+const initialState = {
+  messageInput: '',
+  conversations: {}, // Dictionary to store messages for each recipient
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'SET_MESSAGE_INPUT':
+      return {
+        ...state,
+        messageInput: action.payload,
+      };
+    case 'ADD_MESSAGE':
+      const { recipientId, message } = action.payload;
+      return {
+        ...state,
+        conversations: {
+          ...state.conversations,
+          [recipientId]: [...(state.conversations[recipientId] || []), message],
+        },
+        messageInput: '', // Clear message input after sending
+      };
+    case 'SET_MESSAGES':
+      const { recipientId: id, messages } = action.payload;
+      return {
+        ...state,
+        conversations: {
+          ...state.conversations,
+          [id]: messages,
+        },
+      };
+    default:
+      return state;
+  }
+};
+
 const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const socket = useSocket();
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([]);
-  const [textareaHeight, setTextareaHeight] = useState(0);
-  const [paddingBottom, setPaddingBottom] = useState(0);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { messageInput, conversations } = state;
+  const messages = conversations[recipient._id] || [];
+
   const textareaRef = useRef(null);
   const messagesContainerRef = useRef(null);
 
   // Function to handle message input change
   const handleMessageChange = (e) => {
-    setMessage(e.target.value);
+    dispatch({ type: 'SET_MESSAGE_INPUT', payload: e.target.value });
     adjustTextareaHeight();
   };
 
@@ -24,19 +60,12 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const adjustTextareaHeight = () => {
     textareaRef.current.style.height = 'auto';
     textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    setTextareaHeight(textareaRef.current.scrollHeight);
-    setPaddingBottom(textareaHeight - 30);
   };
-
-  // Update padding bottom when textarea height changes
-  useEffect(() => {
-    setPaddingBottom(textareaHeight - 30);
-  }, [textareaHeight]);
 
   // Function to handle message submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (message.trim() !== '' && recipient && recipient._id) {
+    if (messageInput.trim() !== '' && recipient && recipient._id) {
       try {
         const response = await fetch(`${apiUrl}/messages/send`, {
           method: 'POST',
@@ -45,7 +74,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           },
           body: JSON.stringify({
-            content: message,
+            content: messageInput,
             recipientId: recipient._id,
             recipientName: recipient.name,
             department: recipient.department
@@ -57,16 +86,16 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         }
 
         const newMessage = {
-          content: message,
+          content: messageInput,
           sender: { id: socket.userId, name: localStorage.getItem('username') }
         };
 
         // Update sender's chat box
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
+        dispatch({ type: 'ADD_MESSAGE', payload: { recipientId: recipient._id, message: newMessage } });
 
-        setMessage('');
-        textareaRef.current.style.height = 'auto';
-        setTextareaHeight(0);
+        // Clear message input and adjust textarea
+        dispatch({ type: 'SET_MESSAGE_INPUT', payload: '' });
+        adjustTextareaHeight();
       } catch (error) {
         console.error('Error sending message:', error);
       }
@@ -94,7 +123,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         }
 
         const data = await response.json();
-        setMessages(data);
+        dispatch({ type: 'SET_MESSAGES', payload: { recipientId: recipient._id, messages: data } });
       } catch (error) {
         console.error('Error fetching conversations:', error);
       }
@@ -109,7 +138,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         (newMessage.recipient.id === recipient._id && newMessage.sender.id === socket.userId) ||
         (newMessage.sender.id === recipient._id && newMessage.recipient.id === socket.userId)
       ) {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
+        dispatch({ type: 'ADD_MESSAGE', payload: { recipientId: recipient._id, message: newMessage } });
       }
     };
 
@@ -163,7 +192,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
               style={{ height: 'auto', overflow: 'hidden', width: '80%' }}
               rows="1"
               className="me-1 textarea-input"
-              value={message}
+              value={messageInput}
               onChange={handleMessageChange}
               placeholder="Type your message..."
             />
@@ -188,7 +217,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
               style={{ height: 'auto', overflow: 'hidden', width: '80%' }}
               rows="2"
               className="me-1 textarea-input"
-              value={message}
+              value={messageInput}
               onChange={handleMessageChange}
               placeholder="Type your message..."
             />
