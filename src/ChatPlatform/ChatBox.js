@@ -2,13 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import './Chat.css';
 import { Button } from 'react-bootstrap';
 import { useSocket } from '../SocketProvider'; // Assuming you have SocketProvider set up
-import { useNotification } from '../NotificationContext'; // Adjust the path as needed
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const socket = useSocket(); // Get the socket instance using useSocket hook
-  const { showInfoNotification } = useNotification(); // Using showInfoNotification from NotificationContext
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [textareaHeight, setTextareaHeight] = useState(0);
@@ -57,14 +55,8 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         setMessage('');
         textareaRef.current.style.height = 'auto';
         setTextareaHeight(0);
-
-        // Show success notification on successful message send
-        showInfoNotification('Message sent');
       } catch (error) {
         console.error('Error sending message:', error);
-
-        // Show error notification on failed message send
-        showInfoNotification('Failed to send message');
       }
     } else {
       console.error('Recipient ID is missing');
@@ -101,7 +93,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   useEffect(() => {
     const handleMessageEvent = (newMessage) => {
       setMessages(prevMessages => [...prevMessages, newMessage]);
-      showInfoNotification('New message received');
     };
 
     if (socket) {
