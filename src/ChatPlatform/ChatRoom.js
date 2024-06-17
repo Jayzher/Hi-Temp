@@ -76,7 +76,7 @@ const ChatRoom = () => {
   const handleNewMessage = (newMessage) => {
     console.log('New message received:', newMessage);
     const senderName = newMessage.sender?.name || 'Unknown';
-    if (newMessage.recipient._id === user.id) {
+    if (newMessage.recipient.id === user.id) {
       // Update messages state with the new message
       setMessages(prevMessages => [...prevMessages, newMessage]);
       showNotification(`New message from ${newMessage.sender.name}: ${newMessage.content}`);
@@ -84,7 +84,7 @@ const ChatRoom = () => {
 
     // Update chat box state to show new messages
     const { sender, receiver, content } = newMessage;
-    const relevantUserId = sender._id !== user.id ? receiver._id : sender._id;
+    const relevantUserId = sender.id !== user.id ? receiver.id : sender.id;
 
     setChatBoxes((prevChatBoxes) => {
       const updatedChatBoxes = { ...prevChatBoxes };
