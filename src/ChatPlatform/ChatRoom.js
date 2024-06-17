@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../components/Style.css';
 import './Chat.css';
 import UserContext from '../userContext'; // Import UserContext
-import { useNotification } from '../NotificationProvider';
+import { useNotification } from '../NotificationContext';
 
 const ChatRoom = () => {
   const socket = useSocket();
