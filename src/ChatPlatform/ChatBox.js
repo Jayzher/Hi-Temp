@@ -3,7 +3,7 @@ import './Chat.css';
 import { Button } from 'react-bootstrap';
 import { useSocket } from '../SocketProvider'; // Assuming you have SocketProvider set up
 import UserContext from '../userContext';
-import { useNotification } from '../NotificationProvider'; // Assuming you have NotificationProvider set up
+import { useNotification } from '../NotificationContext'; // Assuming you have NotificationProvider set up
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
