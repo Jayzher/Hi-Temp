@@ -17,7 +17,6 @@ import Planner from './navlinks/Planner';
 import CreateNewTask from './navlinks/CreateNewTask';
 import Employee from './navlinks/Employee';
 import Messages from './navlinks/Messages';
-import ChatRoom from './components/ChatRoom'; // Ensure correct path
 
 function App() {
   const [user, setUser] = useState({
@@ -52,8 +51,6 @@ function App() {
               <Route path="/Employee" element={<Employee />} />
               <Route path="/Planner" element={<Planner />} />
               <Route path="/Messages" element={<Messages />} />
-              {/* ChatRoom Route */}
-              <Route path="/ChatRoom" element={<ChatRoom />} />
             </Routes>
           </Container>
         </Router>
