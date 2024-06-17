@@ -165,6 +165,8 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     return null;
   }
 
+  //Modified
+
   // Render the chat box component
   return (
     <>
