@@ -14,13 +14,11 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const textareaRef = useRef(null);
   const messagesContainerRef = useRef(null);
 
-  // Function to handle changes in the message input textarea
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
     adjustTextareaHeight();
   };
 
-  // Function to adjust textarea height based on content
   const adjustTextareaHeight = () => {
     textareaRef.current.style.height = 'auto';
     textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
@@ -28,12 +26,10 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     setPaddingBottom(textareaHeight - 30);
   };
 
-  // Effect to update padding bottom when textarea height changes
   useEffect(() => {
     setPaddingBottom(textareaHeight - 30);
   }, [textareaHeight]);
 
-  // Function to handle form submission (sending message)
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (message.trim() !== '' && recipient && recipient._id) {
@@ -56,7 +52,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
           throw new Error('Failed to send message');
         }
 
-        // Clear message input and adjust textarea height
         setMessage('');
         textareaRef.current.style.height = 'auto';
         setTextareaHeight(0);
@@ -68,10 +63,9 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     }
   };
 
-  // Effect to fetch initial messages when recipient changes
   useEffect(() => {
     const fetchConversations = async () => {
-      if (!recipient || !recipient._id) {
+      if (!recipient || recipient._id === null) {
         console.log("Recipient or recipient._id is null");
         return; // Return early if recipient or recipient._id is null
       }
@@ -96,7 +90,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     fetchConversations();
   }, [recipient]);
 
-  // Effect to handle incoming socket messages
   useEffect(() => {
     const handleMessageEvent = (newMessage) => {
       setMessages(prevMessages => [...prevMessages, newMessage]);
@@ -113,43 +106,72 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     };
   }, [socket, recipient]);
 
-  // Effect to scroll messages container to bottom when messages change
   useEffect(() => {
+    // Scroll to the bottom of the messages container when new messages arrive
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
     }
   }, [messages]);
 
-  // Render nothing if recipient is not provided
   if (!recipient) {
     return null;
   }
 
-  // Render chat box component
   return (
-    <div className={`chat-box ${visible ? 'visible' : 'hidden'}`}>
-      <div className="header">
-        <p>{recipient.name}</p>
-        <button onClick={() => setChatBoxes(prevChatBoxes => ({ ...prevChatBoxes, [recipient._id]: false }))}>Close</button>
-      </div>
-      <div className="messages" ref={messagesContainerRef}>
-        {messages.map((msg, index) => (
-          <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
-            <p>{msg.content}</p>
+    <div style={{ width: "100%", height: "100vh" }}>
+      <div id="chat-box" className={`chat-box ${visible ? 'visible' : 'hidden'} flex-column ms-3 mt-3 hide-on-small`} style={{display: "flex"}}>
+        <div className="header d-flex flex-row justify-content-between">
+          <p style={{ fontSize: '1.1rem', fontWeight: "bolder" }}>{recipient.name}</p>
+          <button className="text-center fw-bold" style={{background: "rgba(0, 0, 0, 0.3)", borderRadius: "100px", fontSize: "0.8rem", height: "30px"}} onClick={() => setChatBoxes(prevChatBoxes => ({ ...prevChatBoxes, [recipient._id]: false }))}>
+            X
+          </button>
+        </div>
+        <div className="messages">
+          <div className="messages-container" style={{minHeight: "100%"}} ref={messagesContainerRef}>
+            {messages.map((msg, index) => (
+              <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
+                <p className="msg-content">{msg.content}</p>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+        <div className="footer">
+          <form className="d-flex flex-row justify-content-around" onSubmit={handleSubmit} style={{ width: '100%' }}>
+            <textarea
+              ref={textareaRef}
+              style={{ height: 'auto', overflow: 'hidden', width: '80%' }}
+              rows="1"
+              className="me-1 textarea-input"
+              value={message}
+              onChange={handleMessageChange}
+              placeholder="Type your message..."
+            />
+            <Button type="submit">Send</Button>
+          </form>
+        </div>
       </div>
-      <div className="footer">
-        <form onSubmit={handleSubmit}>
-          <textarea
-            ref={textareaRef}
-            rows="1"
-            value={message}
-            onChange={handleMessageChange}
-            placeholder="Type your message..."
-          />
-          <Button type="submit">Send</Button>
-        </form>
+      <div className="show-on-small" style={{ display: "none", height: "100%", minHeight: "90vh" }}>
+        <div className="messages-container" ref={messagesContainerRef} style={{ flexGrow: 1, overflowY: 'auto', position: "fixed", bottom: "10vh", width: "100%", height: `82vh`, paddingBottom: `${paddingBottom}px` }}>
+          {messages.map((msg, index) => (
+            <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
+              <p className="msg-content">{msg.content}</p>
+            </div>
+          ))}
+        </div>
+        <div className="footer" style={{ position: "fixed", zIndex: "10", width: "100%", right: "0", bottom: "0", background: "linear-gradient(184.1deg, rgb(249, 255, 182) 44.7%, rgb(226, 255, 172) 67.2%)", padding: "10px 0" }}>
+          <form className="d-flex flex-row ms-2 justify-content-end align-items-center" onSubmit={handleSubmit} style={{ width: '100%' }}>
+            <textarea
+              ref={textareaRef}
+              style={{ height: 'auto', overflow: 'hidden', width: '80%' }}
+              rows="2"
+              className="me-1 textarea-input"
+              value={message}
+              onChange={handleMessageChange}
+              placeholder="Type your message..."
+            />
+            <Button type="submit" style={{ width: '20%' }}>Send</Button>
+          </form>
+        </div>
       </div>
     </div>
   );
