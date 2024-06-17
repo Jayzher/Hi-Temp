@@ -27,7 +27,6 @@ const ChatRoom = () => {
         setShowUsers(true); // Show user list if screen width is greater than or equal to 700px
       }
     };
-    
 
     window.addEventListener('resize', handleResize);
 
@@ -77,11 +76,15 @@ const ChatRoom = () => {
   const handleNewMessage = (newMessage) => {
     console.log('New message received:', newMessage);
     const senderName = newMessage.sender?.name || 'Unknown';
-    showNotification(`New message from ${senderName}`);
+    if (newMessage.recipient._id === user.id) {
+      // Update messages state with the new message
+      setMessages(prevMessages => [...prevMessages, newMessage]);
+      showNotification(`New message from ${newMessage.sender.name}: ${newMessage.content}`);
+    }
 
     // Update chat box state to show new messages
     const { sender, receiver, content } = newMessage;
-    const relevantUserId = sender._id === user.id ? receiver._id : sender._id;
+    const relevantUserId = sender._id !== user.id ? receiver._id : sender._id;
 
     setChatBoxes((prevChatBoxes) => {
       const updatedChatBoxes = { ...prevChatBoxes };
@@ -108,7 +111,13 @@ const ChatRoom = () => {
 
   const handleSendMessage = (recipientId, messageContent) => {
     socket.emit('send_message', { recipientId, content: messageContent });
-
+    setChatBoxes((prevChatBoxes) => {
+      const updatedChatBoxes = { ...prevChatBoxes };
+      if (!updatedChatBoxes[recipientId]) {
+        updatedChatBoxes[recipientId] = true;
+      }
+      return updatedChatBoxes;
+    });
     // Update chat box state to show sent message
   };
 

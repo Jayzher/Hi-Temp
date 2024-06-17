@@ -115,6 +115,8 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         }
       };
 
+      fetchInitialConversation();
+
       // Listen for new messages from socket
       socket.on('new_message', handleMessageEvent);
 
