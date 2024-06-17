@@ -203,7 +203,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
 
       {/* Mobile Version */}
       <div className="show-on-small" style={{ display: "none", height: "100%", minHeight: "90vh" }}>
-        <div className="messages-container" ref={messagesContainerRef} style={{ flexGrow: 1, overflowY: 'auto', position: "fixed", bottom: "10vh", width: "100%", height: `82vh`, paddingBottom: `${paddingBottom}px` }}>
+        <div className="messages-container" ref={messagesContainerRef} style={{ flexGrow: 1, overflowY: 'auto', position: "fixed", bottom: "10vh", width: "100%", height: `82vh` }}>
           {messages.map((msg, index) => (
             <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
               <p className="msg-content">{msg.content}</p>
