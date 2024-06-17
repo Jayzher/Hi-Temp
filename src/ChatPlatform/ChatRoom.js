@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../components/Style.css';
 import './Chat.css';
 import UserContext from '../userContext'; // Import UserContext
-import { useNotification } from '../NotificationContext'; 
+import { useNotification } from '../NotificationContext';
 
 const ChatRoom = () => {
   const socket = useSocket();
@@ -47,11 +47,6 @@ const ChatRoom = () => {
       })
       .then((data) => {
         setUserList(data);
-        const initialChatBoxes = {};
-        data.forEach((user) => {
-          initialChatBoxes[user._id] = { visible: false, messages: [] };
-        });
-        setChatBoxes(initialChatBoxes);
       })
       .catch((error) => {
         console.error('Error fetching user list:', error);
@@ -96,7 +91,7 @@ const ChatRoom = () => {
         socket.off('new_message');
       };
     }
-  }, [socket, user]);
+  }, [socket, user, showNotification]);
 
   const handleNotificationClick = () => {
     navigate('/Messages');
@@ -104,14 +99,11 @@ const ChatRoom = () => {
 
   const handleUserSelect = (selectedUser) => {
     setChatBoxes((prevChatBoxes) => {
-      const updatedChatBoxes = {};
-      Object.keys(prevChatBoxes).forEach((key) => {
-        updatedChatBoxes[key] = {
-          ...prevChatBoxes[key],
-          visible: key === selectedUser._id ? !prevChatBoxes[key]?.visible : false,
-        };
-      });
-
+      const updatedChatBoxes = { ...prevChatBoxes };
+      updatedChatBoxes[selectedUser._id] = {
+        visible: true,
+        messages: [], // You can initialize with previous messages if needed
+      };
       return updatedChatBoxes;
     });
 
@@ -139,13 +131,8 @@ const ChatRoom = () => {
 
   const handleBackClick = () => {
     setShowUsers(true);
-    setChatBoxes((prevChatBoxes) => {
-      const updatedChatBoxes = { ...prevChatBoxes };
-      Object.keys(updatedChatBoxes).forEach((key) => {
-        updatedChatBoxes[key].visible = false;
-      });
-      return updatedChatBoxes;
-    });
+    // Hide all chat boxes when going back
+    setChatBoxes({});
   };
 
   return (
@@ -190,15 +177,17 @@ const ChatRoom = () => {
           }}
         >
           {userList.map((user) => (
-            <ChatBox
-              key={user._id}
-              recipient={user}
-              visible={chatBoxes[user._id]?.visible}
-              setChatBoxes={setChatBoxes}
-              messages={chatBoxes[user._id]?.messages || []}
-              socket={socket}
-              handleSendMessage={handleSendMessage}
-            />
+            chatBoxes[user._id]?.visible && (
+              <ChatBox
+                key={user._id}
+                recipient={user}
+                visible={chatBoxes[user._id]?.visible}
+                setChatBoxes={setChatBoxes}
+                messages={chatBoxes[user._id]?.messages || []}
+                socket={socket}
+                handleSendMessage={handleSendMessage}
+              />
+            )
           ))}
         </div>
       </div>
