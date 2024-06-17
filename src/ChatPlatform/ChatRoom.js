@@ -104,14 +104,30 @@ const ChatRoom = () => {
     navigate('/Messages');
   };
 
-  const handleUserSelect = (user) => {
-    setChatBoxes((prevChatBoxes) => ({
-      ...prevChatBoxes,
-      [user._id]: {
-        ...prevChatBoxes[user._id],
-        visible: !prevChatBoxes[user._id]?.visible,
-      },
-    }));
+  const handleUserSelect = (selectedUser) => {
+    setChatBoxes((prevChatBoxes) => {
+      const updatedChatBoxes = { ...prevChatBoxes };
+
+      // Toggle the visibility of the selected user's chat box
+      updatedChatBoxes[selectedUser._id] = {
+        ...updatedChatBoxes[selectedUser._id],
+        visible: !updatedChatBoxes[selectedUser._id]?.visible,
+      };
+
+      // Ensure other chat boxes remain unchanged
+      Object.keys(updatedChatBoxes).forEach((key) => {
+        if (key !== selectedUser._id) {
+          updatedChatBoxes[key] = {
+            ...updatedChatBoxes[key],
+            visible: false, // Close all other chat boxes
+          };
+        }
+      });
+
+      return updatedChatBoxes;
+    });
+
+    // Hide user list on mobile
     if (isMobile) {
       setShowUsers(false);
     }
