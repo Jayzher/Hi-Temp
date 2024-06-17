@@ -92,6 +92,8 @@ const ChatRoom = () => {
     setChatBoxes({});
   };
 
+  //Modified
+
   return (
     <div className="dashboard-container" style={{ overflow: 'hidden', height: '100vh' }}>
       <div id="Chatroom-container" className="d-flex flex-row" style={{ height: '100%', maxHeight: '100vh', marginLeft: '15vw', width: '85vw', overflowY: 'hidden' }}>

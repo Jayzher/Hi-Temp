@@ -14,6 +14,8 @@ const Notification = ({ message, show, handleClose }) => {
     }
   }, [show, handleClose]);
 
+  //Modified
+
   return (
     <ToastContainer position="top-end" className="p-3">
       <Toast onClose={handleClose} show={show} delay={3000} autohide>
