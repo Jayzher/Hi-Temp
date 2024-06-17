@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Chat.css';
 import { Button } from 'react-bootstrap';
-import { useSocket } from '../SocketProvider'; // Assuming you have SocketProvider set up
+import { useSocket } from '../SocketProvider';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const ChatBox = ({ recipient, visible, setChatBoxes }) => {
-  const socket = useSocket(); // Get the socket instance using useSocket hook
+  const socket = useSocket();
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [textareaHeight, setTextareaHeight] = useState(0);
@@ -14,11 +14,13 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const textareaRef = useRef(null);
   const messagesContainerRef = useRef(null);
 
+  // Function to handle message input change
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
     adjustTextareaHeight();
   };
 
+  // Adjust textarea height based on content
   const adjustTextareaHeight = () => {
     textareaRef.current.style.height = 'auto';
     textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
@@ -26,10 +28,12 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     setPaddingBottom(textareaHeight - 30);
   };
 
+  // Update padding bottom when textarea height changes
   useEffect(() => {
     setPaddingBottom(textareaHeight - 30);
   }, [textareaHeight]);
 
+  // Function to handle message submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (message.trim() !== '' && recipient && recipient._id) {
@@ -52,6 +56,14 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
           throw new Error('Failed to send message');
         }
 
+        const newMessage = {
+          content: message,
+          sender: { id: socket.userId, name: localStorage.getItem('username') }
+        };
+
+        // Update sender's chat box
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+
         setMessage('');
         textareaRef.current.style.height = 'auto';
         setTextareaHeight(0);
@@ -63,10 +75,10 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     }
   };
 
+  // Effect to fetch conversation messages when recipient changes
   useEffect(() => {
     const fetchConversations = async () => {
-      if (!recipient || recipient._id === null) {
-        console.log("Recipient or recipient._id is null");
+      if (!recipient || !recipient._id) {
         return; // Return early if recipient or recipient._id is null
       }
 
@@ -90,13 +102,14 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     fetchConversations();
   }, [recipient]);
 
+  // Effect to handle new incoming messages via socket
   useEffect(() => {
     const handleMessageEvent = (newMessage) => {
       if (
         (newMessage.recipient.id === recipient._id && newMessage.sender.id === socket.userId) ||
         (newMessage.sender.id === recipient._id && newMessage.recipient.id === socket.userId)
       ) {
-        setMessages(prevMessages => [...prevMessages, newMessage]);
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
       }
     };
 
@@ -111,30 +124,31 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     };
   }, [socket, recipient]);
 
+  // Effect to scroll to bottom of messages container on new messages
   useEffect(() => {
-    // Scroll to the bottom of the messages container when new messages arrive
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
     }
   }, [messages]);
 
-  //Modifications -
-
+  // Return null if recipient is not defined
   if (!recipient) {
     return null;
   }
 
+  // Render the chat box component
   return (
-    <div style={{ width: "100%", height: "100vh" }}>
-      <div id="chat-box" className={`chat-box ${visible ? 'visible' : 'hidden'} flex-column ms-3 mt-3 hide-on-small`} style={{display: "flex"}}>
+    <>
+      {/* Desktop Version */}
+      <div className={`chat-box ${visible ? 'visible' : 'hidden'} flex-column ms-3 mt-3 hide-on-small`} style={{ display: "flex" }}>
         <div className="header d-flex flex-row justify-content-between">
           <p style={{ fontSize: '1.1rem', fontWeight: "bolder" }}>{recipient.name}</p>
-          <button className="text-center fw-bold" style={{background: "rgba(0, 0, 0, 0.3)", borderRadius: "100px", fontSize: "0.8rem", height: "30px"}} onClick={() => setChatBoxes(prevChatBoxes => ({ ...prevChatBoxes, [recipient._id]: false }))}>
+          <button className="text-center fw-bold" style={{ background: "rgba(0, 0, 0, 0.3)", borderRadius: "100px", fontSize: "0.8rem", height: "30px" }} onClick={() => setChatBoxes(prevChatBoxes => ({ ...prevChatBoxes, [recipient._id]: false }))}>
             X
           </button>
         </div>
         <div className="messages">
-          <div className="messages-container" style={{minHeight: "100%"}} ref={messagesContainerRef}>
+          <div className="messages-container" style={{ minHeight: "100%" }} ref={messagesContainerRef}>
             {messages.map((msg, index) => (
               <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
                 <p className="msg-content">{msg.content}</p>
@@ -157,6 +171,8 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
           </form>
         </div>
       </div>
+
+      {/* Mobile Version */}
       <div className="show-on-small" style={{ display: "none", height: "100%", minHeight: "90vh" }}>
         <div className="messages-container" ref={messagesContainerRef} style={{ flexGrow: 1, overflowY: 'auto', position: "fixed", bottom: "10vh", width: "100%", height: `82vh`, paddingBottom: `${paddingBottom}px` }}>
           {messages.map((msg, index) => (
@@ -180,7 +196,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
           </form>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
