@@ -63,7 +63,7 @@ const ChatRoom = () => {
       });
   };
 
-   useEffect(() => {
+  useEffect(() => {
     if (socket) {
       const handleNewMessage = (newMessage) => {
         console.log('New message received:', newMessage);
@@ -196,8 +196,7 @@ const ChatRoom = () => {
               visible={chatBoxes[user._id]?.visible}
               setChatBoxes={setChatBoxes}
               messages={chatBoxes[user._id]?.messages || []}
-              socket={socket}
-              handleSendMessage={handleSendMessage}
+              handleSendMessage={handleSendMessage} // Pass handleSendMessage function
             />
           ))}
         </div>

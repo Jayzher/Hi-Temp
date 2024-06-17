@@ -3,14 +3,12 @@ import './Chat.css';
 import { Button } from 'react-bootstrap';
 import { useSocket } from '../SocketProvider'; // Assuming you have SocketProvider set up
 import UserContext from '../userContext';
-import { useNotification } from '../NotificationContext'; // Assuming you have NotificationProvider set up
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const socket = useSocket(); // Get the socket instance using useSocket hook
   const { user } = useContext(UserContext) || {}; // Safely get the user from UserContext
-  const { showNotification } = useNotification(); // Get the showNotification function from NotificationContext
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [textareaHeight, setTextareaHeight] = useState(0);
@@ -74,7 +72,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
 
       } catch (error) {
         console.error('Error sending message:', error);
-        showNotification('Failed to send message'); // Notify the user of the error
       }
     } else {
       console.error('Recipient ID is missing');
@@ -103,7 +100,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         setMessages(data);
       } catch (error) {
         console.error('Error fetching conversations:', error);
-        showNotification('Failed to fetch conversations'); // Notify the user of the error
       }
     };
     fetchConversations();
