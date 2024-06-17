@@ -95,11 +95,30 @@ const ChatRoom = () => {
   //Modified
 
   return (
-    <div className="dashboard-container" style={{ overflow: 'hidden', height: '100vh' }}>
-      <div id="Chatroom-container" className="d-flex flex-row" style={{ height: '100%', maxHeight: '100vh', marginLeft: '15vw', width: '85vw', overflowY: 'hidden' }}>
+   <div className="dashboard-container" style={{ overflow: 'hidden', height: '100vh' }}>
+      <ToastContainer />
+      <div
+        id="Chatroom-container"
+        className="d-flex flex-row"
+        style={{ height: '100%', maxHeight: '100vh', marginLeft: '15vw', width: '85vw', overflowY: 'hidden' }}
+      >
         {!showUsers && isMobile && (
-          <div className="d-flex align-items-center justify-content-end" style={{ background: 'rgba(0, 0, 0, 0.7)', height: 'fit-content', width: '100%', padding: '5px', position: 'absolute', top: '0', zIndex: '10' }}>
-            <button onClick={handleBackClick} style={{ color: 'white', border: 'none', background: 'transparent', cursor: 'pointer' }}>
+          <div
+            className="d-flex align-items-center justify-content-end"
+            style={{
+              background: 'rgba(0, 0, 0, 0.7)',
+              height: 'fit-content',
+              width: '100%',
+              padding: '5px',
+              position: 'absolute',
+              top: '0',
+              zIndex: '10',
+            }}
+          >
+            <button
+              onClick={handleBackClick}
+              style={{ color: 'white', border: 'none', background: 'transparent', cursor: 'pointer' }}
+            >
               &#8592; Back
             </button>
           </div>
@@ -108,13 +127,21 @@ const ChatRoom = () => {
           <h3 className="ms-5 p-2">User List</h3>
           <UsersLists userList={userList} onSelectUser={handleUserSelect} />
         </div>
-        <div className="d-flex flex-wrap" style={{ backgroundImage: 'linear-gradient(184.1deg, rgba(249,255,182,1) 44.7%, rgba(226,255,172,1) 67.2%)', flex: 1, position: 'relative' }}>
+        <div
+          className="d-flex flex-wrap"
+          style={{
+            backgroundImage: 'linear-gradient(184.1deg, rgba(249,255,182,1) 44.7%, rgba(226,255,172,1) 67.2%)',
+            flex: 1,
+            position: 'relative',
+          }}
+        >
           {userList.map((user) => (
             <ChatBox
               key={user._id}
-              recipient={chatBoxes[user._id] ? user : null}
-              visible={!!chatBoxes[user._id]}
+              recipient={user}
+              visible={chatBoxes[user._id]?.visible}
               setChatBoxes={setChatBoxes}
+              messages={chatBoxes[user._id]?.messages || []}
               socket={socket}
               handleSendMessage={handleSendMessage}
             />
