@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useSocket } from '../SocketProvider';
+import { useSocket } from '../SocketProvider'; // Import useSocket hook from SocketProvider
 import UsersLists from './UsersLists';
 import ChatBox from './ChatBox';
 import { useNavigate } from 'react-router-dom';
-import { useNotification } from '../NotificationContext';
+import { useNotification } from '../NotificationContext'; // Adjust the path as needed
 import '../components/Style.css';
 import './Chat.css';
 
-const apiUrl = process.env.REACT_APP_API_URL;
-
 const ChatRoom = () => {
-  const socket = useSocket();
+  const socket = useSocket(); // Get the socket instance using useSocket hook
   const { showNotification } = useNotification();
   const [userList, setUserList] = useState([]);
   const [chatBoxes, setChatBoxes] = useState({});
-  const [showUsers, setShowUsers] = useState(true);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
+  const [showUsers, setShowUsers] = useState(true); // Add state to control the visibility of the user list
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 700); // State to track if the device is mobile
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,7 +22,7 @@ const ChatRoom = () => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 700);
       if (window.innerWidth >= 700) {
-        setShowUsers(true);
+        setShowUsers(true); // Show user list if screen width is greater than or equal to 700px
       }
     };
 
@@ -36,7 +34,7 @@ const ChatRoom = () => {
   }, []);
 
   const fetchUserList = () => {
-    fetch(`${apiUrl}/users/alldetails`)
+    fetch(`${process.env.REACT_APP_API_URL}/users/alldetails`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Failed to fetch user list');
@@ -74,16 +72,13 @@ const ChatRoom = () => {
   }, [socket]);
 
   const handleNewMessage = (newMessage) => {
+    console.log('New message received:', newMessage);
     const senderName = newMessage.sender?.name || 'Unknown';
     showNotification(`New message from ${senderName}`);
-    setChatBoxes((prevChatBoxes) => ({
-      ...prevChatBoxes,
-      [newMessage.sender.id]: true, // Open the chat box of the sender automatically
-    }));
   };
 
   const handleNotificationClick = () => {
-    navigate('/Messages');
+    navigate('/Messages'); // Navigate to /Messages route
   };
 
   const handleUserSelect = (user) => {
@@ -92,7 +87,7 @@ const ChatRoom = () => {
       [user._id]: !prevChatBoxes[user._id],
     }));
     if (isMobile) {
-      setShowUsers(false);
+      setShowUsers(false); // Hide user list when a user is selected on mobile
     }
   };
 
@@ -102,8 +97,8 @@ const ChatRoom = () => {
   };
 
   const handleBackClick = () => {
-    setShowUsers(true);
-    setChatBoxes({});
+    setShowUsers(true); // Show user list on back button click
+    setChatBoxes({}); // Hide all chat boxes
   };
 
   return (
