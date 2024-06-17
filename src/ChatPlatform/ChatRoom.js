@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useSocket } from '../SocketProvider'; // Import useSocket hook from SocketProvider
+import { useSocket } from '../SocketProvider';
 import UsersLists from './UsersLists';
 import ChatBox from './ChatBox';
 import { useNavigate } from 'react-router-dom';
-import { useNotification } from '../NotificationContext'; // Adjust the path as needed
+import { useNotification } from '../NotificationContext';
 import '../components/Style.css';
 import './Chat.css';
-import UserContext from '../userContext'; // Adjust the path as needed
+import UserContext from '../userContext';
 
 const ChatRoom = () => {
-  const socket = useSocket(); // Get the socket instance using useSocket hook
+  const socket = useSocket();
   const { showNotification } = useNotification();
   const [userList, setUserList] = useState([]);
   const [chatBoxes, setChatBoxes] = useState({});
-  const [showUsers, setShowUsers] = useState(true); // Add state to control the visibility of the user list
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 700); // State to track if the device is mobile
+  const [showUsers, setShowUsers] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
 
@@ -24,7 +24,7 @@ const ChatRoom = () => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 700);
       if (window.innerWidth >= 700) {
-        setShowUsers(true); // Show user list if screen width is greater than or equal to 700px
+        setShowUsers(true);
       }
     };
 
@@ -36,22 +36,31 @@ const ChatRoom = () => {
   }, []);
 
   const fetchUserList = () => {
-    fetch(`${process.env.REACT_APP_API_URL}/users/alldetails`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch user list');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setUserList(data);
-        initializeChatBoxes(data);
-      })
-      .catch((error) => {
-        console.error('Error fetching user list:', error);
-        showNotification('Failed to fetch user list');
-      });
+    let retryCount = 0;
+    const fetchData = () => {
+      fetch(`${process.env.REACT_APP_API_URL}/users/alldetails`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch user list');
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setUserList(data);
+          initializeChatBoxes(data);
+        })
+        .catch((error) => {
+          console.error('Error fetching user list:', error);
+          showNotification('Failed to fetch user list');
+          if (retryCount < 3) {
+            retryCount++;
+            setTimeout(fetchData, 1000); // Retry after 1 second
+          }
+        });
+    };
+    fetchData();
   };
+
 
   const initializeChatBoxes = (data) => {
     const updatedChatBoxes = {};
@@ -66,43 +75,50 @@ const ChatRoom = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('new_message', (newMessage) => {
-        handleNewMessage(newMessage);
-      });
+      const handleNewMessage = (newMessage) => {
+        if (newMessage.recipient.id === user.id || newMessage.sender.id === user.id) {
+          setChatBoxes((prevChatBoxes) => {
+            const updatedChatBoxes = { ...prevChatBoxes };
+            const senderBox = updatedChatBoxes[newMessage.sender.id] || { visible: false, messages: [] };
+            const recipientBox = updatedChatBoxes[newMessage.recipient.id] || { visible: false, messages: [] };
+
+            senderBox.visible = true;
+            senderBox.messages = [...senderBox.messages, newMessage];
+            recipientBox.visible = true;
+            recipientBox.messages = [...recipientBox.messages, newMessage];
+
+            updatedChatBoxes[newMessage.sender.id] = senderBox;
+            updatedChatBoxes[newMessage.recipient.id] = recipientBox;
+
+            return updatedChatBoxes;
+          });
+
+          if (newMessage.recipient.id === user.id) {
+            showNotification(`New message from ${newMessage.sender.name}`);
+          } else if (newMessage.sender.id === user.id) {
+            showNotification('Message sent');
+          }
+        }
+      };
+
+      socket.on('new_message', handleNewMessage);
 
       return () => {
         socket.off('new_message', handleNewMessage);
       };
     }
-  }, [socket]);
+  }, [socket, user.id, showNotification]);
 
-  const handleNewMessage = (newMessage) => {
-    if (newMessage.recipient.id === user.id || newMessage.sender.id === user.id) {
-      setChatBoxes((prevChatBoxes) => ({
-        ...prevChatBoxes,
-        [newMessage.sender.id]: {
-          visible: true,
-          messages: [...(prevChatBoxes[newMessage.sender.id]?.messages || []), newMessage],
-        },
-        [newMessage.recipient.id]: {
-          visible: true,
-          messages: [...(prevChatBoxes[newMessage.recipient.id]?.messages || []), newMessage],
-        },
-      }));
-      showNotification(`New message from ${newMessage.sender.name}`);
-    }
-  };
-
-  const handleUserSelect = (user) => {
+  const handleUserSelect = (selectedUser) => {
     setChatBoxes((prevChatBoxes) => ({
       ...prevChatBoxes,
-      [user._id]: {
-        ...prevChatBoxes[user._id],
+      [selectedUser._id]: {
+        ...prevChatBoxes[selectedUser._id],
         visible: true,
       },
     }));
     if (isMobile) {
-      setShowUsers(false); // Hide user list when a user is selected on mobile
+      setShowUsers(false);
     }
   };
 
@@ -119,8 +135,7 @@ const ChatRoom = () => {
   };
 
   const handleBackClick = () => {
-    setShowUsers(true); // Show user list on back button click
-    setChatBoxes({}); // Hide all chat boxes
+    setShowUsers(true);
   };
 
   return (
@@ -138,16 +153,19 @@ const ChatRoom = () => {
           <UsersLists userList={userList} onSelectUser={handleUserSelect} />
         </div>
         <div className="d-flex flex-wrap" style={{ backgroundImage: 'linear-gradient(184.1deg, rgba(249,255,182,1) 44.7%, rgba(226,255,172,1) 67.2%)', flex: 1, position: 'relative' }}>
-          {userList.map((user) => (
-            <ChatBox
-              key={user._id}
-              recipient={chatBoxes[user._id] && chatBoxes[user._id].visible ? user : null}
-              visible={chatBoxes[user._id] && chatBoxes[user._id].visible}
-              setChatBoxes={setChatBoxes}
-              messages={chatBoxes[user._id] && chatBoxes[user._id].messages ? chatBoxes[user._id].messages : []}
-              handleSendMessage={handleSendMessage}
-            />
-          ))}
+          {userList.map((user) => {
+            const chatBox = chatBoxes[user._id];
+            return (
+              <ChatBox
+                key={user._id}
+                recipient={chatBox && chatBox.visible ? user : null}
+                visible={chatBox && chatBox.visible}
+                setChatBoxes={setChatBoxes}
+                messages={chatBox && chatBox.messages ? chatBox.messages : []}
+                handleSendMessage={handleSendMessage}
+              />
+            );
+          })}
         </div>
       </div>
     </div>
