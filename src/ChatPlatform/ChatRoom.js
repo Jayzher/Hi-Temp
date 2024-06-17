@@ -49,7 +49,7 @@ const ChatRoom = () => {
           const updatedChatBoxes = { ...prevChatBoxes };
           data.forEach((user) => {
             if (!updatedChatBoxes[user._id]) {
-              updatedChatBoxes[user._id] = { visible: false, messages: [] };
+              updatedChatBoxes[user._id] = { visible: true, messages: [] };
             }
           });
           return updatedChatBoxes;
@@ -74,6 +74,17 @@ const ChatRoom = () => {
             newMessage.sender.name === user.name
               ? newMessage.receiver._id
               : newMessage.sender._id;
+
+          setChatBoxes((prevChatBoxes) => {
+            const updatedChatBoxes = { ...prevChatBoxes };
+            if (updatedChatBoxes[relevantUserId]) {
+              updatedChatBoxes[relevantUserId].messages = [
+                ...(updatedChatBoxes[relevantUserId].messages || []),
+                newMessage,
+              ];
+            }
+            return updatedChatBoxes;
+          });
          
           if (newMessage.receiver.name === user.name) {
             showNotification(`New message from ${newMessage.sender.name}`);
