@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useSocket } from '../SocketProvider'; // Import useSocket hook from SocketProvider
+import React, { useState, useEffect, useContext } from 'react';
+import { useSocket } from '../SocketProvider';
 import UsersLists from './UsersLists';
 import ChatBox from './ChatBox';
 import { ToastContainer, toast } from 'react-toastify';
@@ -7,13 +7,15 @@ import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import '../components/Style.css';
 import './Chat.css';
+import UserContext from '../UserContext'; // Import UserContext
 
 const ChatRoom = () => {
-  const socket = useSocket(); // Get the socket instance using useSocket hook
+  const socket = useSocket();
+  const { user } = useContext(UserContext); // Get the current user from UserContext
   const [userList, setUserList] = useState([]);
   const [chatBoxes, setChatBoxes] = useState({});
-  const [showUsers, setShowUsers] = useState(true); // Add state to control the visibility of the user list
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 700); // State to track if the device is mobile
+  const [showUsers, setShowUsers] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,7 +24,7 @@ const ChatRoom = () => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 700);
       if (window.innerWidth >= 700) {
-        setShowUsers(true); // Show user list if screen width is greater than or equal to 700px
+        setShowUsers(true);
       }
     };
 
@@ -61,45 +63,44 @@ const ChatRoom = () => {
 
   useEffect(() => {
     if (socket) {
-      // Listen for 'new_message' event using the existing socket instance
       socket.on('new_message', (newMessage) => {
-        // Log the newMessage object to debug
         console.log('New message received:', newMessage);
 
-        // Update the messages state for the relevant recipient
-        setChatBoxes((prevChatBoxes) => {
-          const updatedChatBoxes = { ...prevChatBoxes };
-          const recipientId = newMessage.sender._id;
-          if (updatedChatBoxes[recipientId]) {
-            updatedChatBoxes[recipientId].messages = [
-              ...(updatedChatBoxes[recipientId].messages || []),
-              newMessage,
-            ];
-          }
-          return updatedChatBoxes;
-        });
+        // Check if the sender or receiver matches the current user
+        if (
+          newMessage.sender.name === user.name ||
+          newMessage.receiver.name === user.name
+        ) {
+          const relevantUserId =
+            newMessage.sender.name === user.name
+              ? newMessage.receiver._id
+              : newMessage.sender._id;
 
-        // Notify user about the new message
-        if (newMessage.sender && newMessage.sender.name) {
-          toast.info(`New message from ${newMessage.sender.name}`, {
-            onClick: () => handleNotificationClick(),
+          setChatBoxes((prevChatBoxes) => {
+            const updatedChatBoxes = { ...prevChatBoxes };
+            if (updatedChatBoxes[relevantUserId]) {
+              updatedChatBoxes[relevantUserId].messages = [
+                ...(updatedChatBoxes[relevantUserId].messages || []),
+                newMessage,
+              ];
+            }
+            return updatedChatBoxes;
           });
-        } else {
-          toast.info('New message received', {
+
+          toast.info(`New message from ${newMessage.sender.name}`, {
             onClick: () => handleNotificationClick(),
           });
         }
       });
 
       return () => {
-        // Clean up event listener
         socket.off('new_message');
       };
     }
-  }, [socket]);
+  }, [socket, user]);
 
   const handleNotificationClick = () => {
-    navigate('/Messages'); // Navigate to /Messages route
+    navigate('/Messages');
   };
 
   const handleUserSelect = (user) => {
@@ -111,7 +112,7 @@ const ChatRoom = () => {
       },
     }));
     if (isMobile) {
-      setShowUsers(false); // Hide user list when a user is selected on mobile
+      setShowUsers(false);
     }
   };
 
@@ -119,13 +120,12 @@ const ChatRoom = () => {
     socket.emit('send_message', { recipientId, content: messageContent });
     toast.success('Message sent');
 
-    // Add the sent message to the messages state
     setChatBoxes((prevChatBoxes) => {
       const updatedChatBoxes = { ...prevChatBoxes };
       if (updatedChatBoxes[recipientId]) {
         updatedChatBoxes[recipientId].messages = [
           ...(updatedChatBoxes[recipientId].messages || []),
-          { content: messageContent, sender: { _id: 'self' } }, // 'self' indicates the sender is the current user
+          { content: messageContent, sender: { _id: 'self' } },
         ];
       }
       return updatedChatBoxes;
@@ -133,7 +133,7 @@ const ChatRoom = () => {
   };
 
   const handleBackClick = () => {
-    setShowUsers(true); // Show user list on back button click
+    setShowUsers(true);
     setChatBoxes((prevChatBoxes) => {
       const updatedChatBoxes = { ...prevChatBoxes };
       Object.keys(updatedChatBoxes).forEach((key) => {
