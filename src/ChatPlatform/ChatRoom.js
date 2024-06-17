@@ -47,14 +47,11 @@ const ChatRoom = () => {
       })
       .then((data) => {
         setUserList(data);
-        setChatBoxes((prevChatBoxes) => {
-          const updatedChatBoxes = {};
-          data.forEach((user) => {
-            // Initialize chat box visibility based on recipient
-            updatedChatBoxes[user._id] = { visible: false, messages: [] };
-          });
-          return updatedChatBoxes;
+        const initialChatBoxes = {};
+        data.forEach((user) => {
+          initialChatBoxes[user._id] = { visible: false, messages: [] };
         });
+        setChatBoxes(initialChatBoxes);
       })
       .catch((error) => {
         console.error('Error fetching user list:', error);
@@ -195,7 +192,7 @@ const ChatRoom = () => {
           {userList.map((user) => (
             <ChatBox
               key={user._id}
-              recipient={chatBoxes[user._id] ? user : null}
+              recipient={user}
               visible={chatBoxes[user._id]?.visible}
               setChatBoxes={setChatBoxes}
               messages={chatBoxes[user._id]?.messages || []}
