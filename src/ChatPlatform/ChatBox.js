@@ -113,7 +113,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     }
   }, [messages]);
 
-  //Modification
+  //Modifications
 
   if (!recipient) {
     return null;

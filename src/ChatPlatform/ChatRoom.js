@@ -119,11 +119,6 @@ const ChatRoom = () => {
           ))}
         </div>
       </div>
-      <Notification
-        message={notification.message}
-        show={notification.show}
-        handleClose={closeNotification}
-      />
     </div>
   );
 };
