@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useSocket } from '../SocketProvider'; // Import useSocket hook from SocketProvider
 import UsersLists from './UsersLists';
 import ChatBox from './ChatBox';
@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../NotificationContext'; // Adjust the path as needed
 import '../components/Style.css';
 import './Chat.css';
+import UserContext from '../userContext'; // Adjust the path as needed
 
 const ChatRoom = () => {
   const socket = useSocket(); // Get the socket instance using useSocket hook
@@ -15,6 +16,7 @@ const ChatRoom = () => {
   const [showUsers, setShowUsers] = useState(true); // Add state to control the visibility of the user list
   const [isMobile, setIsMobile] = useState(window.innerWidth < 700); // State to track if the device is mobile
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     fetchUserList();
@@ -52,42 +54,52 @@ const ChatRoom = () => {
   };
 
   const initializeChatBoxes = (data) => {
-    const updatedChatBoxes = { ...chatBoxes };
+    const updatedChatBoxes = {};
     data.forEach((user) => {
-      if (!updatedChatBoxes[user._id]) {
-        updatedChatBoxes[user._id] = false;
-      }
+      updatedChatBoxes[user._id] = {
+        visible: false,
+        messages: [],
+      };
     });
     setChatBoxes(updatedChatBoxes);
   };
 
   useEffect(() => {
-    socket.on('new_message', (newMessage) => {
-      handleNewMessage(newMessage);
-      setChatBoxes((prevChatBoxes) => ({
-        ...prevChatBoxes,
-        [newMessage.senderId]: { visible: false, unread: true },
-      }));
-    });
+    if (socket) {
+      socket.on('new_message', (newMessage) => {
+        handleNewMessage(newMessage);
+      });
+
+      return () => {
+        socket.off('new_message', handleNewMessage);
+      };
+    }
   }, [socket]);
 
   const handleNewMessage = (newMessage) => {
-    if (newMessage.receiver.name === user.name) {
+    if (newMessage.recipient.id === user.id || newMessage.sender.id === user.id) {
+      setChatBoxes((prevChatBoxes) => ({
+        ...prevChatBoxes,
+        [newMessage.sender.id]: {
+          visible: true,
+          messages: [...(prevChatBoxes[newMessage.sender.id]?.messages || []), newMessage],
+        },
+        [newMessage.recipient.id]: {
+          visible: true,
+          messages: [...(prevChatBoxes[newMessage.recipient.id]?.messages || []), newMessage],
+        },
+      }));
       showNotification(`New message from ${newMessage.sender.name}`);
-    } else if (newMessage.sender.name === user.name) {
-      showNotification(`Message Sent`);
     }
-  };
-
-
-  const handleNotificationClick = () => {
-    navigate('/Messages'); // Navigate to /Messages route
   };
 
   const handleUserSelect = (user) => {
     setChatBoxes((prevChatBoxes) => ({
       ...prevChatBoxes,
-      [user._id]: !prevChatBoxes[user._id],
+      [user._id]: {
+        ...prevChatBoxes[user._id],
+        visible: true,
+      },
     }));
     if (isMobile) {
       setShowUsers(false); // Hide user list when a user is selected on mobile
@@ -96,6 +108,13 @@ const ChatRoom = () => {
 
   const handleSendMessage = (recipientId, messageContent) => {
     socket.emit('send_message', { recipientId, content: messageContent });
+    setChatBoxes((prevChatBoxes) => ({
+      ...prevChatBoxes,
+      [recipientId]: {
+        ...prevChatBoxes[recipientId],
+        messages: [...(prevChatBoxes[recipientId]?.messages || []), { content: messageContent, sender: { id: user.id, name: user.name } }],
+      },
+    }));
     showNotification('Message sent');
   };
 
@@ -103,8 +122,6 @@ const ChatRoom = () => {
     setShowUsers(true); // Show user list on back button click
     setChatBoxes({}); // Hide all chat boxes
   };
-
-  //Mod
 
   return (
     <div className="dashboard-container" style={{ overflow: 'hidden', height: '100vh' }}>
@@ -124,10 +141,10 @@ const ChatRoom = () => {
           {userList.map((user) => (
             <ChatBox
               key={user._id}
-              recipient={chatBoxes[user._id] ? user : null}
-              visible={!!chatBoxes[user._id]}
+              recipient={chatBoxes[user._id] && chatBoxes[user._id].visible ? user : null}
+              visible={chatBoxes[user._id] && chatBoxes[user._id].visible}
               setChatBoxes={setChatBoxes}
-              socket={socket}
+              messages={chatBoxes[user._id] && chatBoxes[user._id].messages ? chatBoxes[user._id].messages : []}
               handleSendMessage={handleSendMessage}
             />
           ))}
