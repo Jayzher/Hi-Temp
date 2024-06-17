@@ -82,15 +82,13 @@ const ChatRoom = () => {
           const updatedChatBoxes = { ...prevChatBoxes };
 
           if (isRecipient) {
-            // Only update the sender's chat box for the recipient
             const senderBox = updatedChatBoxes[newMessage.sender.id] || { visible: false, messages: [] };
-            senderBox.visible = true;
             senderBox.messages = [...senderBox.messages, newMessage];
             updatedChatBoxes[newMessage.sender.id] = senderBox;
-          } else if (isSender) {
-            // Only update the recipient's chat box for the sender
+          }
+
+          if (isSender) {
             const recipientBox = updatedChatBoxes[newMessage.recipient.id] || { visible: false, messages: [] };
-            recipientBox.visible = true;
             recipientBox.messages = [...recipientBox.messages, newMessage];
             updatedChatBoxes[newMessage.recipient.id] = recipientBox;
           }
@@ -127,12 +125,15 @@ const ChatRoom = () => {
   };
 
   const handleSendMessage = (recipientId, messageContent) => {
-    socket.emit('send_message', { recipientId, content: messageContent });
+    const message = { recipientId, content: messageContent };
+    socket.emit('send_message', message);
+    const newMessage = { content: messageContent, sender: { id: user.id, name: user.name } };
+
     setChatBoxes((prevChatBoxes) => ({
       ...prevChatBoxes,
       [recipientId]: {
         ...prevChatBoxes[recipientId],
-        messages: [...(prevChatBoxes[recipientId]?.messages || []), { content: messageContent, sender: { id: user.id, name: user.name } }],
+        messages: [...(prevChatBoxes[recipientId]?.messages || []), newMessage],
       },
     }));
     showNotification('Message sent');
