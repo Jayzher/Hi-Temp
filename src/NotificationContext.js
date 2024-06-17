@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast as _toast, ToastContainer } from 'react-toastify';
+import { useSocket } from '../SocketProvider'; // Assuming you have SocketProvider set up
 import 'react-toastify/dist/ReactToastify.css';
 
 // Create a context object
@@ -16,6 +17,7 @@ export const useNotification = () => {
 
 // Provider component that wraps around the application
 export const NotificationProvider = ({ children }) => {
+  const socket = useSocket(); // Get the socket instance using useSocket hook
   const [notifications, setNotifications] = useState([]);
 
   // Function to show a notification
@@ -29,6 +31,23 @@ export const NotificationProvider = ({ children }) => {
   const hideNotification = (id) => {
     setNotifications((prevNotifications) => prevNotifications.filter((notification) => notification.id !== id));
   };
+
+  // Effect to handle incoming messages from the socket
+  useEffect(() => {
+    const handleNewMessage = (newMessage) => {
+      showNotification(`New message from ${newMessage.sender.name}: ${newMessage.content}`);
+    };
+
+    if (socket) {
+      socket.on('new_message', handleNewMessage);
+    }
+
+    return () => {
+      if (socket) {
+        socket.off('new_message', handleNewMessage);
+      }
+    };
+  }, [socket]);
 
   return (
     <NotificationContext.Provider value={{ notifications, showNotification, hideNotification }}>

@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import './Chat.css';
 import { Button } from 'react-bootstrap';
 import { useSocket } from '../SocketProvider'; // Assuming you have SocketProvider set up
+import UserContext from '../UserContext';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const socket = useSocket(); // Get the socket instance using useSocket hook
+  const { user } = useContext(UserContext) || {}; // Safely get the user from UserContext
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [textareaHeight, setTextareaHeight] = useState(0);
@@ -55,6 +57,19 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         setMessage('');
         textareaRef.current.style.height = 'auto';
         setTextareaHeight(0);
+
+        const newMessage = {
+          content: message,
+          sender: { _id: user._id, name: user.name },
+          receiver: { _id: recipient._id, name: recipient.name },
+        };
+
+        // Emit the new message to the server
+        socket.emit('send_message', newMessage);
+        
+        // Update messages state with the new message
+        setMessages(prevMessages => [...prevMessages, newMessage]);
+
       } catch (error) {
         console.error('Error sending message:', error);
       }
@@ -92,7 +107,10 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
 
   useEffect(() => {
     const handleMessageEvent = (newMessage) => {
-      setMessages(prevMessages => [...prevMessages, newMessage]);
+      // Only update if the message is relevant to this chat
+      if (newMessage.sender._id === recipient._id || newMessage.receiver._id === recipient._id) {
+        setMessages(prevMessages => [...prevMessages, newMessage]);
+      }
     };
 
     if (socket) {
@@ -129,7 +147,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         <div className="messages">
           <div className="messages-container" style={{minHeight: "100%"}} ref={messagesContainerRef}>
             {messages.map((msg, index) => (
-              <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
+              <div key={index} className={msg.sender._id === recipient._id ? 'received' : 'sent'}>
                 <p className="msg-content">{msg.content}</p>
               </div>
             ))}
@@ -153,7 +171,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
       <div className="show-on-small" style={{ display: "none", height: "100%", minHeight: "90vh" }}>
         <div className="messages-container" ref={messagesContainerRef} style={{ flexGrow: 1, overflowY: 'auto', position: "fixed", bottom: "10vh", width: "100%", height: `82vh`, paddingBottom: `${paddingBottom}px` }}>
           {messages.map((msg, index) => (
-            <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
+            <div key={index} className={msg.sender._id === recipient._id ? 'received' : 'sent'}>
               <p className="msg-content">{msg.content}</p>
             </div>
           ))}

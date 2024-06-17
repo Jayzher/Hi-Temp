@@ -11,7 +11,7 @@ import UserContext from '../UserContext'; // Import UserContext
 
 const ChatRoom = () => {
   const socket = useSocket();
-  const { user } = useContext(UserContext); // Get the current user from UserContext
+  const { user } = useContext(UserContext) || {}; // Safely get the user from UserContext
   const [userList, setUserList] = useState([]);
   const [chatBoxes, setChatBoxes] = useState({});
   const [showUsers, setShowUsers] = useState(true);
@@ -66,7 +66,6 @@ const ChatRoom = () => {
       socket.on('new_message', (newMessage) => {
         console.log('New message received:', newMessage);
 
-        // Check if the sender or receiver matches the current user
         if (
           newMessage.sender.name === user.name ||
           newMessage.receiver.name === user.name
