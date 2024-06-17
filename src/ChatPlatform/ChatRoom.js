@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useSocket } from '../SocketProvider'; // Import useSocket hook from SocketProvider
+import { useSocket } from '../SocketProvider'; 
 import UsersLists from './UsersLists';
 import ChatBox from './ChatBox';
 import { useNavigate } from 'react-router-dom';
-import { useNotification } from '../NotificationContext'; // Adjust the path as needed
+import { useNotification } from '../NotificationContext'; 
 import '../components/Style.css';
 import './Chat.css';
 
 const ChatRoom = () => {
-  const socket = useSocket(); // Get the socket instance using useSocket hook
+  const socket = useSocket();
   const { showNotification } = useNotification();
   const [userList, setUserList] = useState([]);
   const [chatBoxes, setChatBoxes] = useState({});
-  const [showUsers, setShowUsers] = useState(true); // Add state to control the visibility of the user list
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 700); // State to track if the device is mobile
+  const [showUsers, setShowUsers] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,12 +22,11 @@ const ChatRoom = () => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 700);
       if (window.innerWidth >= 700) {
-        setShowUsers(true); // Show user list if screen width is greater than or equal to 700px
+        setShowUsers(true);
       }
     };
 
     window.addEventListener('resize', handleResize);
-
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -35,17 +34,17 @@ const ChatRoom = () => {
 
   const fetchUserList = () => {
     fetch(`${process.env.REACT_APP_API_URL}/users/alldetails`)
-      .then((response) => {
+      .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch user list');
         }
         return response.json();
       })
-      .then((data) => {
+      .then(data => {
         setUserList(data);
         initializeChatBoxes(data);
       })
-      .catch((error) => {
+      .catch(error => {
         console.error('Error fetching user list:', error);
         showNotification('Failed to fetch user list');
       });
@@ -53,9 +52,9 @@ const ChatRoom = () => {
 
   const initializeChatBoxes = (data) => {
     const updatedChatBoxes = { ...chatBoxes };
-    data.forEach((user) => {
+    data.forEach(user => {
       if (!updatedChatBoxes[user._id]) {
-        updatedChatBoxes[user._id] = false;
+        updatedChatBoxes[user._id] = { messages: [], visible: false };
       }
     });
     setChatBoxes(updatedChatBoxes);
@@ -64,7 +63,6 @@ const ChatRoom = () => {
   useEffect(() => {
     if (socket) {
       socket.on('new_message', handleNewMessage);
-
       return () => {
         socket.off('new_message', handleNewMessage);
       };
@@ -75,19 +73,27 @@ const ChatRoom = () => {
     console.log('New message received:', newMessage);
     const senderName = newMessage.sender?.name || 'Unknown';
     showNotification(`New message from ${senderName}`);
+
+    setChatBoxes(prevChatBoxes => {
+      const updatedChatBoxes = { ...prevChatBoxes };
+      if (updatedChatBoxes[newMessage.recipientId]) {
+        updatedChatBoxes[newMessage.recipientId].messages.push(newMessage);
+      }
+      return updatedChatBoxes;
+    });
   };
 
   const handleNotificationClick = () => {
-    navigate('/Messages'); // Navigate to /Messages route
+    navigate('/Messages');
   };
 
   const handleUserSelect = (user) => {
-    setChatBoxes((prevChatBoxes) => ({
+    setChatBoxes(prevChatBoxes => ({
       ...prevChatBoxes,
-      [user._id]: !prevChatBoxes[user._id],
+      [user._id]: { ...prevChatBoxes[user._id], visible: !prevChatBoxes[user._id]?.visible },
     }));
     if (isMobile) {
-      setShowUsers(false); // Hide user list when a user is selected on mobile
+      setShowUsers(false);
     }
   };
 
@@ -97,8 +103,14 @@ const ChatRoom = () => {
   };
 
   const handleBackClick = () => {
-    setShowUsers(true); // Show user list on back button click
-    setChatBoxes({}); // Hide all chat boxes
+    setShowUsers(true);
+    setChatBoxes(prevChatBoxes => {
+      const updatedChatBoxes = { ...prevChatBoxes };
+      Object.keys(updatedChatBoxes).forEach(key => {
+        updatedChatBoxes[key].visible = false;
+      });
+      return updatedChatBoxes;
+    });
   };
 
   return (
@@ -116,11 +128,12 @@ const ChatRoom = () => {
           <UsersLists userList={userList} onSelectUser={handleUserSelect} />
         </div>
         <div className="d-flex flex-wrap" style={{ backgroundImage: 'linear-gradient(184.1deg, rgba(249,255,182,1) 44.7%, rgba(226,255,172,1) 67.2%)', flex: 1, position: 'relative' }}>
-          {userList.map((user) => (
+          {userList.map(user => (
             <ChatBox
               key={user._id}
-              recipient={chatBoxes[user._id] ? user : null}
-              visible={!!chatBoxes[user._id]}
+              recipient={chatBoxes[user._id]?.visible ? user : null}
+              visible={chatBoxes[user._id]?.visible}
+              messages={chatBoxes[user._id]?.messages || []}
               setChatBoxes={setChatBoxes}
               socket={socket}
               handleSendMessage={handleSendMessage}
