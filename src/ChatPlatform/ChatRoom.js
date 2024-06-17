@@ -56,42 +56,44 @@ const ChatRoom = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('new_message', (newMessage) => {
-        console.log('New message received:', newMessage);
-
-        if (
-          newMessage.sender.name === user.name ||
-          newMessage.receiver.name === user.name
-        ) {
-          const relevantUserId =
-            newMessage.sender.name === user.name
-              ? newMessage.receiver._id
-              : newMessage.sender._id;
-
-          setChatBoxes((prevChatBoxes) => {
-            const updatedChatBoxes = { ...prevChatBoxes };
-            if (updatedChatBoxes[relevantUserId]) {
-              updatedChatBoxes[relevantUserId].messages = [
-                ...(updatedChatBoxes[relevantUserId].messages || []),
-                newMessage,
-              ];
-            }
-            return updatedChatBoxes;
-          });
-
-          if (newMessage.receiver.name === user.name) {
-            showNotification(`New message from ${newMessage.sender.name}`);
-          } else if (newMessage.sender.name === user.name) {
-            showNotification(`Message Sent`);
-          }
-        }
-      });
+      socket.on('new_message', handleNewMessage);
 
       return () => {
-        socket.off('new_message');
+        socket.off('new_message', handleNewMessage);
       };
     }
-  }, [socket, user, showNotification]);
+  }, [socket, user]);
+
+  const handleNewMessage = (newMessage) => {
+    console.log('New message received:', newMessage);
+
+    if (newMessage.sender.name === user.name || newMessage.receiver.name === user.name) {
+      const relevantUserId = newMessage.sender.name === user.name ? newMessage.receiver._id : newMessage.sender._id;
+
+      setChatBoxes((prevChatBoxes) => {
+        const updatedChatBoxes = { ...prevChatBoxes };
+        if (updatedChatBoxes[relevantUserId]) {
+          updatedChatBoxes[relevantUserId].messages = [
+            ...(updatedChatBoxes[relevantUserId].messages || []),
+            newMessage,
+          ];
+        } else {
+          // If chat box doesn't exist (for incoming messages), create it
+          updatedChatBoxes[relevantUserId] = {
+            visible: true,
+            messages: [newMessage],
+          };
+        }
+        return updatedChatBoxes;
+      });
+
+      if (newMessage.receiver.name === user.name) {
+        showNotification(`New message from ${newMessage.sender.name}`);
+      } else if (newMessage.sender.name === user.name) {
+        showNotification(`Message Sent`);
+      }
+    }
+  };
 
   const handleNotificationClick = () => {
     navigate('/Messages');
@@ -115,18 +117,24 @@ const ChatRoom = () => {
 
   const handleSendMessage = (recipientId, messageContent) => {
     socket.emit('send_message', { recipientId, content: messageContent });
-    toast.success('Message sent');
 
     setChatBoxes((prevChatBoxes) => {
       const updatedChatBoxes = { ...prevChatBoxes };
       if (updatedChatBoxes[recipientId]) {
         updatedChatBoxes[recipientId].messages = [
           ...(updatedChatBoxes[recipientId].messages || []),
-          { content: messageContent, sender: { _id: 'self' } },
+          { content: messageContent, sender: { _id: user._id, name: user.name } },
         ];
+      } else {
+        updatedChatBoxes[recipientId] = {
+          visible: true,
+          messages: [{ content: messageContent, sender: { _id: user._id, name: user.name } }],
+        };
       }
       return updatedChatBoxes;
     });
+
+    toast.success('Message sent');
   };
 
   const handleBackClick = () => {
