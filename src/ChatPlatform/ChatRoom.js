@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../NotificationContext'; // Adjust the path as needed
 import '../components/Style.css';
 import './Chat.css';
+import UserContext from '../userContext'; // Adjust the path as needed
 
 const ChatRoom = () => {
   const socket = useSocket(); // Get the socket instance using useSocket hook
@@ -15,6 +16,7 @@ const ChatRoom = () => {
   const [showUsers, setShowUsers] = useState(true); // Add state to control the visibility of the user list
   const [isMobile, setIsMobile] = useState(window.innerWidth < 700); // State to track if the device is mobile
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     fetchUserList();
@@ -63,13 +65,6 @@ const ChatRoom = () => {
 
   useEffect(() => {
     if (socket) {
-      setChatBoxes((prevChatBoxes) => {
-        const updatedChatBoxes = { ...prevChatBoxes };
-        if (!updatedChatBoxes[recipientId]) {
-          updatedChatBoxes[recipientId] = true;
-        }
-        return updatedChatBoxes;
-      });
       socket.on('new_message', handleNewMessage);
 
       return () => {
@@ -85,7 +80,7 @@ const ChatRoom = () => {
 
     // Update chat box state to show new messages
     const { sender, receiver, content } = newMessage;
-    const relevantUserId = sender._id === socket.id ? receiver._id : sender._id;
+    const relevantUserId = sender._id === user.id ? receiver._id : sender._id;
 
     setChatBoxes((prevChatBoxes) => {
       const updatedChatBoxes = { ...prevChatBoxes };
@@ -112,6 +107,7 @@ const ChatRoom = () => {
 
   const handleSendMessage = (recipientId, messageContent) => {
     socket.emit('send_message', { recipientId, content: messageContent });
+
     // Update chat box state to show sent message
   };
 
