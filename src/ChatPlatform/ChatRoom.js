@@ -98,8 +98,6 @@ const ChatRoom = () => {
 
         if (isRecipient) {
           showNotification(`New message from ${newMessage.sender.name}`);
-        } else if (isSender) {
-          showNotification('Message sent');
         }
       };
 
