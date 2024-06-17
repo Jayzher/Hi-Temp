@@ -45,7 +45,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const socket = useSocket();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { messageInput, conversations } = state;
-  const messages = conversations[recipient._id] || [];
+  const messages = conversations[recipient?._id] || [];
 
   const textareaRef = useRef(null);
   const messagesContainerRef = useRef(null);
