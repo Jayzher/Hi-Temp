@@ -86,9 +86,15 @@ const ChatRoom = () => {
             return updatedChatBoxes;
           });
 
-          toast.info(`New message from ${newMessage.sender.name}`, {
-            onClick: () => handleNotificationClick(),
-          });
+          if (newMessage.receiver.name === user.name) {
+            toast.info(`New message from ${newMessage.sender.name}`, {
+              onClick: () => handleNotificationClick(),
+            });
+          } else if (newMessage.sender.name === user.name) {
+            toast.info(`Message Sent`, {
+              onClick: () => handleNotificationClick(),
+            });
+          }
         }
       });
 
