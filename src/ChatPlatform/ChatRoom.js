@@ -27,6 +27,7 @@ const ChatRoom = () => {
         setShowUsers(true); // Show user list if screen width is greater than or equal to 700px
       }
     };
+    
 
     window.addEventListener('resize', handleResize);
 
