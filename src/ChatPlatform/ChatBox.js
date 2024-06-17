@@ -2,13 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import './Chat.css';
 import { Button } from 'react-bootstrap';
 import { useSocket } from '../SocketProvider'; // Assuming you have SocketProvider set up
-import { useNotification } from '../NotificationContext'; // Adjust the path as needed
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const socket = useSocket(); // Get the socket instance using useSocket hook
-  const { showInfoNotification } = useNotification(); // Using showInfoNotification from NotificationContext
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [textareaHeight, setTextareaHeight] = useState(0);
@@ -54,22 +52,11 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
           throw new Error('Failed to send message');
         }
 
-        const newMessage = await response.json();
-
         setMessage('');
         textareaRef.current.style.height = 'auto';
         setTextareaHeight(0);
-
-        // Add the sent message to the messages list
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
-
-        // Show success notification on successful message send
-        showInfoNotification('Message sent');
       } catch (error) {
         console.error('Error sending message:', error);
-
-        // Show error notification on failed message send
-        showInfoNotification('Failed to send message');
       }
     } else {
       console.error('Recipient ID is missing');
@@ -106,7 +93,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   useEffect(() => {
     const handleMessageEvent = (newMessage) => {
       setMessages(prevMessages => [...prevMessages, newMessage]);
-      showInfoNotification('New message received');
     };
 
     if (socket) {
@@ -136,7 +122,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
       <div id="chat-box" className={`chat-box ${visible ? 'visible' : 'hidden'} flex-column ms-3 mt-3 hide-on-small`} style={{display: "flex"}}>
         <div className="header d-flex flex-row justify-content-between">
           <p style={{ fontSize: '1.1rem', fontWeight: "bolder" }}>{recipient.name}</p>
-          <button className="text-center fw-bold" style={{background: "rgba(0, 0, 0, 0.3)", borderRadius: "100px", fontSize: "0.8rem", height: "30px"}} onClick={() => setChatBoxes(prevChatBoxes => ({ ...prevChatBoxes, [recipient._id]: { ...prevChatBoxes[recipient._id], visible: false } }))}>
+          <button className="text-center fw-bold" style={{background: "rgba(0, 0, 0, 0.3)", borderRadius: "100px", fontSize: "0.8rem", height: "30px"}} onClick={() => setChatBoxes(prevChatBoxes => ({ ...prevChatBoxes, [recipient._id]: false }))}>
             X
           </button>
         </div>
