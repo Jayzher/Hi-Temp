@@ -1,17 +1,20 @@
-// ChatRoom.js
+// src/components/ChatRoom.js
 import React, { useState, useEffect } from 'react';
-import { useSocket } from '../SocketProvider'; // Import useSocket hook from SocketProvider
+import { useSocket } from '../SocketProvider';
+import { useNotification } from '../NotificationContext';
 import UsersLists from './UsersLists';
 import ChatBox from './ChatBox';
+import Notification from './Notification';
 import '../components/Style.css';
 import './Chat.css';
 
 const ChatRoom = () => {
-  const socket = useSocket(); // Get the socket instance using useSocket hook
+  const socket = useSocket();
+  const { showNotification, notification, closeNotification } = useNotification();
   const [userList, setUserList] = useState([]);
   const [chatBoxes, setChatBoxes] = useState({});
-  const [showUsers, setShowUsers] = useState(true); // Add state to control the visibility of the user list
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 700); // State to track if the device is mobile
+  const [showUsers, setShowUsers] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
 
   useEffect(() => {
     fetchUserList();
@@ -19,7 +22,7 @@ const ChatRoom = () => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 700);
       if (window.innerWidth >= 700) {
-        setShowUsers(true); // Show user list if screen width is greater than or equal to 700px
+        setShowUsers(true);
       }
     };
 
@@ -29,8 +32,6 @@ const ChatRoom = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
-  //Modified
 
   const fetchUserList = () => {
     fetch(`${process.env.REACT_APP_API_URL}/users/alldetails`)
@@ -46,7 +47,7 @@ const ChatRoom = () => {
           const updatedChatBoxes = { ...prevChatBoxes };
           data.forEach((user) => {
             if (!updatedChatBoxes[user._id]) {
-              updatedChatBoxes[user._id] = false;
+              updatedChatBoxes[user._id] = { visible: false, unread: false };
             }
           });
           return updatedChatBoxes;
@@ -57,58 +58,60 @@ const ChatRoom = () => {
 
   useEffect(() => {
     if (socket) {
-      // Listen for 'userStatusChange' event using the existing socket instance
-      socket.on('userStatusChange', (data) => {
-        console.log('User status changed:', data);
-        fetchUserList(); // Fetch updated user list when status changes
+      socket.on('new_message', (newMessage) => {
+        setChatBoxes((prevChatBoxes) => ({
+          ...prevChatBoxes,
+          [newMessage.senderId]: { visible: false, unread: true },
+        }));
+        showNotification(newMessage.content);
       });
 
       return () => {
-        // Clean up event listener
-        socket.off('userStatusChange');
+        socket.off('new_message');
       };
     }
-  }, [socket]);
+  }, [socket, showNotification]);
 
   const handleUserSelect = (user) => {
     setChatBoxes((prevChatBoxes) => ({
       ...prevChatBoxes,
-      [user._id]: !prevChatBoxes[user._id],
+      [user._id]: { visible: !prevChatBoxes[user._id].visible, unread: false },
     }));
     if (isMobile) {
-      setShowUsers(false); // Hide user list when a user is selected on mobile
+      setShowUsers(false);
     }
   };
 
   const handleSendMessage = (recipientId, messageContent) => {
     socket.emit('send_message', { recipientId, content: messageContent });
   };
+  //Modification
 
   const handleBackClick = () => {
-    setShowUsers(true); // Show user list on back button click
-    setChatBoxes({}); // Hide all chat boxes
+    setShowUsers(true);
+    setChatBoxes({});
   };
 
   return (
-    <div className="dashboard-container" style={{ overflow: "hidden", height: '100vh' }}>
-      <div id="Chatroom-container" className="d-flex flex-row" style={{ height: '100%', maxHeight: '100vh', marginLeft: "15vw", width: '85vw', overflowY: "hidden" }}>
-        <div className="user-list-container" style={{ width: '20%', background: '#f0f0f0'}} hidden={!showUsers} >
-          <h3 className="ms-5 p-2">User List</h3>
-          <UsersLists userList={userList} onSelectUser={handleUserSelect} />
-        </div>
-        <div className="d-flex flex-wrap" style={{ backgroundImage: "linear-gradient(184.1deg, rgba(249,255,182,1) 44.7%, rgba(226,255,172,1) 67.2%)", flex: 1, position: 'relative' }}>
+    <div className="dashboard-container" style={{ overflow: 'hidden', height: '100vh' }}>
+      <div id="Chatroom-container" className="d-flex flex-row" style={{ height: '100%', maxHeight: '100vh', marginLeft: '15vw', width: '85vw', overflowY: 'hidden' }}>
+        <div className="d-flex flex-wrap" style={{ backgroundImage: 'linear-gradient(184.1deg, rgba(249,255,182,1) 44.7%, rgba(226,255,172,1) 67.2%)', flex: 1, position: 'relative' }}>
           {!showUsers && isMobile && (
-            <div className="d-flex align-items-center justify-content-end" style={{ background: "rgba(0, 0, 0, 0.7)", height: "fit-content", width: "100%", padding: "5px", position: 'absolute', top: '0', zIndex: "10"}}>
+            <div className="d-flex align-items-center justify-content-end" style={{ background: 'rgba(0, 0, 0, 0.7)', height: 'fit-content', width: '100%', padding: '5px', position: 'absolute', top: '0', zIndex: '10' }}>
               <button onClick={handleBackClick} style={{ color: 'white', border: 'none', background: 'transparent', cursor: 'pointer' }}>
                 &#8592; Back
               </button>
             </div>
           )}
+          <div className="user-list-container" style={{ width: '20%', background: '#f0f0f0' }} hidden={!showUsers}>
+            <h3 className="ms-5 p-2">User List</h3>
+            <UsersLists userList={userList} onSelectUser={handleUserSelect} chatBoxes={chatBoxes} />
+          </div>
           {userList.map((user) => (
             <ChatBox
               key={user._id}
-              recipient={chatBoxes[user._id] ? user : null}
-              visible={!!chatBoxes[user._id]}
+              recipient={chatBoxes[user._id].visible ? user : null}
+              visible={chatBoxes[user._id].visible}
               setChatBoxes={setChatBoxes}
               socket={socket}
               handleSendMessage={handleSendMessage}
@@ -116,6 +119,11 @@ const ChatRoom = () => {
           ))}
         </div>
       </div>
+      <Notification
+        message={notification.message}
+        show={notification.show}
+        handleClose={closeNotification}
+      />
     </div>
   );
 };

@@ -26,8 +26,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     setPaddingBottom(textareaHeight - 30);
   };
 
-  //Modified
-
   useEffect(() => {
     setPaddingBottom(textareaHeight - 30);
   }, [textareaHeight]);
@@ -114,6 +112,8 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
     }
   }, [messages]);
+
+  //Modification
 
   if (!recipient) {
     return null;
