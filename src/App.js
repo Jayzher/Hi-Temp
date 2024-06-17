@@ -9,7 +9,7 @@ import Logout from './pages/Logout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Tabs from './components/Tab';
-import { UserProvider } from './userContext';
+import { UserProvider } from './UserContext'; // Ensure correct path
 import { NotificationProvider } from './NotificationContext'; // Ensure correct path
 
 import Profile from './navlinks/Profile';
@@ -17,6 +17,7 @@ import Planner from './navlinks/Planner';
 import CreateNewTask from './navlinks/CreateNewTask';
 import Employee from './navlinks/Employee';
 import Messages from './navlinks/Messages';
+import ChatRoom from './components/ChatRoom'; // Ensure correct path
 
 function App() {
   const [user, setUser] = useState({
@@ -41,6 +42,7 @@ function App() {
               <Route path="/" element={<Home />} /> 
               <Route path="/Login" element={<Login />} /> 
               <Route path="/Logout" element={<Logout />} /> 
+              <Route path="/Register" element={<Register />} /> 
               <Route path="/TasksCreate" element={<CreateNewTask />} /> 
               {/* Dashboard Routes */}
               <Route path="/Dashboard" element={<Dashboard />} /> 
@@ -50,6 +52,8 @@ function App() {
               <Route path="/Employee" element={<Employee />} />
               <Route path="/Planner" element={<Planner />} />
               <Route path="/Messages" element={<Messages />} />
+              {/* ChatRoom Route */}
+              <Route path="/ChatRoom" element={<ChatRoom />} />
             </Routes>
           </Container>
         </Router>
