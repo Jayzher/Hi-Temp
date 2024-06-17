@@ -7,6 +7,8 @@ import ChatBox from './ChatBox';
 import Notification from './Notification';
 import '../components/Style.css';
 import './Chat.css';
+import { Toast, ToastContainer } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ChatRoom = () => {
   const socket = useSocket();
