@@ -72,10 +72,13 @@ const ChatRoom = () => {
   }, [socket]);
 
   const handleNewMessage = (newMessage) => {
-    console.log('New message received:', newMessage);
-    const senderName = newMessage.sender?.name || 'Unknown';
-    showNotification(`New message from ${senderName}`);
+    if (newMessage.receiver.name === user.name) {
+      showNotification(`New message from ${newMessage.sender.name}`);
+    } else if (newMessage.sender.name === user.name) {
+      showNotification(`Message Sent`);
+    }
   };
+
 
   const handleNotificationClick = () => {
     navigate('/Messages'); // Navigate to /Messages route
