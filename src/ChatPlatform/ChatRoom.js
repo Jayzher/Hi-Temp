@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../components/Style.css';
 import './Chat.css';
 import UserContext from '../userContext'; // Import UserContext
+import { useNotification } from '../NotificationProvider';
 
 const ChatRoom = () => {
   const socket = useSocket();
@@ -17,6 +18,7 @@ const ChatRoom = () => {
   const [showUsers, setShowUsers] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
 
   useEffect(() => {
     fetchUserList();
@@ -61,9 +63,9 @@ const ChatRoom = () => {
       });
   };
 
-  useEffect(() => {
+   useEffect(() => {
     if (socket) {
-      socket.on('new_message', (newMessage) => {
+      const handleNewMessage = (newMessage) => {
         console.log('New message received:', newMessage);
 
         if (
@@ -87,22 +89,20 @@ const ChatRoom = () => {
           });
 
           if (newMessage.receiver.name === user.name) {
-            toast.info(`New message from ${newMessage.sender.name}`, {
-              onClick: () => handleNotificationClick(),
-            });
+            showNotification(`New message from ${newMessage.sender.name}`);
           } else if (newMessage.sender.name === user.name) {
-            toast.info(`Message Sent`, {
-              onClick: () => handleNotificationClick(),
-            });
+            showNotification(`Message sent`);
           }
         }
-      });
+      };
+
+      socket.on('new_message', handleNewMessage);
 
       return () => {
-        socket.off('new_message');
+        socket.off('new_message', handleNewMessage);
       };
     }
-  }, [socket, user]);
+  }, [socket, user, showNotification]);
 
   const handleNotificationClick = () => {
     navigate('/Messages');
