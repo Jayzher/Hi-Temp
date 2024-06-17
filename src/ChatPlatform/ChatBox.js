@@ -115,6 +115,8 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
 
       // Listen for new messages from socket
       socket.on('new_message', handleMessageEvent);
+      
+      fetchInitialConversation();
 
       return () => {
         // Clean up socket listener when component unmounts
