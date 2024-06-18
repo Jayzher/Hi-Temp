@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef, useReducer } from 'react';
+import React, { useState, useEffect, useRef, useReducer, useContext } from 'react';
 import './Chat.css';
 import { Button } from 'react-bootstrap';
 import { useSocket } from '../SocketProvider';
+import UserContext from 'path/to/UserContext'; // Adjust the path as per your project structure
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -43,6 +44,7 @@ const reducer = (state, action) => {
 
 const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const socket = useSocket();
+  const { user } = useContext(UserContext); // Assuming user is accessed via context
   const [state, dispatch] = useReducer(reducer, initialState);
   const { messageInput, conversations } = state;
   const messages = conversations[recipient?._id] || [];
@@ -87,7 +89,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
 
         const newMessage = {
           content: messageInput,
-          sender: { id: socket.userId, name: localStorage.getItem('username') }
+          sender: { id: user.id, name: localStorage.getItem('username') } // Assuming user.id is accessible
         };
 
         // Update sender's chat box
@@ -151,7 +153,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         socket.off('new_message', handleMessageEvent);
       }
     };
-  }, [socket, recipient]);
+  }, [socket, recipient, user]); // Include user in dependencies
 
   // Effect to scroll to bottom of messages container on new messages
   useEffect(() => {
@@ -164,8 +166,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   if (!recipient) {
     return null;
   }
-
-  //Modified
 
   // Render the chat box component
   return (
