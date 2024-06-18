@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef, useReducer, useContext } from 'react';
+import React, { useState, useEffect, useRef, useReducer } from 'react';
 import './Chat.css';
 import { Button } from 'react-bootstrap';
 import { useSocket } from '../SocketProvider';
-import UserContext from '../userContext'; // Import your UserContext here
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -46,13 +45,10 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const socket = useSocket();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { messageInput, conversations } = state;
-  const messages = conversations[recipient?.id] || [];
+  const messages = conversations[recipient?._id] || [];
 
   const textareaRef = useRef(null);
   const messagesContainerRef = useRef(null);
-
-  // Accessing user context
-  const { user } = useContext(UserContext);
 
   // Function to handle message input change
   const handleMessageChange = (e) => {
@@ -79,10 +75,9 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
           },
           body: JSON.stringify({
             content: messageInput,
-            recipientId: recipient,
+            recipientId: recipient._id,
             recipientName: recipient.name,
-            department: recipient.department,
-            senderId: user.id // Assuming user.id is available in your UserContext
+            department: recipient.department
           })
         });
 
@@ -92,11 +87,11 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
 
         const newMessage = {
           content: messageInput,
-          sender: { id: user.id, name: localStorage.getItem('username') }
+          sender: { id: socket.userId, name: localStorage.getItem('username') }
         };
 
         // Update sender's chat box
-        dispatch({ type: 'ADD_MESSAGE', payload: { recipientId: recipient, message: newMessage } });
+        dispatch({ type: 'ADD_MESSAGE', payload: { recipientId: recipient._id, message: newMessage } });
 
         // Clear message input and adjust textarea
         dispatch({ type: 'SET_MESSAGE_INPUT', payload: '' });
@@ -117,7 +112,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
       }
 
       try {
-        const response = await fetch(`${apiUrl}/messages/conversation/${recipient}`, {
+        const response = await fetch(`${apiUrl}/messages/conversation/${recipient._id}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -128,7 +123,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         }
 
         const data = await response.json();
-        dispatch({ type: 'SET_MESSAGES', payload: { recipientId: recipient, messages: data } });
+        dispatch({ type: 'SET_MESSAGES', payload: { recipientId: recipient._id, messages: data } });
       } catch (error) {
         console.error('Error fetching conversations:', error);
       }
@@ -140,8 +135,8 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   useEffect(() => {
     const handleMessageEvent = (newMessage) => {
       if (
-        (newMessage.recipient.id === recipient && newMessage.sender.id === user.id) ||
-        (newMessage.sender.id === recipient && newMessage.recipient.id === user.id)
+        (newMessage.recipient.id === recipient._id && newMessage.sender.id === socket.userId) ||
+        (newMessage.sender.id === recipient._id && newMessage.recipient.id === socket.userId)
       ) {
         dispatch({ type: 'ADD_MESSAGE', payload: { recipientId: recipient._id, message: newMessage } });
       }
@@ -156,7 +151,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         socket.off('new_message', handleMessageEvent);
       }
     };
-  }, [socket, recipient, user]);
+  }, [socket, recipient]);
 
   // Effect to scroll to bottom of messages container on new messages
   useEffect(() => {
@@ -169,6 +164,8 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   if (!recipient) {
     return null;
   }
+
+  //Modified
 
   // Render the chat box component
   return (
@@ -184,7 +181,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         <div className="messages">
           <div className="messages-container" style={{ minHeight: "100%" }} ref={messagesContainerRef}>
             {messages.map((msg, index) => (
-              <div key={index} className={msg.sender.id === recipient ? 'received' : 'sent'}>
+              <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
                 <p className="msg-content">{msg.content}</p>
               </div>
             ))}
@@ -210,7 +207,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
       <div className="show-on-small" style={{ display: "none", height: "100%", minHeight: "90vh" }}>
         <div className="messages-container" ref={messagesContainerRef} style={{ flexGrow: 1, overflowY: 'auto', position: "fixed", bottom: "10vh", width: "100%", height: `82vh` }}>
           {messages.map((msg, index) => (
-            <div key={index} className={msg.sender.id === recipient ? 'received' : 'sent'}>
+            <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
               <p className="msg-content">{msg.content}</p>
             </div>
           ))}
