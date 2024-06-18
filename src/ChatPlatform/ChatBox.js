@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef, useReducer } from 'react';
+import React, { useState, useEffect, useRef, useReducer, useContext } from 'react';
 import './Chat.css';
 import { Button } from 'react-bootstrap';
 import { useSocket } from '../SocketProvider';
+import UserContext from '../userContext'; // Import your UserContext here
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -50,6 +51,9 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const textareaRef = useRef(null);
   const messagesContainerRef = useRef(null);
 
+  // Accessing user context
+  const { user } = useContext(UserContext);
+
   // Function to handle message input change
   const handleMessageChange = (e) => {
     dispatch({ type: 'SET_MESSAGE_INPUT', payload: e.target.value });
@@ -77,7 +81,8 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
             content: messageInput,
             recipientId: recipient._id,
             recipientName: recipient.name,
-            department: recipient.department
+            department: recipient.department,
+            senderId: user.id // Assuming user.id is available in your UserContext
           })
         });
 
@@ -87,7 +92,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
 
         const newMessage = {
           content: messageInput,
-          sender: { id: socket.userId, name: localStorage.getItem('username') }
+          sender: { id: user.id, name: localStorage.getItem('username') }
         };
 
         // Update sender's chat box
@@ -135,8 +140,8 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   useEffect(() => {
     const handleMessageEvent = (newMessage) => {
       if (
-        (newMessage.recipient.id === recipient._id && newMessage.sender.id === socket.userId) ||
-        (newMessage.sender.id === recipient._id && newMessage.recipient.id === socket.userId)
+        (newMessage.recipient.id === recipient._id && newMessage.sender.id === user.id) ||
+        (newMessage.sender.id === recipient._id && newMessage.recipient.id === user.id)
       ) {
         dispatch({ type: 'ADD_MESSAGE', payload: { recipientId: recipient._id, message: newMessage } });
       }
@@ -151,7 +156,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         socket.off('new_message', handleMessageEvent);
       }
     };
-  }, [socket, recipient]);
+  }, [socket, recipient, user]);
 
   // Effect to scroll to bottom of messages container on new messages
   useEffect(() => {
@@ -164,8 +169,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   if (!recipient) {
     return null;
   }
-
-  //Modified
 
   // Render the chat box component
   return (
