@@ -46,7 +46,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const socket = useSocket();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { messageInput, conversations } = state;
-  const messages = conversations[recipient?._id] || [];
+  const messages = conversations[recipient?.id] || [];
 
   const textareaRef = useRef(null);
   const messagesContainerRef = useRef(null);
@@ -79,7 +79,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
           },
           body: JSON.stringify({
             content: messageInput,
-            recipientId: recipient._id,
+            recipientId: recipient,
             recipientName: recipient.name,
             department: recipient.department,
             senderId: user.id // Assuming user.id is available in your UserContext
@@ -96,7 +96,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         };
 
         // Update sender's chat box
-        dispatch({ type: 'ADD_MESSAGE', payload: { recipientId: recipient._id, message: newMessage } });
+        dispatch({ type: 'ADD_MESSAGE', payload: { recipientId: recipient, message: newMessage } });
 
         // Clear message input and adjust textarea
         dispatch({ type: 'SET_MESSAGE_INPUT', payload: '' });
@@ -117,7 +117,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
       }
 
       try {
-        const response = await fetch(`${apiUrl}/messages/conversation/${recipient._id}`, {
+        const response = await fetch(`${apiUrl}/messages/conversation/${recipient}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -128,7 +128,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         }
 
         const data = await response.json();
-        dispatch({ type: 'SET_MESSAGES', payload: { recipientId: recipient._id, messages: data } });
+        dispatch({ type: 'SET_MESSAGES', payload: { recipientId: recipient, messages: data } });
       } catch (error) {
         console.error('Error fetching conversations:', error);
       }
@@ -140,8 +140,8 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   useEffect(() => {
     const handleMessageEvent = (newMessage) => {
       if (
-        (newMessage.recipient.id === recipient._id && newMessage.sender.id === user.id) ||
-        (newMessage.sender.id === recipient._id && newMessage.recipient.id === user.id)
+        (newMessage.recipient.id === recipient && newMessage.sender.id === user.id) ||
+        (newMessage.sender.id === recipient && newMessage.recipient.id === user.id)
       ) {
         dispatch({ type: 'ADD_MESSAGE', payload: { recipientId: recipient._id, message: newMessage } });
       }
@@ -184,7 +184,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         <div className="messages">
           <div className="messages-container" style={{ minHeight: "100%" }} ref={messagesContainerRef}>
             {messages.map((msg, index) => (
-              <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
+              <div key={index} className={msg.sender.id === recipient ? 'received' : 'sent'}>
                 <p className="msg-content">{msg.content}</p>
               </div>
             ))}
@@ -210,7 +210,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
       <div className="show-on-small" style={{ display: "none", height: "100%", minHeight: "90vh" }}>
         <div className="messages-container" ref={messagesContainerRef} style={{ flexGrow: 1, overflowY: 'auto', position: "fixed", bottom: "10vh", width: "100%", height: `82vh` }}>
           {messages.map((msg, index) => (
-            <div key={index} className={msg.sender.id === recipient._id ? 'received' : 'sent'}>
+            <div key={index} className={msg.sender.id === recipient ? 'received' : 'sent'}>
               <p className="msg-content">{msg.content}</p>
             </div>
           ))}
