@@ -100,9 +100,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
           sender: { id: user.id, name: localStorage.getItem('username') } // Assuming user.id is accessible
         };
 
-        // Update sender's chat box
-        dispatch({ type: 'ADD_MESSAGE', payload: { recipientId: recipient._id, message: newMessage } });
-
         // Clear message input and adjust textarea
         dispatch({ type: 'SET_MESSAGE_INPUT', payload: '' });
         adjustTextareaHeight();
@@ -133,7 +130,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         }
 
         const data = await response.json();
-        dispatch({ type: 'SET_MESSAGES', payload: { recipientId: recipient._id, messages: data } });
       } catch (error) {
         console.error('Error fetching conversations:', error);
       }
@@ -165,7 +161,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         socket.off('new_message', handleMessageEvent);
       }
     };
-  }, [socket, user]); // Include user in dependencies
+  }, [socket, recipient, user]); // Include user in dependencies
 
   // Effect to scroll to bottom of messages container on new messages
   useEffect(() => {
@@ -244,3 +240,4 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
 };
 
 export default ChatBox;
+
