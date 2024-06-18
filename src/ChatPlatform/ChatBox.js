@@ -37,6 +37,14 @@ const reducer = (state, action) => {
           [id]: messages,
         },
       };
+    case 'CLEAR_MESSAGES':
+      return {
+        ...state,
+        conversations: {
+          ...state.conversations,
+          [action.payload]: [], // Clear messages for a specific recipient
+        },
+      };
     default:
       return state;
   }
@@ -130,6 +138,10 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         console.error('Error fetching conversations:', error);
       }
     };
+
+    // Clear messages for previous recipient when recipient changes
+    dispatch({ type: 'CLEAR_MESSAGES', payload: recipient?.id });
+
     fetchConversations();
   }, [recipient]);
 
