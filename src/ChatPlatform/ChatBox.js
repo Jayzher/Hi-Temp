@@ -135,8 +135,8 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   useEffect(() => {
     const handleMessageEvent = (newMessage) => {
       if (
-        (newMessage.recipient.id === recipient._id && newMessage.sender.id === socket.userId) ||
-        (newMessage.sender.id === recipient._id && newMessage.recipient.id === socket.userId)
+        (newMessage.recipient.id === recipient?._id && newMessage.sender.id === user.id) ||
+        (newMessage.sender.id === recipient?._id && newMessage.recipient.id === user.id)
       ) {
         dispatch({ type: 'ADD_MESSAGE', payload: { recipientId: recipient._id, message: newMessage } });
       }
