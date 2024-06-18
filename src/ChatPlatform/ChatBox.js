@@ -240,4 +240,3 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
 };
 
 export default ChatBox;
-
