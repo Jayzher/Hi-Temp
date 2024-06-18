@@ -130,6 +130,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         }
 
         const data = await response.json();
+        dispatch({ type: 'SET_MESSAGES', payload: { recipientId: recipient._id, messages: data } });
       } catch (error) {
         console.error('Error fetching conversations:', error);
       }
@@ -161,7 +162,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         socket.off('new_message', handleMessageEvent);
       }
     };
-  }, [socket, recipient, user]); // Include user in dependencies
+  }, [socket, user]); // Include user in dependencies
 
   // Effect to scroll to bottom of messages container on new messages
   useEffect(() => {
