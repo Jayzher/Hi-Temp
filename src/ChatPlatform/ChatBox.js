@@ -130,7 +130,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
         }
 
         const data = await response.json();
-        dispatch({ type: 'SET_MESSAGES', payload: { recipientId: recipient._id, messages: data } });
       } catch (error) {
         console.error('Error fetching conversations:', error);
       }
