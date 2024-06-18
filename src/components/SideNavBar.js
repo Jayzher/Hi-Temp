@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import UserContext from "../userContext";
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
+import { useSocket } from '../SocketProvider';
+import { useNotification } from '../NotificationContext';
 
 export default function SideNavBar() {
     const { user, setUser } = useContext(UserContext);
@@ -12,6 +14,28 @@ export default function SideNavBar() {
     const [role, setRole] = useState(user.role);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const navigate = useNavigate();
+
+    const { showNotification } = useNotification();
+    const socket = useSocket();
+    
+    useEffect(() => {
+        if (socket) {
+          const handleNewMessage = (newMessage) => {
+            const isRecipient = newMessage.recipient.id === user.id;
+            const isSender = newMessage.sender.id === user.id;
+
+            if (isRecipient) {
+              showNotification(`New message from ${newMessage.sender.name}`);
+            }
+          };
+
+          socket.on('new_message', handleNewMessage);
+
+          return () => {
+            socket.off('new_message', handleNewMessage);
+          };
+        }
+    }, [socket, user.id, showNotification]);
 
     useEffect(() => {
         if (Notification.permission !== "granted") {

@@ -3,14 +3,14 @@ import { useSocket } from '../SocketProvider';
 import UsersLists from './UsersLists';
 import ChatBox from './ChatBox';
 import { useNavigate } from 'react-router-dom';
-import { useNotification } from '../NotificationContext';
 import '../components/Style.css';
 import './Chat.css';
 import UserContext from '../userContext';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ChatRoom = () => {
   const socket = useSocket();
-  const { showNotification } = useNotification();
   const [userList, setUserList] = useState([]);
   const [chatBoxes, setChatBoxes] = useState({});
   const [showUsers, setShowUsers] = useState(true);
@@ -51,7 +51,6 @@ const ChatRoom = () => {
         })
         .catch((error) => {
           console.error('Error fetching user list:', error);
-          showNotification('Failed to fetch user list');
           if (retryCount < 3) {
             retryCount++;
             setTimeout(fetchData, 1000); // Retry after 1 second
@@ -72,25 +71,6 @@ const ChatRoom = () => {
     setChatBoxes(updatedChatBoxes);
   };
 
-  useEffect(() => {
-    if (socket) {
-      const handleNewMessage = (newMessage) => {
-        const isRecipient = newMessage.recipient.id === user.id;
-        const isSender = newMessage.sender.id === user.id;
-
-        if (isRecipient) {
-          showNotification(`New message from ${newMessage.sender.name}`);
-        }
-      };
-
-      socket.on('new_message', handleNewMessage);
-
-      return () => {
-        socket.off('new_message', handleNewMessage);
-      };
-    }
-  }, [socket, user.id, showNotification]);
-
   const handleUserSelect = (selectedUser) => {
     setChatBoxes((prevChatBoxes) => ({
       ...prevChatBoxes,
@@ -107,7 +87,7 @@ const ChatRoom = () => {
   const handleSendMessage = (recipientId, messageContent) => {
     const message = { recipientId, content: messageContent };
     socket.emit('send_message', message);
-    showNotification('Message sent');
+    toast.success('Sent Successfully!');
   };
 
   const handleBackClick = () => {
