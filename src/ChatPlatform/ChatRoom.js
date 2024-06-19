@@ -91,8 +91,7 @@ const ChatRoom = () => {
   };
 
   const handleBackClick = () => {
-    setShowUsers(true);
-    setChatBoxes({});
+    navigate("/Messages");
   };
 
   return (
