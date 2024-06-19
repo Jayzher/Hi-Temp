@@ -2,6 +2,7 @@ import React from 'react';
 import './Chat.css';
 
 const UsersLists = ({ userList, onSelectUser }) => {
+
   return (
     <div>
       <ul className="user-list">
