@@ -92,6 +92,7 @@ const ChatRoom = () => {
 
   const handleBackClick = () => {
     setShowUsers(true);
+    fetchUserList();
   };
 
   return (
