@@ -3,6 +3,7 @@ import './Chat.css';
 import { Button } from 'react-bootstrap';
 import { useSocket } from '../SocketProvider';
 import UserContext from '../userContext'; // Adjust the path as per your project structure
+import ReactContext from '../ReactContext'; // Adjust the path as per your project structure
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -56,7 +57,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { messageInput, conversations } = state;
   const messages = conversations[recipient?._id] || [];
-  const [showUsers, setShowUsers] = useState(true);
+  const { contextVar, setContextVar } = useContext(ReactContext);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
 
   const textareaRef = useRef(null);
@@ -146,7 +147,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 700);
       if (window.innerWidth >= 700) {
-        setShowUsers(true);
+        setContextVar({showUsers: true});
       }
     };
 
@@ -193,8 +194,9 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   }
 
   const handleBackClick = () => {
+    console.log("I am Clicked");
     setChatBoxes(prevChatBoxes => ({ ...prevChatBoxes, [recipient._id]: false }));
-    setUser({showUsers: true});
+    setContextVar({showUsers: true});
   };
 
 
@@ -237,8 +239,8 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
       {/* Mobile Version */}
       <div className="show-on-small" style={{ display: "none", height: "100%", minHeight: "90vh" }}>
         {isMobile && (
-          <div className="d-flex align-items-center justify-content-end" style={{ background: 'rgba(0, 0, 0, 0.7)', height: 'fit-content', width: '100%', padding: '5px', position: 'absolute', top: '0', zIndex: '10' }}>
-            <button onClick={() => handleBackClick } style={{ color: 'white', border: 'none', background: 'transparent', cursor: 'pointer' }}>
+          <div className="d-flex align-items-center justify-content-end" style={{ background: 'rgba(0, 0, 0, 0.5)', height: 'fit-content', width: '100%', padding: '5px', position: 'absolute', top: '0', zIndex: '999' }}>
+            <button onClick={() => handleBackClick() } style={{ color: 'white', border: 'none', background: 'transparent', cursor: 'pointer' }}>
               &#8592; Back
             </button>
           </div>

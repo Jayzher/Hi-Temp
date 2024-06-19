@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import '../components/Style.css';
 import './Chat.css';
 import UserContext from '../userContext';
+import ReactContext from '../ReactContext';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -16,6 +17,7 @@ const ChatRoom = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
   const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
+  const { contextVar, setContextVar } = useContext(ReactContext);
 
   useEffect(() => {
     fetchUserList();
@@ -23,7 +25,7 @@ const ChatRoom = () => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 700);
       if (window.innerWidth >= 700) {
-        setUser({showUsers: true});
+        setContextVar({showUsers: true});
       }
     };
 
@@ -57,6 +59,7 @@ const ChatRoom = () => {
         });
     };
     fetchData();
+    console.log(user.showUsers);
   };
 
   const initializeChatBoxes = (data) => {
@@ -79,7 +82,7 @@ const ChatRoom = () => {
       },
     }));
     if (isMobile) {
-      setUser({showUsers: false});
+      setContextVar({showUsers: false});
     }
   };
 
@@ -92,7 +95,7 @@ const ChatRoom = () => {
   return (
     <div className="dashboard-container" style={{ overflow: 'hidden', height: '100vh' }}>
       <div id="Chatroom-container" className="d-flex flex-row" style={{ height: '100%', maxHeight: '100vh', marginLeft: '15vw', width: '85vw', overflowY: 'hidden' }}>
-        <div className="user-list-container" style={{ width: '20%', background: '#f0f0f0' }} hidden={!user.showUsers}>
+        <div className="user-list-container" style={{ width: '20%', background: '#f0f0f0' }} hidden={!contextVar.showUsers}>
           <h3 className="ms-5 p-2">User List</h3>
           <UsersLists userList={userList} onSelectUser={handleUserSelect} />
         </div>

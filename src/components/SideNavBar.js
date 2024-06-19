@@ -42,33 +42,10 @@ export default function SideNavBar() {
 
           return () => {
             socket.off('new_message', handleNewMessage);
+            socket.on('TaskUpdated', handleTaskUpdate);
           };
         }
-    }, [socket, user.name, showNotification]);
-
-    useEffect(() => {
-        if (Notification.permission !== "granted") {
-            Notification.requestPermission();
-        }
-
-        const taskUpdated = io(`${process.env.REACT_APP_API_URL}`);
-
-        const handleTaskUpdated = (message) => {
-            console.log(`${message}, Your Tasks Dashboard has been Updated!`);
-            if (Notification.permission === "granted" && message === user.name) {
-                new Notification('New Message', {
-                    body: `${message}, Your Tasks Dashboard has been Updated!`,
-                });
-            }
-        };
-
-        taskUpdated.on('TaskUpdated', handleTaskUpdated);
-
-        return () => {
-            taskUpdated.disconnect();
-            taskUpdated.off('TaskUpdated', handleTaskUpdated);
-        };
-    }, []);
+    }, [socket, user.name]);
 
     useEffect(() => {
         setActiveLink("");

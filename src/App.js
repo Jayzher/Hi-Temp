@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Tabs from './components/Tab';
 import { UserProvider } from './userContext';
+import { ReactProvider } from './ReactContext';
 import { NotificationProvider } from './NotificationContext'; // Ensure correct path
 
 import Profile from './navlinks/Profile';
@@ -28,33 +29,38 @@ function App() {
     name: null,
     department: null,
     Tasks: null,
-    changePassword: null,
-    showUsers: null
+    changePassword: null
+  });
+
+  const [contextVar, setContextVar] = useState({
+    showUsers: true
   });
 
   return (
     <UserProvider value={{ user, setUser }}>
-      <NotificationProvider>
-        <Router>
-          <AppNavBar /> 
-          <Container> 
-            <Routes>
-              <Route path="/" element={<Home />} /> 
-              <Route path="/Login" element={<Login />} /> 
-              <Route path="/Logout" element={<Logout />} /> 
-              <Route path="/TasksCreate" element={<CreateNewTask />} /> 
-              {/* Dashboard Routes */}
-              <Route path="/Dashboard" element={<Dashboard />} /> 
-              <Route path="/Dashboard/:taskId" element={<Dashboard />} />
-              <Route path="/Dashboard/profile" element={<Profile />} />
-              {/* Employee Routes */}
-              <Route path="/Employee" element={<Employee />} />
-              <Route path="/Planner" element={<Planner />} />
-              <Route path="/Messages" element={<Messages />} />
-            </Routes>
-          </Container>
-        </Router>
-      </NotificationProvider>
+      <ReactProvider value={{ contextVar, setContextVar }}>
+        <NotificationProvider>
+          <Router>
+            <AppNavBar /> 
+            <Container> 
+              <Routes>
+                <Route path="/" element={<Home />} /> 
+                <Route path="/Login" element={<Login />} /> 
+                <Route path="/Logout" element={<Logout />} /> 
+                <Route path="/TasksCreate" element={<CreateNewTask />} /> 
+                {/* Dashboard Routes */}
+                <Route path="/Dashboard" element={<Dashboard />} /> 
+                <Route path="/Dashboard/:taskId" element={<Dashboard />} />
+                <Route path="/Dashboard/profile" element={<Profile />} />
+                {/* Employee Routes */}
+                <Route path="/Employee" element={<Employee />} />
+                <Route path="/Planner" element={<Planner />} />
+                <Route path="/Messages" element={<Messages />} />
+              </Routes>
+            </Container>
+          </Router>
+        </NotificationProvider>
+      </ReactProvider>
     </UserProvider>
   );
 }
