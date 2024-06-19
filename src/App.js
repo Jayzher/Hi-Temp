@@ -28,7 +28,8 @@ function App() {
     name: null,
     department: null,
     Tasks: null,
-    changePassword: null
+    changePassword: null,
+    showUsers: true
   });
 
   return (

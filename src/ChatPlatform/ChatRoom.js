@@ -13,7 +13,6 @@ const ChatRoom = () => {
   const socket = useSocket();
   const [userList, setUserList] = useState([]);
   const [chatBoxes, setChatBoxes] = useState({});
-  const [showUsers, setShowUsers] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
@@ -90,14 +89,10 @@ const ChatRoom = () => {
     toast.success('Sent Successfully!');
   };
 
-  const handleBackClick = () => {
-    setShowUsers(true);
-  };
-
   return (
     <div className="dashboard-container" style={{ overflow: 'hidden', height: '100vh' }}>
       <div id="Chatroom-container" className="d-flex flex-row" style={{ height: '100%', maxHeight: '100vh', marginLeft: '15vw', width: '85vw', overflowY: 'hidden' }}>
-        <div className="user-list-container" style={{ width: '20%', background: '#f0f0f0' }} hidden={!showUsers}>
+        <div className="user-list-container" style={{ width: '20%', background: '#f0f0f0' }} hidden={!user.showUsers}>
           <h3 className="ms-5 p-2">User List</h3>
           <UsersLists userList={userList} onSelectUser={handleUserSelect} />
         </div>

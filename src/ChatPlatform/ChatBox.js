@@ -52,7 +52,7 @@ const reducer = (state, action) => {
 
 const ChatBox = ({ recipient, visible, setChatBoxes }) => {
   const socket = useSocket();
-  const { user } = useContext(UserContext); // Assuming user is accessed via context
+  const { user, setUser } = useContext(UserContext); // Assuming user is accessed via context
   const [state, dispatch] = useReducer(reducer, initialState);
   const { messageInput, conversations } = state;
   const messages = conversations[recipient?._id] || [];
@@ -192,6 +192,12 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     return null;
   }
 
+  const handleBackClick = () => {
+    setChatBoxes(prevChatBoxes => ({ ...prevChatBoxes, [recipient._id]: false }));
+    setUser({showUsers: true});
+  };
+
+
   // Render the chat box component
   return (
     <>
@@ -232,7 +238,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
       <div className="show-on-small" style={{ display: "none", height: "100%", minHeight: "90vh" }}>
         {isMobile && (
           <div className="d-flex align-items-center justify-content-end" style={{ background: 'rgba(0, 0, 0, 0.7)', height: 'fit-content', width: '100%', padding: '5px', position: 'absolute', top: '0', zIndex: '10' }}>
-            <button onClick={() => setChatBoxes(prevChatBoxes => ({ ...prevChatBoxes, [recipient._id]: false }))} style={{ color: 'white', border: 'none', background: 'transparent', cursor: 'pointer' }}>
+            <button onClick={() => handleBackClick } style={{ color: 'white', border: 'none', background: 'transparent', cursor: 'pointer' }}>
               &#8592; Back
             </button>
           </div>
