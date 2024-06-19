@@ -27,15 +27,24 @@ export default function SideNavBar() {
             if (isRecipient) {
               showNotification(`New message from ${newMessage.sender.name}`);
             }
+          };          
+
+          const handleTaskUpdate = (taskUpdate) => {
+            const name = taskUpdate.name === user.name;
+
+            if (name) {
+              showNotification(`Your Task has been Updated: ${taskUpdate.taskType}`);
+            }
           };
 
           socket.on('new_message', handleNewMessage);
+          socket.on('TaskUpdated', handleTaskUpdate);
 
           return () => {
             socket.off('new_message', handleNewMessage);
           };
         }
-    }, [socket, user.id, showNotification]);
+    }, [socket, user.name, showNotification]);
 
     useEffect(() => {
         if (Notification.permission !== "granted") {
