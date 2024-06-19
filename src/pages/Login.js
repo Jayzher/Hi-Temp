@@ -181,7 +181,8 @@ export default function Login() {
           department: data.department,
           name: data.name,
           Tasks: data.Tasks,
-          changePassword: data.changePassword
+          changePassword: data.changePassword,
+          showUsers: true
         });
 
         // Establish WebSocket connection

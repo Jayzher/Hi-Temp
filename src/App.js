@@ -29,7 +29,7 @@ function App() {
     department: null,
     Tasks: null,
     changePassword: null,
-    showUsers: true
+    showUsers: null
   });
 
   return (
