@@ -15,7 +15,7 @@ const ChatRoom = () => {
   const [chatBoxes, setChatBoxes] = useState({});
   const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   useEffect(() => {
     fetchUserList();
@@ -23,7 +23,7 @@ const ChatRoom = () => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 700);
       if (window.innerWidth >= 700) {
-        setShowUsers(true);
+        setUser({showUsers: true});
       }
     };
 
@@ -79,7 +79,7 @@ const ChatRoom = () => {
       },
     }));
     if (isMobile) {
-      setShowUsers(false);
+      setUser({showUsers: false});
     }
   };
 
