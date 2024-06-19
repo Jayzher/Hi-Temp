@@ -115,20 +115,6 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
 
   // Effect to fetch conversation messages when recipient changes
   useEffect(() => {
-
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 700);
-      if (window.innerWidth >= 700) {
-        setShowUsers(true);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-
     const fetchConversations = async () => {
       if (!recipient || !recipient._id) {
         return; // Return early if recipient or recipient._id is null
@@ -156,6 +142,20 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
     dispatch({ type: 'CLEAR_MESSAGES', payload: recipient?.id });
 
     fetchConversations();
+
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 700);
+      if (window.innerWidth >= 700) {
+        setShowUsers(true);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+
   }, [recipient]);
 
   // Effect to handle new incoming messages via socket
@@ -230,7 +230,7 @@ const ChatBox = ({ recipient, visible, setChatBoxes }) => {
 
       {/* Mobile Version */}
       <div className="show-on-small" style={{ display: "none", height: "100%", minHeight: "90vh" }}>
-        {!showUsers && isMobile && (
+        {isMobile && (
           <div className="d-flex align-items-center justify-content-end" style={{ background: 'rgba(0, 0, 0, 0.7)', height: 'fit-content', width: '100%', padding: '5px', position: 'absolute', top: '0', zIndex: '10' }}>
             <button onClick={() => setChatBoxes(prevChatBoxes => ({ ...prevChatBoxes, [recipient._id]: false }))} style={{ color: 'white', border: 'none', background: 'transparent', cursor: 'pointer' }}>
               &#8592; Back
