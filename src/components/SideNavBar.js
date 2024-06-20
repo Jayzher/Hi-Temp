@@ -33,7 +33,7 @@ export default function SideNavBar() {
             const name = taskUpdate.name === user.name;
 
             if (name) {
-              showNotification(`Your Task has been Updated: ${taskUpdate.taskType}`);
+              showNotification(`Task has been Updated: ${taskUpdate.projectName}[${taskUpdate.taskType}]`);
             }
           };
 
@@ -42,7 +42,7 @@ export default function SideNavBar() {
 
           return () => {
             socket.off('new_message', handleNewMessage);
-            socket.on('TaskUpdated', handleTaskUpdate);
+            socket.off('TaskUpdated', handleTaskUpdate);
           };
         }
     }, [socket, user.name]);

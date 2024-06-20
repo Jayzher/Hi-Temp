@@ -149,7 +149,7 @@ export default function DisplayProjectCard() {
                         </Form.Group>
                         <Form.Group className="ms-2 me-3 mb-2">
                             <Form.Label>Address:</Form.Label>
-                            <Form.Control type="text" name="address" placeholder="Enter Address" value={formData2.address} onChange={handleChange2} />
+                            <Form.Control type="text" name="address" placeholder="Enter Address" value={formData2.address} onChange={handleChange2} required />
                         </Form.Group>
                         <Form.Group className="ms-2 me-3 mb-2">
                             <Form.Label>Description:</Form.Label>

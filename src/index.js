@@ -9,7 +9,8 @@ import { SocketProvider } from './SocketProvider';
 
 const root = document.getElementById('root');
 createRoot(root).render(
-  <SocketProvider url="https://hi-temp-database.onrender.com">
+//  <SocketProvider url="https://hi-temp-database.onrender.com">
+  <SocketProvider url="http://localhost:4000">
     <React.StrictMode>
       <App />
     </React.StrictMode>

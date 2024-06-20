@@ -44,7 +44,7 @@ function App() {
             <AppNavBar /> 
             <Container> 
               <Routes>
-                <Route path="/" element={<Home />} /> 
+                <Route path="/" element={<Login />} /> 
                 <Route path="/Login" element={<Login />} /> 
                 <Route path="/Logout" element={<Logout />} /> 
                 <Route path="/TasksCreate" element={<CreateNewTask />} /> 

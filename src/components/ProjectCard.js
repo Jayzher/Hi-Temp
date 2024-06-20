@@ -5,22 +5,34 @@ import GetTeam from './GetTeam';
 import GetTaskType from './GetTaskType';
 import GetDepartment from './GetDepartment';
 import UserContext from '../userContext';
+import { useSocket } from '../SocketProvider';
 import swal from 'sweetalert2';
+import { FaEye, FaEyeSlash, FaSyncAlt } from 'react-icons/fa';
 
 export default function ProjectCard({ proj }) {
+    const socket = useSocket();
     const { projectName, subTasks, createdOn } = proj;
     const [collapsed, setCollapsed] = useState(true);
     const [taskDetailsList, setTaskDetailsList] = useState([]);
     const { user } = useContext(UserContext);
     const [show, setShow] = useState(false);
+    const [show2, setShow2] = useState(false);
     const [showTaskDetails, setShowTaskDetails] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
     const [selectedImage, setSelectedImage] = useState('');
     const handleClose = () => setShow(false);
+    const handleClose2 = () => setShow2(false);
     const handleTaskDetailsClose = () => setShowTaskDetails(false);
     const handleShow = () => setShow(true);
     const [showImageModal, setShowImageModal] = useState(false);
-
+    const [taskStatus, setTaskStatus] = useState("Pending");
+    const [selected_id, setSelected_id] = useState("");
+    const [visibleTasks, setVisibleTasks] = useState([]);
+    const [showAllTasks, setShowAllTasks] = useState(false);
+    const toggleShowAllTasks = () => setShowAllTasks(!showAllTasks);
+    const refreshTasks = async () => {
+        await fetchData(); // Fetch the latest tasks
+    };
     const [formData, setFormData] = useState({
         projectName: projectName,
         description: '',
@@ -34,11 +46,49 @@ export default function ProjectCard({ proj }) {
         fullName: ''
     });
 
+     useEffect(() => {
+        if (socket) {
+          const handleTaskUpdate = (taskUpdate) => {
+            fetchData();
+          };
+
+          socket.on('TaskUpdated', handleTaskUpdate);
+
+          return () => {
+            socket.off('TaskUpdated', handleTaskUpdate);
+          };
+        }
+    }, [socket]);
+
     useEffect(() => {
-        const fetchData = async () => {
-            const detailsList = await Promise.all(subTasks.map(task => fetchTaskDetails(task.TaskId)));
-            setTaskDetailsList(detailsList);
-        };
+        const filteredTasks = [];
+
+        if (taskDetailsList.length > 0) {
+            // Always show the first task
+            filteredTasks.push(taskDetailsList[0]);
+
+            if (taskDetailsList.length > 1) {
+                // Only show the second task if its status is "Completed"
+                if (taskDetailsList[1].Status === "Completed") {
+                    filteredTasks.push(taskDetailsList[1]);
+
+                    // Show subsequent tasks after the second task if it's "Completed"
+                    for (let i = 2; i < taskDetailsList.length; i++) {
+                        filteredTasks.push(taskDetailsList[i]);
+                    }
+                }
+            }
+        }
+
+        setVisibleTasks(filteredTasks);
+    }, [taskDetailsList]);
+
+    const fetchData = async () => {
+        const detailsList = await Promise.all(subTasks.map(task => fetchTaskDetails(task.TaskId)));
+        setTaskDetailsList(detailsList);
+    };
+
+    useEffect(() => {
         fetchData();
     }, [subTasks]);
 
@@ -133,7 +183,6 @@ export default function ProjectCard({ proj }) {
         })
         .then(res => {
             console.log(res);
-            window.dispatchEvent(new Event('ProjectCreated'));
         })
         .catch(error => {
             console.error("Error:", error);
@@ -179,6 +228,27 @@ export default function ProjectCard({ proj }) {
         .catch(error => {
             console.error("Error:", error);
         });
+    };    
+
+    const updateTaskStatus = (e) => {
+        e.preventDefault();
+        fetch(`${process.env.REACT_APP_API_URL}/tasks/updateTaskStatus`, {
+            method: "PATCH",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: selected_id,
+                status: taskStatus
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
     };
 
     const handleSubmit = (e) => {
@@ -212,7 +282,7 @@ export default function ProjectCard({ proj }) {
                         <div className="d-flex flex-row mb-2" style={{ justifyContent: "space-around" }}>
                             <Form.Group style={{width: "100%"}}>
                                 <Form.Label>Project:</Form.Label>
-                                <Form.Control type="text" name="projectName" value={projectName} disabled={true}/> 
+                                <Form.Control type="text" name="projectName" value={projectName} disabled={true} /> 
                             </Form.Group>
                         </div>
                         <Form.Group className="mb-2" style={{width: "100%"}}>
@@ -225,19 +295,19 @@ export default function ProjectCard({ proj }) {
                         <div id="project-task-modal" className="d-flex flex-row mb-2" style={{ justifyContent: "space-between" }}>
                             <Form.Group className="me-2" style={{width: "100%"}}>
                                 <Form.Label>Task Type:</Form.Label>
-                                <Form.Select onChange={handleChange} required name="taskType">
+                                <Form.Select onChange={handleChange} required name="taskType" required>
                                     <option value="N/A">Select Task Type</option>
                                     <GetTaskType department={formData.department} />
                                 </Form.Select>
                             </Form.Group>
                             <Form.Group className="" style={{width: "100%"}}>
                                 <Form.Label>Due Date:</Form.Label>
-                                <Form.Control type="date" name="duration" value={formData.duration} onChange={handleChange} />
+                                <Form.Control type="date" name="duration" value={formData.duration} onChange={handleChange} required/>
                             </Form.Group>
                         </div>
                         <Form.Group className="" style={{width: "100%"}}>
                             <Form.Label>Destination:</Form.Label>
-                            <Form.Control type="text" name="destination" value={formData.destination} onChange={handleChange} />
+                            <Form.Control type="text" name="destination" value={formData.destination} onChange={handleChange} required/>
                         </Form.Group>
                         <Form.Group className="mb-2" style={{width: "100%"}}>
                             <Form.Label>Description:</Form.Label>
@@ -245,7 +315,7 @@ export default function ProjectCard({ proj }) {
                         </Form.Group>
                         <Form.Group className="mb-2" style={{width: "100%"}}>
                             <Form.Label>Assign To:</Form.Label>
-                            <Form.Select onChange={handleChange} required name="fullName">
+                            <Form.Select onChange={handleChange} name="fullName" required>
                                 <option value="">Select Employee</option>
                                 <GetTeam department={formData.department} />
                             </Form.Select>
@@ -302,20 +372,56 @@ export default function ProjectCard({ proj }) {
                 </Modal.Body>
             </Modal>
 
+            <Modal size="sm" show={show2} onHide={() => setShow2(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Update Task Status</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{background: "lightgrey"}}>
+                    <Form onSubmit={updateTaskStatus} style={{ width: "100%"}}>
+                        <Form.Group className="mb-2" style={{width: "100%"}}>
+                            <Form.Label>Department:</Form.Label>
+                            <Form.Select value={taskStatus} onChange={e => setTaskStatus(e.target.value)} required name="department">
+                                <option value="Pending">Pending</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Failed">Failed</option>
+                            </Form.Select>
+                        </Form.Group>
+                        <div className="d-flex flex-row mb-2 mt-3" style={{ justifyContent: "center" }}>
+                            <Button variant="primary" type="submit" className="me-2" onClick={handleClose2}>
+                                Update
+                            </Button>
+                            <Button variant="secondary" className="pl-3 pr-3" onClick={handleClose2}>
+                                Close
+                            </Button>
+                        </div>
+                    </Form>
+                </Modal.Body>
+            </Modal>
+
+
             <div className="ms-2 me-2">
                 <div className={collapsed ? "d-flex align-items-center mb-2" : "mb-2"} style={{ minHeight: collapsed ? "10vh" : "auto", width: "100%", background: "azure", border: "2px solid lightgrey", borderRadius: "10px", overflow: "hidden", padding: "0", margin: "0" }}>
                     <div className="d-flex justify-content-between">
                         <div style={{ width: "50vw", cursor: "pointer" }} onClick={toggleCollapse}>
                             <h5 className="p-2">{projectName}</h5>
                         </div>
-                         {(user.role === "Admin") ?
-                            <Button style={{ borderRadius: "5px", display: collapsed ? "none" : "inline" }} onClick={handleShow}>
-                                <span style={{ fontSize: "18pt", fontWeight: "bolder" }}>+</span>
-                            </Button>
-                        :
-                            <>                        
+                        {(user.role === "Admin") ? (
+                            <>
+                                <div className="d-flex flex-row justify-content-around mt-2" style={{width: "100px"}}>
+                                    {showAllTasks ? (
+                                        <FaEyeSlash style={{ border: "1px solid lightgrey", height: "24px", width: "30px", cursor: "pointer"}} onClick={toggleShowAllTasks} />
+                                    ) : (
+                                        <FaEye style={{ border: "1px solid lightgrey", height: "24px", width: "30px", cursor: "pointer"}} onClick={toggleShowAllTasks} />
+                                    )}
+                                    <FaSyncAlt style={{ border: "1px solid lightgrey", height: "24px", width: "30px", cursor: "pointer" }} onClick={refreshTasks} />
+                                </div>
+                                <Button style={{ borderRadius: "5px", display: collapsed ? "none" : "inline" }} onClick={handleShow}>
+                                    <span style={{ fontSize: "18pt", fontWeight: "bolder" }}>+</span>
+                                </Button>   
                             </>
-                        }
+                        ) : (
+                            <> </>
+                        )}
                     </div>
                     <table className="task-table text-center" style={{ width: "100%", borderCollapse: "collapse", display: collapsed ? "none" : "table" }}>
                         <thead>
@@ -324,15 +430,35 @@ export default function ProjectCard({ proj }) {
                                 <th style={{ border: "1px solid lightgrey", padding: "8px" }}>Assigned To</th>
                                 <th style={{ border: "1px solid lightgrey", padding: "8px" }}>Due Date</th>
                                 <th style={{ border: "1px solid lightgrey", padding: "8px" }}>Status</th>
+                                <th style={{ border: "1px solid lightgrey", padding: "8px" }}>Actions</th> {/* New Actions Column */}
                             </tr>
                         </thead>
                         <tbody>
-                            {taskDetailsList.map((task, index) => (
-                                <tr key={index}>
-                                    <td style={{ border: "1px solid lightgrey", padding: "8px", cursor: "pointer" }} onClick={() => handleTaskTypeClick(task)}>{task.taskType}</td>
-                                    <td style={{ border: "1px solid lightgrey", padding: "8px", cursor: "pointer" }} onClick={() => retrieveUserDetails(task.assignedTo[0].fullName)}>{task.assignedTo[0].fullName}</td>
+                            {visibleTasks.map((task, index) => (
+                                <tr key={index} style={{ display: index === 1 && !showAllTasks ? "none" : "table-row" }}> {/* Hide second task if showAllTasks is false */}
+                                    <td 
+                                        style={{ border: "1px solid lightgrey", padding: "8px", cursor: "pointer" }} 
+                                        onClick={() => handleTaskTypeClick(task)}
+                                    >
+                                        {task.taskType}
+                                    </td>
+                                    <td 
+                                        style={{ border: "1px solid lightgrey", padding: "8px", cursor: "pointer" }} 
+                                        onClick={() => retrieveUserDetails(task.assignedTo[0].fullName)}
+                                    >
+                                        {task.assignedTo[0].fullName}
+                                    </td>
                                     <td style={{ border: "1px solid lightgrey", padding: "8px" }}>{task.duration}</td>
-                                    <td style={{ border: "1px solid lightgrey", padding: "8px" }}>{task.Status}</td>
+                                    {user.role === "Employee" ? (
+                                        <td style={{ border: "1px solid lightgrey", padding: "8px" }}>{task.Status}</td>
+                                    ) : (
+                                        <td 
+                                            style={{ border: "1px solid lightgrey", padding: "8px", cursor: "pointer" }} 
+                                            onClick={() => { setShow2(true); setSelected_id(task._id); }}
+                                        >
+                                            {task.Status}
+                                        </td>
+                                    )}
                                 </tr>
                             ))}
                         </tbody>

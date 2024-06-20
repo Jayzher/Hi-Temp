@@ -71,9 +71,17 @@ export default function DisplayTaskCard() {
                 taskDetails = await Promise.all(data[0]?.activeTasks.map(obj => getTasks(obj.objectId)));
                 console.log(taskDetails);
             }
+
+            // Filter out tasks where projectName is an empty string
+            taskDetails = taskDetails.filter(task => task.projectName === "");
+
+            // Log the filtered taskDetails
             console.log(taskDetails);
+
             setFilteredTasks(taskDetails);
-            setTasks(taskDetails.filter(task => task !== null)); // Filter out null values
+
+            // Filter out null values and set the tasks
+            setTasks(taskDetails.filter(task => task !== null));
         } catch (error) {
             console.error('Error fetching tasks:', error);
         }
@@ -102,7 +110,7 @@ export default function DisplayTaskCard() {
         }
     };
 
-        const sortTasks = () => {
+    const sortTasks = () => {
         const sorted = [...filteredTasks];
         sorted.sort((a, b) => {
             const sortByA = getSortValue(a);

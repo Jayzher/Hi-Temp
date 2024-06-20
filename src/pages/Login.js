@@ -4,9 +4,10 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { Form, InputGroup, Button, Container } from 'react-bootstrap';
 import swal from 'sweetalert2';
 import UserContext from '../userContext';
-import io from 'socket.io-client';
+import { useSocket } from '../SocketProvider';
 
 export default function Login() {
+  const socket = useSocket();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { user, setUser } = useContext(UserContext);
@@ -183,15 +184,6 @@ export default function Login() {
           Tasks: data.Tasks,
           changePassword: data.changePassword
         });
-
-        // Establish WebSocket connection
-        const socket = io(process.env.REACT_APP_API_URL);
-
-        // Listen for connection open
-        socket.onopen = () => {
-          // Emit userStatusChanged event
-          socket.send(JSON.stringify({ userId: data._id, status: true }));
-        };
       })
       .catch(error => {
         console.error('Error fetching user details:', error);

@@ -88,7 +88,7 @@ const ChatRoom = () => {
 
   const handleSendMessage = (recipientId, messageContent) => {
     const message = { recipientId, content: messageContent };
-    socket.emit('send_message', message);
+    // socket.emit('send_message', message);
     toast.success('Sent Successfully!');
   };
 
